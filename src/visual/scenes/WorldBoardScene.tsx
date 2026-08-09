@@ -52,8 +52,12 @@ export function WorldBoardScene({
   const FoldedMap = getAsset("object.folded-map");
 
   const current = slots.find((slot) => slot.id === currentSlotId) ?? slots[0];
+  const currentOffset = current ? (getSlotVisual(current.id).offset ?? { x: 0, y: 0 }) : { x: 0, y: 0 };
   const avatarPoint = current
-    ? toScene(current.anchor)
+    ? {
+        x: toScene(current.anchor).x + currentOffset.x,
+        y: toScene(current.anchor).y + currentOffset.y,
+      }
     : { x: width * 0.12, y: height * 0.82 };
 
   return (
@@ -87,12 +91,13 @@ export function WorldBoardScene({
           extra={slots
             .filter((slot) => slot.state === "completed")
             .map((slot) => {
+              const offset = getSlotVisual(slot.id).offset ?? { x: 0, y: 0 };
               const point = toScene(slot.anchor);
               return (
                 <RestoreBloom
                   key={slot.id}
-                  cx={point.x}
-                  cy={point.y}
+                  cx={point.x + offset.x}
+                  cy={point.y + offset.y}
                   r={getSlotVisual(slot.id).bloomRadius ?? 280}
                 />
               );
@@ -153,11 +158,12 @@ export function WorldBoardScene({
       {/* Interaction layer */}
       <div className="pointer-events-none absolute inset-0">
         {slots.map((slot) => {
-          const style = {
-            left: `${slot.anchor.x}%`,
-            top: `${slot.anchor.y}%`,
-          };
           const slotVisual = getSlotVisual(slot.id);
+          const offset = slotVisual.offset ?? { x: 0, y: 0 };
+          const style = {
+            left: `${slot.anchor.x + (offset.x / width) * 100}%`,
+            top: `${slot.anchor.y + (offset.y / height) * 100}%`,
+          };
 
           if (slot.state === "locked") {
             return (

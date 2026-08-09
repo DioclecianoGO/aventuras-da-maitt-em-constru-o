@@ -29,6 +29,12 @@ export type OverworldSceneProps = {
 
 const pct = (value: number, total: number) => `${(value / total) * 100}%`;
 
+/**
+ * Presentation easing only: the first restored slot must read as a visible
+ * bloom on a map-scale region. It never changes the derived value itself.
+ */
+const bloomEase = (progress: number) => (progress <= 0 ? 0 : 0.45 + 0.55 * progress);
+
 export function OverworldScene({
   regionProgress,
   avatarProgress,
@@ -80,7 +86,7 @@ export function OverworldScene({
               cx={region.centroid.x}
               cy={region.centroid.y}
               radius={region.bloomRadius}
-              progress={regionProgress[region.id] ?? 0}
+              progress={bloomEase(regionProgress[region.id] ?? 0)}
             >
               <OverworldColor regionId={region.id} />
             </RestoreGroup>
