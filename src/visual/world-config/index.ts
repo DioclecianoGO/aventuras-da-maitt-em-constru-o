@@ -90,12 +90,12 @@ export const worldVisuals: Record<string, WorldVisual> = {
     sceneAssetKey: "board.dunas-douradas",
     scene: { width: 1600, height: 900 },
     routePath:
-      "M 40 782 C 150 742, 232 640, 288 566 C 372 470, 520 430, 704 372 C 838 330, 986 430, 1152 528 C 1284 606, 1414 616, 1572 566",
+      "M 40 700 C 150 662, 240 604, 288 566 C 420 502, 560 486, 704 500 C 860 516, 1000 548, 1152 562 C 1300 576, 1430 560, 1572 526",
     landmarks: [
       {
         id: "landmark-arco",
         assetKey: "landmark.rock-arch",
-        anchor: { x: 918, y: 356 },
+        anchor: { x: 918, y: 512 },
         scale: 1,
         label: "Arco de pedra esculpido pelo vento",
       },
@@ -110,8 +110,18 @@ export const worldVisuals: Record<string, WorldVisual> = {
  */
 export const slotVisuals: Record<string, SlotVisual> = {
   "slot-1": { objectKind: "carved-stone", bloomRadius: 300, label: "pedra esculpida" },
-  "slot-2": { objectKind: "footprints", bloomRadius: 300, label: "pegadas na areia" },
-  "slot-3": { objectKind: "weathered-marker", bloomRadius: 320, label: "marco gasto pelo vento" },
+  "slot-2": {
+    objectKind: "footprints",
+    offset: { x: 0, y: 140 },
+    bloomRadius: 300,
+    label: "pegadas na areia",
+  },
+  "slot-3": {
+    objectKind: "weathered-marker",
+    offset: { x: 0, y: 40 },
+    bloomRadius: 320,
+    label: "marco gasto pelo vento",
+  },
 };
 
 export const fallbackSlotVisual: SlotVisual = {
