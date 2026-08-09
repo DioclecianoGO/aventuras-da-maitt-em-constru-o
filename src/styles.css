@@ -97,6 +97,65 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
 }
 
+/* ---------------------------------------------------------------------
+ * Aventuras da Maittê — world tokens (docs/design/ART-DIRECTION.md,
+ * docs/design/COLOR-RESTORATION.md).
+ * `paper` + `ink` carry the stolen-color coloring-book state; the
+ * `world-*` hues exist only to be revealed through restoration masks.
+ * ------------------------------------------------------------------- */
+:root {
+  --paper: oklch(0.945 0.018 85);
+  --paper-deep: oklch(0.9 0.026 78);
+  --paper-shade: oklch(0.86 0.03 74);
+  --ink: oklch(0.32 0.035 55);
+  --ink-soft: oklch(0.48 0.03 58);
+  --ink-faint: oklch(0.68 0.022 62);
+  --hope: oklch(0.62 0.17 152);
+  --hope-deep: oklch(0.5 0.15 152);
+  --world-forest: oklch(0.62 0.13 145);
+  --world-kingdom: oklch(0.62 0.1 285);
+  --world-valley: oklch(0.74 0.12 120);
+  --world-city: oklch(0.7 0.11 45);
+  --world-desert: oklch(0.81 0.12 78);
+  --world-desert-deep: oklch(0.69 0.13 62);
+  --world-ocean: oklch(0.68 0.11 220);
+
+  /* Typography — illustrated storybook, deliberately not a UI/dashboard face. */
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body: "Nunito", ui-rounded, system-ui, sans-serif;
+
+  /* Motion tokens — PROVISIONAL test values (docs/design/ANIMATION.md). */
+  --motion-reveal: 900ms;
+  --motion-travel: 820ms;
+  --motion-settle: 340ms;
+  --motion-stage: 440ms;
+  --motion-restore: 900ms;
+  --ease-travel: cubic-bezier(0.6, 0, 0.2, 1);
+  --ease-settle: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-hope: var(--hope);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+h1,
+h2,
+.font-display {
+  font-family: var(--font-display);
+}
+
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
@@ -140,5 +199,115 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+  }
+}
+
+/* --- World presentation utilities ------------------------------------ */
+
+@layer components {
+  .world-surface {
+    background-color: var(--paper);
+    color: var(--ink);
+  }
+
+  .world-reveal {
+    animation: world-reveal var(--motion-reveal) var(--ease-settle) both;
+  }
+
+  .world-settle {
+    animation: world-settle var(--motion-settle) var(--ease-settle) both;
+  }
+
+  .stage-emerge {
+    animation: stage-emerge var(--motion-stage) var(--ease-settle) both;
+  }
+
+  .heart-pulse {
+    animation: heart-pulse 2600ms ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .slot-breathe {
+    animation: slot-breathe 3400ms ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center bottom;
+  }
+
+  .drift-slow {
+    animation: drift-slow 16s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes world-reveal {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes world-settle {
+  from {
+    opacity: 0.4;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes stage-emerge {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes heart-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.13);
+  }
+}
+
+@keyframes slot-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.03);
+  }
+}
+
+@keyframes drift-slow {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(20px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-reveal,
+  .world-settle,
+  .stage-emerge,
+  .heart-pulse,
+  .slot-breathe,
+  .drift-slow {
+    animation: none !important;
   }
 }

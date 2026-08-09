@@ -23,6 +23,7 @@ import type { AttemptResult } from "@/game/domain/responses";
 import { toEvidence } from "@/game/evaluation/orchestrator";
 import { PuzzleTemplateHost } from "@/game/stage/PuzzleTemplateHost";
 import { useGameState } from "@/game/state/GameStateProvider";
+import { ChallengeStageShell } from "@/visual/stage/ChallengeStageShell";
 
 export const Route = createFileRoute("/mundo/$worldId/desafio/$slotId")({
   loader: ({ params }) => {
@@ -90,42 +91,29 @@ function ChallengeStage() {
   if (!slot || !activity || !item) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/40 p-4 sm:items-center">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Desafio"
-        className="w-full max-w-2xl rounded-3xl bg-card p-6 shadow-lg motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4"
-      >
-        <div className="mb-5 flex items-start justify-between gap-4">
-          <h1 className="text-2xl font-bold text-card-foreground">Desafio</h1>
-          <button
-            type="button"
-            onClick={close}
-            className="min-h-11 rounded-lg border border-border px-4 text-sm font-medium"
-          >
-            Voltar ao tabuleiro
-          </button>
-        </div>
-
-        <PuzzleTemplateHost
-          activity={activity}
-          slot={slot}
-          pack={placeholderPack}
-          item={item}
-          onAttempt={handleAttempt}
-        />
-
-        {lastAttempt ? (
-          <p className="mt-5 rounded-xl bg-muted p-4 text-sm text-muted-foreground" role="status">
+    <ChallengeStageShell
+      worldId={worldId}
+      title="Pedra esculpida"
+      onClose={close}
+      feedback={
+        lastAttempt ? (
+          <span role="status">
             {lastAttempt.outcome === "correct"
-              ? "Correto — trecho restaurado."
+              ? "Isso! A cor voltou a este trecho da trilha."
               : lastAttempt.outcome === "partially-correct"
                 ? placeholderPack.feedback.firstError
                 : placeholderPack.feedback.repeatedError}
-          </p>
-        ) : null}
-      </div>
-    </div>
+          </span>
+        ) : undefined
+      }
+    >
+      <PuzzleTemplateHost
+        activity={activity}
+        slot={slot}
+        pack={placeholderPack}
+        item={item}
+        onAttempt={handleAttempt}
+      />
+    </ChallengeStageShell>
   );
 }
