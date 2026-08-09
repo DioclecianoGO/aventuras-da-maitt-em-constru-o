@@ -357,6 +357,25 @@ Handling: confirm; multi-profile would change persistence in Phase 0.
 | **May exceed reliable Lovable capability** — precise FLIP/spatial-continuity choreography, path-following animation, multi-layer masked restoration at scale | Sections F and I | Escalation may be required | Per docs/WORKFLOW.md escalation clause, route these specific items to Codex/Claude Code if the Phase 0 spike underperforms; specs remain authoritative |
 | Content authoring bottleneck (validated packs) | Phases 1–3 | Templates ready with nothing valid to render | Ship schema + a small product-validated pilot pack per family before scaling content |
 
+## M — Phase 0 blocking decisions (updated after corrections)
+
+Blocking — Phase 0 cannot start until each is resolved:
+
+1. **Architecture/state/schema approval** — Sections D and E as corrected (evaluation boundary, slot-owns-activity), standing in for the missing docs/technical/ specs.
+2. **Restoration is derived, not persisted** — approved in principle above; needs to be recorded as the binding rule, since the whole persisted shape depends on it.
+3. **Single local profile, no backend/account** — confirms the persistence surface Phase 0 builds against.
+4. **Challenge Stage continuity requirement** — approved; the overlay implementation stays PROVISIONAL and Phase 0 must not assume it is final.
+
+Not blocking for Phase 0, blocking for Phase 1: Activity Slot count and order; Support Levels; validated Content Pack items; navigation affordance; Mathematics landmarks/minion; companion assignment.
+
+Not blocking at all in Phase 0: mastery thresholds, XP economy, milestone catalogue, audio source, transition timing. Phase 0 stores the evidence and exposes the seams without asserting any value.
+
+## N — Can Phase 0 begin with pedagogical GAPs open?
+
+Yes. Phase 0 builds only structure: schemas, registries, the response→evaluation→evidence pipeline, persistence, boundaries and the restoration spike. It authors no curriculum, asserts no mastery threshold, assigns no XP, fixes no slot count and ships no child-facing content. Every open pedagogical GAP is represented as a typed seam awaiting a decided value, so resolving those decisions later changes data and constants rather than architecture.
+
+The one condition: Phase 0 must not emit a "proficient" label, an XP number, or a fixed slot layout as a placeholder that could later be mistaken for a decision. Placeholders in Phase 0 are explicitly named as such.
+
 ## Build authorization
 
-No build begins on this plan. Approval authorizes **Phase 0 only**, and only after the Section K items blocking Phase 0 (technical architecture/state/schema approval, restoration granularity, single-profile persistence) are resolved.
+No build begins on this plan. Approval authorizes **Phase 0 only**, and only after the four blocking decisions in Section M are resolved.
