@@ -22,7 +22,9 @@ Four spatial layers, one route each, so each layer is independently addressable 
   (stage overlay) Challenge Stage  focused interaction over the retained board
 ```
 
-PROPOSAL: Challenge Stage is a route-driven overlay (`/mundo/$worldId/desafio/$slotId`) rendered above the still-mounted board rather than a separate page. This is what makes "preserve spatial continuity" achievable — the board is never unmounted, so the stage can grow out of the selected slot's screen position and shrink back into it.
+APPROVED REQUIREMENT: Challenge Stage preserves the World Board as spatial context; the board is never lost behind an unrelated page.
+
+PROVISIONAL IMPLEMENTATION: a route-driven overlay (`/mundo/$worldId/desafio/$slotId`) rendered above the still-mounted board. The board stays mounted, so the stage can grow out of the selected slot's screen position and shrink back into it. This implementation may be replaced if another approach satisfies the same continuity requirement better.
 
 Navigation states: `overworld` → `world-entering` (zoom) → `board-idle` → `slot-activated` → `stage-briefing` → `stage-active` → `stage-resolved` → `board-restoring` → `board-advancing` → `board-idle`.
 
@@ -60,7 +62,10 @@ Navigation states: `overworld` → `world-entering` (zoom) → `board-idle` → 
 | SubjectRegistry | Subject → world config lookup | PRODUCT-VISION | Future-ready architectural element |
 | ContentPackRegistry | Pack lookup by skill/slot | CONTENT-PARAMETRIZATION | Functional |
 | MasteryStore | Per-skill evidence accumulation | MATH-G2 §9 | Functional (no thresholds — see GAP-MASTERY) |
-| PersistenceAdapter | Save/load, swappable backend | MVP-SCOPE (PROVISIONAL) | Future-ready architectural element |
+| ResponseEvaluator | Evaluates UserResponse against pack rules | LEARNING-MODEL, PUZZLE-SYSTEM | Functional |
+| PersistenceAdapter | Save/load interface | MVP-SCOPE | Functional (MVP infrastructure) |
+| LocalStoragePersistence | Adapter implementation for the MVP | MVP-SCOPE (PROVISIONAL scope) | Functional (MVP) |
+| RemotePersistence | Backend/account-backed save | — (not authorized) | Future |
 
 No XP UI component is planned: the economy is undecided (GAP-XP). Only the evidence field is reserved.
 
@@ -93,32 +98,72 @@ ContentPack  { id, skillIds[], objectiveIds[], difficultyDims,
                feedback: { firstError, repeatedError, hint[] } }
 Activity     { id, contentPackId, templateId, difficulty, supportLevel,
                mode: 'discover'|'practice'|'challenge', guidePetId?,
-               slotId, masteryRules }
+               masteryRules }            // location-agnostic: no slotId
 Template     { id, accepts: representation[], render(props: TemplateProps) }
 Difficulty   { level: 1..4, mathComplexity, representationalDistance,
                taskComplexity, assistance }   // per MATH-G2 §7
 SupportLevel { id, hintsAllowed, revealAllowed, ... }  // GAP-SUPPORT
 GuidePet     { id, name, tone }
 ActivitySlot { id, worldId, segmentId, order, anchor: {x,y},
-               activityIds[], restorationWeight }
+               restorationWeight,
+               sequence: { discover?: ActivityId,
+                           practice?: ActivityId[],
+                           challenge: ActivityId[] } }
 Evidence     { skillId, activityId, mode, correct, assisted,
                representation, at }
 Restoration  { segmentId, worldId, value }   // derived
 ```
 
-Puzzle Template contract (the key isolation boundary):
+**Activity ↔ Activity Slot ownership (corrected).** The relationship is unidirectional: the **Activity Slot owns the assignment**. An Activity describes *what is practised and how*; it carries no board location and no `slotId`. A slot names the Activity sequence occupying that position, which is also how one slot can hold a Discover activity plus Practice and Challenge activities without any of them knowing where they live. Reassigning content to another slot edits one slot record, and the same Activity may be referenced by more than one slot.
+
+**Puzzle Template contract (corrected — templates never evaluate).** A template collects and reports a *response*. It does not know what is correct.
 
 ```ts
+// What the child did — structured, never judged
+type UserResponse =
+  | { kind: 'selection';    optionIds: string[] }
+  | { kind: 'ordering';     orderedIds: string[] }
+  | { kind: 'placement';    placements: { itemId: string; targetId: string; rotation?: number }[] }
+  | { kind: 'composition';  parts: { partId: string; targetId: string; transform?: Transform }[] }
+  | { kind: 'numeric';      value: number; byColumn?: Record<'u'|'d'|'c', number>; regroupings?: Regroup[] }
+  | { kind: 'text';         value: string }
+  | { kind: 'relation';     relationId: string }        // CH-OP-STORY phase 1
+  | { kind: 'audio';        clipRef: string };          // FUTURE, not this MVP
+
 type TemplateProps = {
   item: PackItem;            // content, opaque to the template
   mode: LearningMode;
   support: SupportLevel;
-  onAttempt(a: { correct: boolean; assisted: boolean }): void;
+  onRespond(response: UserResponse): void;   // raw response only
+  onSupportUsed(kind: SupportEventKind): void;
+  feedback: FeedbackSignal | null;           // rendered, not decided, by the template
   onResolved(): void;
 };
 ```
 
-A template never imports a skill id, never contains a number/word/answer, and never decides mastery. It reports attempts; the Activity layer judges them.
+The Activity/Evaluation layer judges the response using the Content Pack's rules:
+
+```ts
+type EvaluationResult = {
+  outcome: 'correct' | 'partially-correct' | 'incorrect';
+  matchedAnswerId?: string;                     // supports multiple valid answers
+  perTargetOutcome?: Record<string, boolean>;   // ordering/composition detail
+  diagnosticCode?: string;                      // e.g. 'missed-regrouping'
+};
+
+type AttemptResult = EvaluationResult & {
+  activityId: string; slotId: string; skillIds: string[];
+  mode: LearningMode; assisted: boolean;        // from support events, not the template
+  representation: string; at: string;
+};
+
+interface ResponseEvaluator<R extends UserResponse = UserResponse> {
+  kind: R['kind'];
+  evaluate(response: R, item: PackItem, rules: PackAnswerRules): EvaluationResult;
+}
+```
+
+Evaluators are registered by response kind and are pure, unit-testable without any UI. Content Packs carry `answerRules` (single answer, answer set, accepted orderings, tolerance, per-part targets), so multiple valid answers, partial credit for ordering and composition, typed answers and — later — spoken answers are handled by adding an evaluator, not by changing templates. The evidence layer consumes `AttemptResult` only and never sees a raw response. A template never imports a skill id, never contains an answer, never sets `assisted`, and never decides mastery.
 
 ## F — Animation and transition plan
 
@@ -142,7 +187,9 @@ All animations respect `prefers-reduced-motion` and every one has a state-equiva
 
 ## G — Challenge system by MVP slice
 
-Common contract for every family: receives one pack item + mode + support level; emits attempts; owns no curriculum. Touch targets ≥ 44px minimum, ≥ 64px for primary manipulables (tablet-first).
+Common contract for every family: receives one pack item + mode + support level; emits a structured `UserResponse` and support events; performs no evaluation and owns no curriculum. Touch targets ≥ 44px minimum, ≥ 64px for primary manipulables (tablet-first).
+
+**Touch interaction integrity (binding requirement).** Any core drag interaction that could produce a false educational error through touch imprecision must ship with a reliable alternative interaction — tap-to-select then tap-to-place — unless the drag gesture itself is part of the skill being assessed. This is an evidence-integrity requirement, not only an accessibility one: an attempt lost to a slipped finger would otherwise be recorded as a mathematical error. It applies to CH-NUM-BUILD, CH-OP-SOLVE regrouping, CH-GEO-SORT and CH-GEO-BUILD, and is an acceptance condition of every phase that ships them.
 
 ### Slice A
 
@@ -154,7 +201,7 @@ Common contract for every family: receives one pack item + mode + support level;
 
 **CH-OP-SOLVE** (ADD/SUB CALC + PLACE). Vertical column layout with explicit units/tens/hundreds columns; regrouping is a manipulable action (drag ten units → one ten) with a visible carry mark, not an automatic result. Also supports "find the character's mistake" variants. Error escalation moves to concrete base-ten support rather than revealing the total.
 
-**CH-OP-STORY** (ADD/SUB PROBLEM). Two explicit phases: (1) choose the relation the story describes, (2) compute. Phase 1 outcome is recorded on the PROBLEM skill; phase 2 on the CALC skill. When the operation is given in advance, the item is flagged so it cannot yield full PROBLEM mastery. Packs must include problems where the surface keyword contradicts the required operation, so keyword matching cannot succeed.
+**CH-OP-STORY** (ADD/SUB PROBLEM). Two explicit phases: (1) choose the relation the story describes (`relation` response), (2) compute (`numeric` response). Phase 1 outcome is recorded on the PROBLEM skill; phase 2 on the CALC skill. When the operation is given in advance, the item is flagged so it cannot yield full PROBLEM mastery. Pedagogical requirement: problems must require comprehension of the represented mathematical relationship and must not be reliably solvable through superficial keyword matching alone. The specific authoring strategies that achieve this belong to validated Content Packs and are not fixed by this plan.
 
 ### Slice C
 
@@ -169,14 +216,14 @@ Structural mechanisms, not conventions:
 1. **Discover ≠ mastery** — `mode` is part of the Activity record and stamped on every Evidence row. The mastery selector reads only `mode === 'challenge'` rows for independent evidence, so it is structurally unable to count a Discover success.
 2. **Hint ≠ Challenge mastery** — `assisted: true` is set the moment any hint/support is consumed and cannot be cleared for that attempt. Assisted rows accumulate in a separate counter.
 3. **No curriculum in world components** — board/scenery components receive only `slotId`, `anchor`, `segmentId`, `state`. An ESLint `no-restricted-imports` boundary prevents them importing the content directory at build time.
-4. **Templates own no skills/answers** — templates receive `item` and call `onAttempt`. Answer checking lives in the pack/activity layer. The same lint boundary blocks templates importing skill/curriculum modules.
+4. **Templates own no skills, answers or verdicts** — templates emit a `UserResponse`; all evaluation happens in the Activity/Evaluation layer against the pack's `answerRules`. The lint boundary blocks templates importing skill, curriculum or evaluator modules, so a template cannot compute correctness even accidentally.
 5. **No workbook photos as screens** — content packs carry structured items (numbers, figures, relations). The schema has no page-image field.
 6. **Layout cannot reveal answers** — uniform spacing/size rules in CH-NUM-PATH; option ordering randomized per attempt; distractors required to match the correct answer in visual weight. A pack validation check rejects option sets where the correct item is the only one of its size/length class.
 7. **One answer ≠ mastery** — mastery requires multiple independent correct attempts across ≥2 representations (`representationsSeen`). Exact counts are a product decision (GAP-MASTERY); until decided, the UI never claims "proficient".
 
 ## I — Color restoration architecture
 
-- **State location**: persisted facts are slot completions + milestones only. Restoration values are pure selectors: `segment → completedSlots/totalSlots`, `world → aggregate`, `overworldRegion → world value`, `avatar → milestones + world value`. Changing granularity later changes selectors, not saved data.
+- **State location (APPROVED DIRECTION)**: persisted state stores source facts only — slot completion, milestones and evidence. Restoration percentages are derived selectors, never persisted truth: `segment → completedSlots/totalSlots`, `world → aggregate`, `overworldRegion → world value`, `avatar → milestones + world value`. Changing granularity later changes selectors, not saved data.
 - **Update events**: `SLOT_COMPLETED` and `MILESTONE_RECOVERED`. Nothing else writes restoration.
 - **Board-area restoration**: each Activity Slot declares `segmentId` and `restorationWeight`; the segment's art layer receives the computed value.
 - **Overworld restoration**: the Mathematics region reads the world aggregate on mount and animates from its previously-seen value.
@@ -185,13 +232,13 @@ Structural mechanisms, not conventions:
 - **Extensibility**: restoration is keyed by `worldId`/`segmentId`; a new subject world adds config only.
 - **Proposed visual technique** (PROPOSAL): two stacked art layers per segment — grayscale/line-art beneath, full-colour above — with the coloured layer revealed by a CSS `mask-image` driven by a custom property. Broadly supported, animatable, no per-asset scripting.
 - **Fallback**: coloured-layer `opacity` cross-fade per segment, or a discrete asset swap at completion.
-- **Uncertainty flagged**: partial *within-segment* restoration and mask performance with many simultaneous segments on tablet are unverified and must be prototyped in Phase 0.
+- **Uncertainty flagged**: the exact visual restoration technique remains a Phase 0 spike. Partial *within-segment* restoration and mask performance with many simultaneous segments on tablet are unverified.
 
 ## J — Delivery phasing
 
 Approval of one phase does not authorize the next. Each phase ends in a reviewable artifact.
 
-**Phase 0 — Foundation / architecture.** Deliverables: route skeleton for the spatial layers; typed state store + selectors; Zod schemas for all Section E entities; PersistenceAdapter with localStorage; PuzzleTemplateHost + template contract; content/world/template registries; the lint boundary rules from Section H; a restoration-technique spike (mask vs. opacity) on a placeholder asset; one throwaway template proving the full loop. Dependencies: approval of Sections D, E, I. Acceptance: a placeholder slot can be completed, state persists across reload, a segment visibly restores, and no world component can import content. Reviewable: architecture + working technical loop with placeholder art.
+**Phase 0 — Foundation / architecture.** Deliverables: route skeleton for the spatial layers; typed state store + selectors; Zod schemas for all Section E entities; PersistenceAdapter + localStorage implementation (MVP infrastructure — reload survival is a Phase 0 acceptance condition, not a future concern); PuzzleTemplateHost + the response/evaluation contract with at least two evaluators (`selection`, `ordering`); content/world/template/evaluator registries; the lint boundary rules from Section H; a restoration-technique spike (mask vs. opacity) on a placeholder asset; one throwaway template proving the full loop with placeholder content and both drag and tap-to-place input paths. Dependencies: approval of Sections D, E, I as corrected. Acceptance: a placeholder slot can be completed, evaluation happens outside the template, state persists across reload, a segment visibly restores, and no world component or template can import content or evaluators. Reviewable: architecture + working technical loop with placeholder art.
 
 **Phase 1 — Slice A Number Sense.** Deliverables: CH-NUM-BUILD, CH-NUM-PATH; Mathematics world config with Slice A slots; content packs for the seven NUM skills across Discover/Practice/Challenge; companion briefing; feedback rules; board + Overworld restoration wired; first-pass Mathematics board art. Dependencies: Phase 0 accepted; Activity Slot count/order decided (GAP-SLOTS); support levels decided (GAP-SUPPORT); validated pack items supplied. Acceptance: a child completes the Slice A route end to end on a tablet-sized screen, evidence is recorded per skill with mode/assisted flags, colour restores locally and on the Overworld, progress survives reload. Reviewable: the first genuinely playable slice. **Explicitly not the completion of the useful Mathematics MVP.**
 
@@ -310,6 +357,25 @@ Handling: confirm; multi-profile would change persistence in Phase 0.
 | **May exceed reliable Lovable capability** — precise FLIP/spatial-continuity choreography, path-following animation, multi-layer masked restoration at scale | Sections F and I | Escalation may be required | Per docs/WORKFLOW.md escalation clause, route these specific items to Codex/Claude Code if the Phase 0 spike underperforms; specs remain authoritative |
 | Content authoring bottleneck (validated packs) | Phases 1–3 | Templates ready with nothing valid to render | Ship schema + a small product-validated pilot pack per family before scaling content |
 
+## M — Phase 0 blocking decisions (updated after corrections)
+
+Blocking — Phase 0 cannot start until each is resolved:
+
+1. **Architecture/state/schema approval** — Sections D and E as corrected (evaluation boundary, slot-owns-activity), standing in for the missing docs/technical/ specs.
+2. **Restoration is derived, not persisted** — approved in principle above; needs to be recorded as the binding rule, since the whole persisted shape depends on it.
+3. **Single local profile, no backend/account** — confirms the persistence surface Phase 0 builds against.
+4. **Challenge Stage continuity requirement** — approved; the overlay implementation stays PROVISIONAL and Phase 0 must not assume it is final.
+
+Not blocking for Phase 0, blocking for Phase 1: Activity Slot count and order; Support Levels; validated Content Pack items; navigation affordance; Mathematics landmarks/minion; companion assignment.
+
+Not blocking at all in Phase 0: mastery thresholds, XP economy, milestone catalogue, audio source, transition timing. Phase 0 stores the evidence and exposes the seams without asserting any value.
+
+## N — Can Phase 0 begin with pedagogical GAPs open?
+
+Yes. Phase 0 builds only structure: schemas, registries, the response→evaluation→evidence pipeline, persistence, boundaries and the restoration spike. It authors no curriculum, asserts no mastery threshold, assigns no XP, fixes no slot count and ships no child-facing content. Every open pedagogical GAP is represented as a typed seam awaiting a decided value, so resolving those decisions later changes data and constants rather than architecture.
+
+The one condition: Phase 0 must not emit a "proficient" label, an XP number, or a fixed slot layout as a placeholder that could later be mistaken for a decision. Placeholders in Phase 0 are explicitly named as such.
+
 ## Build authorization
 
-No build begins on this plan. Approval authorizes **Phase 0 only**, and only after the Section K items blocking Phase 0 (technical architecture/state/schema approval, restoration granularity, single-profile persistence) are resolved.
+No build begins on this plan. Approval authorizes **Phase 0 only**, and only after the four blocking decisions in Section M are resolved.
