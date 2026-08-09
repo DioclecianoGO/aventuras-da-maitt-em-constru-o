@@ -10,33 +10,70 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MundoWorldIdRouteImport } from './routes/mundo.$worldId'
+import { Route as MundoWorldIdIndexRouteImport } from './routes/mundo.$worldId.index'
+import { Route as MundoWorldIdDesafioSlotIdRouteImport } from './routes/mundo.$worldId.desafio.$slotId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MundoWorldIdRoute = MundoWorldIdRouteImport.update({
+  id: '/mundo/$worldId',
+  path: '/mundo/$worldId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MundoWorldIdIndexRoute = MundoWorldIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MundoWorldIdRoute,
+} as any)
+const MundoWorldIdDesafioSlotIdRoute =
+  MundoWorldIdDesafioSlotIdRouteImport.update({
+    id: '/desafio/$slotId',
+    path: '/desafio/$slotId',
+    getParentRoute: () => MundoWorldIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/mundo/$worldId': typeof MundoWorldIdRouteWithChildren
+  '/mundo/$worldId/': typeof MundoWorldIdIndexRoute
+  '/mundo/$worldId/desafio/$slotId': typeof MundoWorldIdDesafioSlotIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/mundo/$worldId': typeof MundoWorldIdIndexRoute
+  '/mundo/$worldId/desafio/$slotId': typeof MundoWorldIdDesafioSlotIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/mundo/$worldId': typeof MundoWorldIdRouteWithChildren
+  '/mundo/$worldId/': typeof MundoWorldIdIndexRoute
+  '/mundo/$worldId/desafio/$slotId': typeof MundoWorldIdDesafioSlotIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/mundo/$worldId'
+    | '/mundo/$worldId/'
+    | '/mundo/$worldId/desafio/$slotId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/mundo/$worldId' | '/mundo/$worldId/desafio/$slotId'
+  id:
+    | '__root__'
+    | '/'
+    | '/mundo/$worldId'
+    | '/mundo/$worldId/'
+    | '/mundo/$worldId/desafio/$slotId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MundoWorldIdRoute: typeof MundoWorldIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +85,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mundo/$worldId': {
+      id: '/mundo/$worldId'
+      path: '/mundo/$worldId'
+      fullPath: '/mundo/$worldId'
+      preLoaderRoute: typeof MundoWorldIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mundo/$worldId/': {
+      id: '/mundo/$worldId/'
+      path: '/'
+      fullPath: '/mundo/$worldId/'
+      preLoaderRoute: typeof MundoWorldIdIndexRouteImport
+      parentRoute: typeof MundoWorldIdRoute
+    }
+    '/mundo/$worldId/desafio/$slotId': {
+      id: '/mundo/$worldId/desafio/$slotId'
+      path: '/desafio/$slotId'
+      fullPath: '/mundo/$worldId/desafio/$slotId'
+      preLoaderRoute: typeof MundoWorldIdDesafioSlotIdRouteImport
+      parentRoute: typeof MundoWorldIdRoute
+    }
   }
 }
 
+interface MundoWorldIdRouteChildren {
+  MundoWorldIdIndexRoute: typeof MundoWorldIdIndexRoute
+  MundoWorldIdDesafioSlotIdRoute: typeof MundoWorldIdDesafioSlotIdRoute
+}
+
+const MundoWorldIdRouteChildren: MundoWorldIdRouteChildren = {
+  MundoWorldIdIndexRoute: MundoWorldIdIndexRoute,
+  MundoWorldIdDesafioSlotIdRoute: MundoWorldIdDesafioSlotIdRoute,
+}
+
+const MundoWorldIdRouteWithChildren = MundoWorldIdRoute._addFileChildren(
+  MundoWorldIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MundoWorldIdRoute: MundoWorldIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
