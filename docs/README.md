@@ -41,6 +41,8 @@ docs/
 ├── design/
 │   ├── ART-DIRECTION.md
 │   ├── VISUAL-IMPLEMENTATION.md
+│   ├── PHASE-1B-CHARACTER-ART-AUDIO.md
+│   ├── CHARACTER-ART.md
 │   ├── COLOR-RESTORATION.md
 │   ├── ANIMATION.md
 │   ├── AUDIO.md
