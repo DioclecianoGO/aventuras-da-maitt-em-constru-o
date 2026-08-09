@@ -42,7 +42,17 @@ export function OverworldScene({
     : "none";
 
   return (
-    <div className="world-surface relative isolate h-full w-full overflow-hidden">
+    <div className="world-surface flex h-full w-full items-center justify-center overflow-hidden">
+      <div
+        className="relative isolate"
+        style={{
+          aspectRatio: `${OVERWORLD_SCENE.width} / ${OVERWORLD_SCENE.height}`,
+          width: "100%",
+          height: "100%",
+          maxWidth: `calc(100dvh * ${OVERWORLD_SCENE.width / OVERWORLD_SCENE.height})`,
+          maxHeight: `calc(100dvw * ${OVERWORLD_SCENE.height / OVERWORLD_SCENE.width})`,
+        }}
+      >
       <div
         className="absolute inset-0 origin-center"
         style={{
@@ -156,6 +166,7 @@ export function OverworldScene({
             </Link>
           );
         })}
+      </div>
       </div>
     </div>
   );
