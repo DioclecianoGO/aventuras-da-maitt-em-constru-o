@@ -148,13 +148,14 @@ export function getRegionForWorld(worldId: string): RegionVisual | undefined {
 
 /**
  * Maittê's colour regions. The heart is saturated from the opening and is not
- * part of any progression mapping. `demoPartial` demonstrates one partial
- * state; it is configuration, not a milestone rule (docs/narrative/MAITTE.md).
+ * part of any progression mapping. `provisionalSequence` demonstrates one
+ * partial state; it is configuration, not a milestone rule
+ * (docs/narrative/MAITTE.md).
  */
 export const characterVisual: CharacterVisualConfig = {
   regions: ["heart", "glasses", "hairStreak", "hair", "shirt", "skirt", "socks", "shoes"],
   alwaysRestored: ["heart"],
-  demoPartial: ["socks", "glasses"],
+  provisionalSequence: ["socks", "glasses", "shirt", "hairStreak", "skirt", "shoes", "hair"],
 };
 
 /**

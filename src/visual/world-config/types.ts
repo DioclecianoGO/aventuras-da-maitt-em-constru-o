@@ -89,6 +89,11 @@ export type CharacterRegionId =
 export type CharacterVisualConfig = {
   regions: CharacterRegionId[];
   alwaysRestored: CharacterRegionId[];
-  /** Demonstration only — configurable, never a permanent reward order. */
-  demoPartial: CharacterRegionId[];
+  /**
+   * PROVISIONAL configuration only. Regions are independently addressable;
+   * this list is one replaceable arrangement used to demonstrate partial
+   * restoration. It is NOT a decided reward order and no gameplay rule may
+   * depend on it.
+   */
+  provisionalSequence: CharacterRegionId[];
 };
