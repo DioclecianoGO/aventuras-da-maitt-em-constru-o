@@ -40,6 +40,7 @@ docs/
 │   └── XP.md
 ├── design/
 │   ├── ART-DIRECTION.md
+│   ├── VISUAL-IMPLEMENTATION.md
 │   ├── COLOR-RESTORATION.md
 │   ├── ANIMATION.md
 │   ├── AUDIO.md
