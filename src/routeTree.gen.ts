@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MundoWorldIdRouteImport } from './routes/mundo.$worldId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MundoWorldIdRoute = MundoWorldIdRouteImport.update({
+  id: '/mundo/$worldId',
+  path: '/mundo/$worldId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/mundo/$worldId': typeof MundoWorldIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/mundo/$worldId': typeof MundoWorldIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/mundo/$worldId': typeof MundoWorldIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/mundo/$worldId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/mundo/$worldId'
+  id: '__root__' | '/' | '/mundo/$worldId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MundoWorldIdRoute: typeof MundoWorldIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mundo/$worldId': {
+      id: '/mundo/$worldId'
+      path: '/mundo/$worldId'
+      fullPath: '/mundo/$worldId'
+      preLoaderRoute: typeof MundoWorldIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MundoWorldIdRoute: MundoWorldIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
