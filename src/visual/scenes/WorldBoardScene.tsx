@@ -57,7 +57,17 @@ export function WorldBoardScene({
     : { x: width * 0.12, y: height * 0.82 };
 
   return (
-    <div className="world-surface relative isolate h-full w-full overflow-hidden">
+    <div className="world-surface flex h-full w-full items-center justify-center overflow-hidden">
+      <div
+        className="relative isolate"
+        style={{
+          aspectRatio: `${width} / ${height}`,
+          width: "100%",
+          height: "100%",
+          maxWidth: `calc(100dvh * ${width / height})`,
+          maxHeight: `calc(100dvw * ${height / width})`,
+        }}
+      >
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="world-settle h-full w-full"
@@ -206,6 +216,7 @@ export function WorldBoardScene({
         <p className="text-[0.72rem] tracking-[0.28em] text-ink-soft uppercase">
           {visual.displayName}
         </p>
+      </div>
       </div>
     </div>
   );
