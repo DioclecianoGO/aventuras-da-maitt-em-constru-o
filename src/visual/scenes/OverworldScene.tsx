@@ -54,7 +54,7 @@ export function OverworldScene({
         <svg
           viewBox={`0 0 ${OVERWORLD_SCENE.width} ${OVERWORLD_SCENE.height}`}
           className="world-reveal h-full w-full"
-          preserveAspectRatio="xMidYMid slice"
+          preserveAspectRatio="xMidYMid meet"
           role="img"
           aria-label="Mapa do mundo sem cor, com seis regiões e a Base da Esperança ao centro"
         >

@@ -61,7 +61,7 @@ export function WorldBoardScene({
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="world-settle h-full w-full"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-label={`${visual.displayName} — zona ${visual.zoneName}`}
       >
@@ -130,7 +130,7 @@ export function WorldBoardScene({
 
         <MaitteAvatar
           progress={avatarProgress}
-          x={Math.max(110, avatarPoint.x - 116)}
+          x={Math.min(width * 0.86, Math.max(width * 0.1, avatarPoint.x - 116))}
           y={avatarPoint.y + 10}
           scale={0.66}
           animated={hydrated}
