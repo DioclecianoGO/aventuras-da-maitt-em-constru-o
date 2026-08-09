@@ -1,5 +1,185 @@
 # Phase 1A — Visual Foundation Plan
 
+> **RECONCILIATION.** Sections R1–R8 below supersede the corresponding parts of the
+> original plan after the merge of `NAVIGATION.md`, `TRANSITIONS.md`,
+> `COLOR-RESTORATION.md`, `RESPONSIVE.md`, `ANIMATION.md`, `ACTIVITY-SLOTS.md`,
+> `PET-COMPANIONS.md`, and the updated `OVERWORLD.md`, `MATHEMATICS-WORLD.md`,
+> `MAITTE.md`, `VISUAL-IMPLEMENTATION.md`. Where they conflict, R1–R8 win.
+> Superseded: G1, G2/G4, G3, G6, G7, G8, the ActivitySlot rows of Sections B/D/E,
+> and Section J. Everything else stands unchanged — Phase 0 preservation, the
+> evaluation pipeline, persisted facts + derived restoration, the nested-route
+> default, and "no new animation dependency".
+
+## R1 — Revised Overworld concept (replaces G1)
+
+One continuous illustrated magical geography in oblique storybook perspective, framed 16:10 for landscape tablet.
+
+**Base da Esperança — approximately central.** It is the narrative home origin, not a seventh world and not a campsite. Concept-level ingredients only: Maittê's house, a small plaza with one tree, pets nearby. **No colored pennant, lantern, campfire or magical artifact.** At opening the Base is rendered in the same stolen-color line art as everything else.
+
+**Opening color anchor:** Maittê's green heart is the *only* intentionally saturated element on the map. This replaces the previous "base camp is the only colored element" statement, now forbidden by `COLOR-RESTORATION.md` and `OVERWORLD.md`.
+
+**Preferred provisional geography (from `OVERWORLD.md`, replaces the previous clockwise layout):**
+- northwest/west — Portuguese, Floresta das Letras;
+- north — History, Reino do Tempo, separated by mountain/height;
+- east/northeast — Geography, Vale dos Exploradores;
+- east/southeast — English, city region;
+- southwest — Mathematics, Deserto dos Números;
+- south/coast — Science, Oceano das Descobertas;
+- centre — Base da Esperança.
+
+No region is drawn as "nearest/first"; distances from the Base read as comparable so no global subject order is implied.
+
+**Terrain transitions are organic, never tiled:** forest thins into fields, fields into the eastern valley, valley into roads and city outskirts, southwestern scrub into dunes, dunes into the southern coast, northern foothills into the kingdom plateau.
+
+**Paths:** faint dotted trails radiate from the Base to all six regions with equal weight. The Mathematics trail gains definition only through restoration, not by initial emphasis.
+
+**Focal point:** the Base at the optical centre, with the northern mountain/kingdom mass and the southwestern dune ridge as balancing silhouettes.
+
+**Maittê:** at/near the Base, ~7% of frame height, facing outward; her heart is the map's single colour accent.
+
+**Camera framing:** fixed-aspect `viewBox` with a responsive focal point; crop/pan per `RESPONSIVE.md`. Never a card list at any width.
+
+Region placement remains PROVISIONAL and adjustable during concept review if composition quality requires it.
+
+## R2 — Revised Mathematics Board concept (replaces the board parts of G2/G4)
+
+**Opening Zone: `Dunas Douradas` (PROVISIONAL name).** The Board does **not** start at the oasis.
+
+- **Perspective:** oblique elevated storybook view; the Zone is one illustrated chunk, wider than the viewport, with controlled horizontal panning or fit-to-viewport framing.
+- **Landscape:** broad golden dunes — in stolen state: warm paper, confident ink line, hatched dune shadows, wind ripples, sparse dry brush and stone.
+- **Route:** a curved trail embedded in the scenery, entering at the near/left edge where **Maittê starts**, rising over a dune saddle and continuing toward the far side of the Zone.
+- **Activity Slots:** scenery objects along the route — carved standing stone, footprints in the sand, a wind-worn marker post, a small dry-wash crossing — never buttons or numbered circles.
+- **Orientation landmark:** one visible mid-route landmark (wind-carved rock arch is the concept proposal). It owns no curriculum and is not named after any operation.
+- **Anticipation:** a distant unnamed ruin/pyramid-like silhouette as atmosphere, plus a far hint of green/water readable as **`Oásis dos Enigmas`, the next-Zone preview only**. Not enterable in Phase 1A.
+- **Restoration:** colour travels along the route from the entry side outward as slots complete, per `COLOR-RESTORATION.md`; each completed slot restores its local stretch. Non-colour cues (clarity, small life, restored path texture) accompany every state change.
+- **Curriculum independence:** no scenery element encodes Number Sense or any skill; the Zone must accept Slices A, B and C without redesign.
+
+Names, landmark and slot-object choices remain PROVISIONAL pending art review.
+
+## R3 — Revised Maittê restoration model (replaces the G3 restoration paragraphs)
+
+Character traits stand as in G3 and `MAITTE.md`: dark brown hair below the shoulders, waved tips, marked fringe, subtle light lock, pink glasses (current canonical direction), skirt, colourful socks, unbranded high-top canvas sneakers, green heart, ~8-year-old proportions, original stylised line art with light manga/anime influence.
+
+**The previously proposed order heart → shirt → socks → skirt/hair → shoes/glasses is withdrawn.** No restoration order is proposed or implied.
+
+Model:
+- the asset is authored as **independently addressable colour regions**: `heart`, `glasses`, `hairStreak`, `hair`, `shirt`, `skirt`, `socks`, `shoes`, each a separate layer/group toggled by an opacity or mask value;
+- `heart` is saturated from opening and is excluded from any progression mapping — it is the hope anchor;
+- a **configurable region→milestone mapping table** lives in the visual configuration layer (not domain, not state); changing which region restores when is a config change with no asset restructuring;
+- selectors supply derived progress only; the mapping interprets it;
+- Phase 1A demonstrates the stolen state plus **one** partial state, explicitly labelled a demonstration rather than a reward order;
+- the same layered asset serves board, map and future icon scale, and leaves room for a future accessory slot for the glasses.
+
+## R4 — Revised diegetic navigation (replaces G6)
+
+**Folded world map = the primary, and for Phase 1A the only, diegetic control.** The backpack navigation proposal is withdrawn.
+
+- **Object:** a small folded paper map resting in the scene, drawn in the world's illustrated language.
+- **Function:** return from a subject world to the Overworld. Nothing else. It is not a menu.
+- **Placement:** lower-left of the Board, resting on scenery rather than floating in a bar. PROVISIONAL position.
+- **Target:** ≥ 72 px effective touch target, larger on tablet.
+- **Interaction:** touch/hover lifts and partially unfolds a corner; press unfolds it and hands off directly into the spatial zoom-out.
+- **Accessibility:** semantic `<button>` with a programmatic label (e.g. "Voltar ao mapa do mundo"), visible keyboard focus as a warm glow, never a text link.
+- **Reduced motion:** unfold/lift dropped; the action and a short fade remain.
+
+**Backpack:** FUTURE / concept-only. Phase 1A may reserve space for it visually near Maittê but implements no behaviour — no profile, collection, clothing or settings — and never merges it with the folded map. Parent/admin access remains a separate undecided surface.
+
+## R5 — Revised ActivitySlot / visual metadata boundary (replaces the ActivitySlot rows in Sections B, D, E)
+
+**Correction to Section B:** the earlier allowance to add optional visual metadata such as `visualKind` to the domain schema is withdrawn. Per `ACTIVITY-SLOTS.md` §Presentation separation and `VISUAL-IMPLEMENTATION.md` §5, the educational/domain schema stays visually agnostic.
+
+```text
+src/game/domain/schemas.ts   ActivitySlot: id, worldId, segment/zone id, order,
+                             anchor {x,y} (neutral spatial), restorationWeight,
+                             activity sequence.            <- UNCHANGED, no art
+src/visual/world-config/     worldVisuals[worldId] -> { zones, sceneLayers, routePath }
+                             slotVisuals[slotId]   -> { objectKind, offset, scale, states }
+                             landmarks[landmarkId] -> { assetKey, anchor }
+                             characterRegions      -> Maittê region -> milestone mapping
+                             stageSkins[worldId]   -> Challenge Stage skin
+src/visual/assetRegistry.ts  logical asset key -> imported asset module
+```
+
+Rules:
+- visual config is keyed by **stable slot / zone / world ids** and consumes the existing neutral `anchor`;
+- domain never imports `src/visual/**`; the visual layer never imports evaluation or persistence;
+- a missing `slotVisuals` entry falls back to a default scenery object rather than crashing;
+- re-skinning or moving a slot visually requires no change under `src/game/**`;
+- enforced by extending the existing `no-restricted-imports` lint rules;
+- **Asset plan change:** the `visualKind` column in Section E is re-read as a key of `slotVisuals`, not a domain field. All other asset rows unchanged.
+
+## R6 — Revised Challenge Stage visual architecture (replaces G7)
+
+**One common functional shell, world-specific skins.** The parchment-and-rope frame is withdrawn as a universal treatment.
+
+- `stage/ChallengeStageShell` owns only what every world shares: emergence from the selected slot anchor, board-context preservation, focus management and order, instruction region, large touch interaction region, reserved support/audio affordance, feedback states, return choreography.
+- Appearance comes from a **skin resolved by world id** in `stageSkins`: frame asset, edge treatment, backdrop treatment, palette tokens, ambient detail. Future Forest / Ocean / Kingdom / Valley / City skins are config entries with no shell change.
+- **Mathematics Phase 1A skin (PROVISIONAL concept):** a sun-bleached canvas panel stretched between two weathered desert posts, sand drifting at its base, occupying roughly the centre 72% of the viewport; dune horizon and route stay visible around it.
+- **Backdrop rule:** the Board is dimmed and slightly softened, never covered by an opaque neutral scrim. Per `ANIMATION.md` §Attention protection, peripheral ambient motion is reduced while a challenge is focused.
+- **Emergence/return:** transform-origin at the slot anchor; on success the frame recedes into the object, the object restores colour, colour flows along its route stretch, then Maittê moves. State never waits on animation.
+- **Companion:** a `CompanionSlot` at the frame edge takes a **pet id from configuration**. Per `PET-COMPANIONS.md` no pet is assigned to Mathematics or any skill; Phase 1A validates the entrance shell with one configurable concept pet. Dialogue, audio and all four production assets stay out of scope.
+- On narrower viewports the frame may take more of the viewport but keeps visible world context and large targets.
+
+## R7 — Updated GAP / ASSUMPTION register
+
+Resolved by the merged Specs and removed: the six absent UX/design specs, ACTIVITY-SLOTS, PET-COMPANIONS, the navigation object, the Maittê restoration order, restoration granularity, the "Deserto dos Números" display name, companion selection, and the visual-metadata boundary.
+
+Remaining, none blocking Build:
+
+[ASSUMPTION] — Overworld region placement and Base composition
+Specs: `OVERWORLD.md` (preferred provisional geography)
+Description: R1 follows the preferred arrangement; exact positions and Base ingredients are concept-level.
+Handling: build to R1; adjust after preview review.
+Must resolve before Build? NO
+
+[ASSUMPTION] — `Dunas Douradas` art, landmark, route length and slot count
+Specs: `MATHEMATICS-WORLD.md` (PROVISIONAL)
+Description: rock arch, distant ruin silhouette, slot object set and route length are proposals.
+Handling: keep in `worldVisuals`/`slotVisuals`; review from the preview.
+Must resolve before Build? NO
+
+[ASSUMPTION] — Mathematics Challenge Stage skin
+Specs: `VISUAL-IMPLEMENTATION.md` §10
+Description: the canvas-and-posts desert frame is a concept.
+Handling: skin is config-resolved and replaceable.
+Must resolve before Build? NO
+
+[ASSUMPTION] — Animation timings and easing
+Specs: `ANIMATION.md`, `TRANSITIONS.md` (PROVISIONAL)
+Description: Section F durations are test values.
+Handling: centralise as motion tokens; tune on tablet preview.
+Must resolve before Build? NO
+
+[ASSUMPTION] — No new animation dependency
+Specs: `ANIMATION.md` §Implementation
+Description: CSS transforms/keyframes + WAAPI assumed sufficient.
+Handling: if insufficient during Build, stop and raise a dependency proposal.
+Must resolve before Build? NO
+
+[GAP] — Mathematics minion, numeric breakpoints, spoken instruction/audio
+Specs: `MATHEMATICS-WORLD.md`, `RESPONSIVE.md`, `PET-COMPANIONS.md`; no AUDIO spec
+Description: all three are outside Phase 1A scope; only a reserved position for a future support/audio control is included in the shell.
+Handling: leave unresolved; do not implement.
+Must resolve before Build? NO
+
+[GAP] — Stale spec references in Phase 0 code comments
+Specs: `docs/ux/BOARDS.md`, `docs/design/RESTORATION-OF-COLOR.md` (never existed)
+Handling: correct comments during Build.
+Must resolve before Build? NO
+
+[CONFLICT] — SEO head metadata vs. no visible page heading
+Specs: `VISUAL-IMPLEMENTATION.md` §3 vs. platform SEO requirements
+Handling: keep per-route `head()` meta; render one visually-hidden H1 per route.
+Must resolve before Build? NO
+
+## R8 — Build readiness statement
+
+Every item previously marked "must resolve before Build" is now resolved by the merged Specs and by R1–R6. The remaining entries are PROVISIONAL concept details reviewable from the interactive preview against the twelve acceptance criteria, and none block starting work.
+
+`PHASE 1A READY FOR BUILD`
+
+---
+
 ## Section A — Reading confirmation
 
 ### Specifications read
