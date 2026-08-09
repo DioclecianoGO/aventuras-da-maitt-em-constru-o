@@ -53,10 +53,10 @@ export function PlaceholderOrderTemplate({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-lg font-medium text-foreground">{item.prompt}</p>
+    <div className="flex flex-col items-center gap-6 text-center">
+      <p className="text-[clamp(1.05rem,2vw,1.5rem)] font-medium text-ink">{item.prompt}</p>
 
-      <ul className="flex flex-wrap gap-3" role="list">
+      <ul className="flex flex-wrap justify-center gap-4" role="list">
         {order.map((id) => {
           const isSelected = selectedId === id;
           return (
@@ -77,11 +77,12 @@ export function PlaceholderOrderTemplate({
                   dragIdRef.current = null;
                 }}
                 className={cn(
-                  "min-h-16 min-w-16 rounded-xl border-2 px-5 py-3 text-xl font-semibold transition-colors",
-                  "touch-manipulation select-none",
+                  "min-h-20 min-w-20 rounded-[42%_58%_46%_54%/54%_44%_56%_46%] border-[3px] border-[var(--ink)]",
+                  "bg-[var(--paper-deep)] px-6 py-4 text-2xl font-semibold text-ink shadow-none",
+                  "touch-manipulation transition-transform duration-200 select-none motion-reduce:transition-none",
                   isSelected
-                    ? "border-primary bg-primary/15 text-primary"
-                    : "border-border bg-card text-card-foreground hover:border-primary/50",
+                    ? "-translate-y-1 outline-2 outline-offset-4 outline-[var(--hope)]"
+                    : "hover:-translate-y-0.5",
                   disabled && "opacity-60",
                 )}
               >
@@ -96,9 +97,9 @@ export function PlaceholderOrderTemplate({
         type="button"
         disabled={disabled}
         onClick={() => onRespond({ kind: "ordering", orderedIds: order })}
-        className="self-start rounded-xl bg-primary px-6 py-3 text-lg font-semibold text-primary-foreground disabled:opacity-60"
+        className="rounded-full border-[3px] border-[var(--hope-deep)] bg-[var(--hope)] px-8 py-3 text-lg font-semibold text-[var(--paper)] transition-transform duration-200 hover:scale-105 disabled:opacity-60 motion-reduce:transition-none"
       >
-        Confirmar
+        Pronto
       </button>
     </div>
   );
