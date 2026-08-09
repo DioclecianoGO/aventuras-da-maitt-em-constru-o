@@ -82,9 +82,9 @@ export function OverworldScene({
           {/* Maittê waits at the Base — her heart is the only saturated point. */}
           <MaitteAvatar
             progress={avatarProgress}
-            x={baseVisual.centroid.x + 96}
-            y={baseVisual.centroid.y + 44}
-            scale={0.52}
+            x={baseVisual.centroid.x + 128}
+            y={baseVisual.centroid.y + 52}
+            scale={0.5}
             animated={hydrated}
             title="Maittê na Base da Esperança"
           />
@@ -106,7 +106,7 @@ export function OverworldScene({
           className="absolute -translate-x-1/2 text-[clamp(0.7rem,1.1vw,0.95rem)] font-medium tracking-[0.22em] text-ink-soft uppercase"
           style={{
             left: pct(baseVisual.centroid.x, OVERWORLD_SCENE.width),
-            top: pct(baseVisual.centroid.y + 74, OVERWORLD_SCENE.height),
+            top: pct(baseVisual.centroid.y + 112, OVERWORLD_SCENE.height),
           }}
         >
           {baseVisual.displayName}

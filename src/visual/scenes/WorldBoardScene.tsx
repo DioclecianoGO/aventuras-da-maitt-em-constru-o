@@ -130,9 +130,9 @@ export function WorldBoardScene({
 
         <MaitteAvatar
           progress={avatarProgress}
-          x={avatarPoint.x - 70}
-          y={avatarPoint.y + 6}
-          scale={0.62}
+          x={Math.max(110, avatarPoint.x - 116)}
+          y={avatarPoint.y + 10}
+          scale={0.66}
           animated={hydrated}
           title="Maittê na trilha"
         />
