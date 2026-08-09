@@ -17,7 +17,39 @@ The MVP must prove four things:
 
 **DECIDED:** Mathematics is the first implemented subject.
 
-The initial Mathematics content is based on the study material supplied for:
+The Mathematics MVP is intentionally phased internally:
+
+- **Slice A — Number Sense:** first end-to-end technical vertical slice, proving the architecture and learning loop;
+- **Slice B — Addition, Subtraction and Problems:** required useful study path aligned to the teacher's current priorities;
+- **Slice C — Plane Geometry:** required useful study path aligned to the teacher's current priorities.
+
+Completing Slice A alone validates the technical loop, but does **not** complete the useful study MVP.
+
+The detailed sequence belongs in `docs/pedagogy/MATHEMATICS-GRADE-2.md` and the world/container rules belong in `docs/worlds/MATHEMATICS-WORLD.md`.
+
+## Included in the MVP
+
+- web application;
+- tablet-oriented responsive experience;
+- shared origin/overworld capable of presenting multiple subject-world destinations;
+- Mathematics world as the first playable subject-world;
+- sequential local progression inside Mathematics where required;
+- Slice A Number Sense with reusable challenge templates;
+- Slice B addition/subtraction/problem-solving path;
+- Slice C plane-geometry path;
+- challenge-stage framework;
+- reusable/parametrizable challenge templates;
+- contextual instructions with pet companions;
+- XP/progression foundation;
+- color-restoration feedback;
+- basic narrative framing around stolen/restored colors;
+- ability to save enough state to continue progress, if technically feasible within the selected architecture;
+- subtle/gamified navigation rather than a conventional prominent header;
+- page-turn-inspired transition for major context changes if it performs adequately.
+
+## Mathematics content represented in the current source material
+
+The source material includes:
 
 - reading and writing numbers up to 500;
 - decimal place value, units, tens and hundreds;
@@ -34,24 +66,7 @@ The initial Mathematics content is based on the study material supplied for:
 - plane geometric figures and their characteristics;
 - introductory spatial solids content present in the supplied material.
 
-The detailed pedagogical sequence belongs in `docs/pedagogy/MATHEMATICS-GRADE-2.md` and must be validated against the source material before implementation.
-
-## Included in the MVP
-
-- web application;
-- tablet-oriented responsive experience;
-- shared origin/overworld capable of presenting multiple subject-world destinations;
-- Mathematics world as the first playable subject-world;
-- sequential local progression inside Mathematics where required;
-- challenge-stage framework;
-- reusable/parametrizable challenge templates;
-- contextual instructions with pet companions;
-- XP/progression foundation;
-- color-restoration feedback;
-- basic narrative framing around stolen/restored colors;
-- ability to save enough state to continue progress, if technically feasible within the selected architecture;
-- subtle/gamified navigation rather than a conventional prominent header;
-- page-turn-inspired transition for major context changes if it performs adequately.
+Spatial solids remain documented supporting/follow-up content and are not required for today's useful MVP unless explicitly promoted.
 
 ## Explicitly not required for MVP
 
@@ -60,12 +75,14 @@ The detailed pedagogical sequence belongs in `docs/pedagogy/MATHEMATICS-GRADE-2.
 - full production animation system;
 - every subject fully playable;
 - every planned world/region completed;
-- all final character illustrations;
-- all final sound effects/music;
+- final production character illustrations;
+- final production sound effects/music;
 - advanced cinematic sequences;
 - multiplayer/social systems;
 - complex administrative platform;
-- complete long-term curriculum editor.
+- complete long-term curriculum editor;
+- backend account model unless a concrete need is approved;
+- spatial-solid activities for the current useful MVP, unless their status is explicitly changed.
 
 ## Provisional MVP decisions
 
@@ -75,8 +92,10 @@ The detailed pedagogical sequence belongs in `docs/pedagogy/MATHEMATICS-GRADE-2.
 
 **PROVISIONAL:** the exact number of Mathematics stages/challenges will be derived from the pedagogical sequence and not fixed in advance.
 
+**PROVISIONAL:** Deserto dos Números / Number Desert is the working visual direction/name for the Mathematics World. Exact landmarks, route length and minion remain to be proposed and reviewed.
+
 ## Acceptance boundary
 
-The MVP is successful when a child can open the experience on a tablet-sized screen, enter the Mathematics path, understand what to do without adult interpretation for every step, complete multiple curriculum-aligned challenges, receive meaningful feedback, observe progress/color restoration, and return to continue the journey.
+The MVP is successful when a child can open the experience on a tablet-sized screen, enter the Mathematics path, understand what to do without adult interpretation for every step, complete multiple curriculum-aligned challenges across the approved useful Mathematics slices, receive meaningful feedback, observe progress/color restoration, and return to continue the journey.
 
 A visually impressive prototype that does not preserve curricular correctness or reusable content architecture is not considered a successful MVP.
