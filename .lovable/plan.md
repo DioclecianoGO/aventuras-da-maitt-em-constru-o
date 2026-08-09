@@ -1,381 +1,392 @@
-# Implementation Plan — Aventuras da Maittê (Mathematics MVP)
+# Phase 1A — Visual Foundation Plan
 
-This is a plan for human review. No code is written and no product decision is created here. Every proposal below is marked as PROPOSAL, ASSUMPTION, GAP or CONFLICT where it is not already covered by an approved spec.
+## Section A — Reading confirmation
 
-## A — Reading confirmation
+### Specifications read
+- `AGENTS.md`
+- `docs/README.md`
+- `docs/WORKFLOW.md`
+- `docs/design/VISUAL-IMPLEMENTATION.md` (primary spec)
+- `docs/design/ART-DIRECTION.md`
+- `docs/product/PRODUCT-VISION.md`, `docs/product/DESIGN-PRINCIPLES.md`, `docs/product/MVP-SCOPE.md`
+- `docs/narrative/UNIVERSE.md`, `docs/narrative/MAITTE.md`, `docs/narrative/VILLAIN.md`
+- `docs/worlds/OVERWORLD.md`, `docs/worlds/MATHEMATICS-WORLD.md` (exists; authoritative)
+- `docs/ux/WORLD-BOARD.md`, `docs/ux/CHALLENGE-STAGE.md`
+- `docs/technical/ARCHITECTURE.md`, `STATE.md`, `CONFIG-SCHEMAS.md`, `PERSISTENCE.md`
+- `docs/adr/ADR-009-PUZZLE-RESPONSE-EVALUATION-BOUNDARY.md`
+- Additionally consulted: `docs/gameplay/PROGRESSION.md`, `docs/gameplay/PUZZLE-SYSTEM.md`, `docs/pedagogy/*`
 
-Specs read in full, in order:
-AGENTS.md; docs/README.md; docs/WORKFLOW.md; docs/product/PRODUCT-VISION.md; docs/product/DESIGN-PRINCIPLES.md; docs/product/MVP-SCOPE.md; docs/narrative/UNIVERSE.md; docs/narrative/MAITTE.md; docs/narrative/VILLAIN.md; docs/worlds/OVERWORLD.md; docs/worlds/MATHEMATICS-WORLD.md; docs/ux/WORLD-BOARD.md; docs/ux/CHALLENGE-STAGE.md; docs/gameplay/PUZZLE-SYSTEM.md; docs/gameplay/PROGRESSION.md; docs/design/ART-DIRECTION.md; docs/pedagogy/LEARNING-MODEL.md; docs/pedagogy/CONTENT-PARAMETRIZATION.md; docs/pedagogy/MATHEMATICS-GRADE-2.md; docs/adr/README.md.
+### Absent specifications (registered as GAP, see Section J)
+`docs/ux/NAVIGATION.md`, `docs/ux/TRANSITIONS.md`, `docs/ux/FEEDBACK.md`, `docs/design/COLOR-RESTORATION.md`, `docs/design/RESPONSIVE.md`, `docs/design/ANIMATION.md`, `docs/design/AUDIO.md`, `docs/gameplay/ACTIVITY-SLOTS.md`, `docs/gameplay/SUPPORT-LEVELS.md`, `docs/gameplay/XP.md`, `docs/narrative/STORY.md`, `docs/narrative/PET-COMPANIONS.md`, `docs/narrative/LACKEYS.md`, `docs/product/GAME-LOOP.md`, `docs/worlds/{PORTUGUESE,SCIENCE,HISTORY,GEOGRAPHY,ENGLISH}-WORLD.md`, `docs/pedagogy/CURRICULUM-SOURCES.md`.
 
-Absent but implementation-relevant (listed in docs/README.md, not present on disk). None of these may be inferred:
-docs/product/GAME-LOOP.md; docs/narrative/STORY.md, PET-COMPANIONS.md, LACKEYS.md; docs/worlds/PORTUGUESE|SCIENCE|HISTORY|GEOGRAPHY|ENGLISH-WORLD.md; docs/ux/NAVIGATION.md, FEEDBACK.md, TRANSITIONS.md; docs/gameplay/ACTIVITY-SLOTS.md, SUPPORT-LEVELS.md, XP.md; docs/design/COLOR-RESTORATION.md, ANIMATION.md, AUDIO.md, RESPONSIVE.md; docs/pedagogy/CURRICULUM-SOURCES.md; docs/technical/ARCHITECTURE.md, CONFIG-SCHEMAS.md, STATE.md, PERSISTENCE.md; the whole ADR-001..008 set (inventory only, no rationale files).
+`docs/worlds/MATHEMATICS-WORLD.md` is NOT absent. Its unresolved biome/landmark/minion/name details are PROVISIONAL.
 
-Current repository state: bootstrap only — TanStack Start app with `__root.tsx` and `index.tsx` placeholder screen. No game code exists yet.
+### Phase 0 implementation read
+- Routes: `src/routes/index.tsx`, `mundo.$worldId.tsx`, `mundo.$worldId.index.tsx`, `mundo.$worldId.desafio.$slotId.tsx`, `__root.tsx`
+- State: `GameStateProvider.tsx`, `reducer.ts`, `selectors.ts`, `types.ts`
+- Restoration: `src/game/restoration/RestorationLayer.tsx` (mask + opacity techniques already spiked)
+- Persistence: `adapter.ts`, `local-storage.ts` (schemaVersion 1)
+- Stage/templates/registries: `PuzzleTemplateHost.tsx`, `templates/contract.ts`, `PlaceholderOrderTemplate.tsx`, `registries/index.ts`
+- Domain/evaluation: `domain/schemas.ts`, `domain/responses.ts`, `evaluation/*`
+- Content: `content/placeholder-fixture.ts` (world "Mundo de Demonstração Técnica", segments "Trecho A/B", 3+ slots with `anchor {x,y}` already present)
+- Stack: TanStack Start/Router, React 19, Tailwind v4 (`src/styles.css`), no animation library installed.
 
-## B — Experience architecture
+Observed stale doc references inside code comments (`docs/ux/BOARDS.md`, `docs/design/RESTORATION-OF-COLOR.md`) point at files that do not exist — registered as GAP.
 
-Four spatial layers, one route each, so each layer is independently addressable and testable:
+---
 
-```text
-/                 Overworld        illustrated map, six regions, Mathematics playable
-/mundo/$worldId   World Board      biome route, Activity Slots, Maittê token
-  (stage overlay) Challenge Stage  focused interaction over the retained board
-```
+## Section B — Preservation of Phase 0
 
-APPROVED REQUIREMENT: Challenge Stage preserves the World Board as spatial context; the board is never lost behind an unrelated page.
-
-PROVISIONAL IMPLEMENTATION: a route-driven overlay (`/mundo/$worldId/desafio/$slotId`) rendered above the still-mounted board. The board stays mounted, so the stage can grow out of the selected slot's screen position and shrink back into it. This implementation may be replaced if another approach satisfies the same continuity requirement better.
-
-Navigation states: `overworld` → `world-entering` (zoom) → `board-idle` → `slot-activated` → `stage-briefing` → `stage-active` → `stage-resolved` → `board-restoring` → `board-advancing` → `board-idle`.
-
-- **Overworld**: single illustrated scene, six named regions inside one geography, each carrying its own restoration value. No dashboard cards, no persistent header.
-- **Mathematics World**: subject container. Contains ordered Activity Slots grouped into *segments* (data-level grouping only). Slice A/B/C content is assigned to slots by data, never by scenery.
-- **World Board**: the biome art is the board. Route path drawn as an SVG polyline through landmark anchors; Maittê is positioned at the current slot anchor. No grid, no dice.
-- **Challenge Stage**: companion briefing, then puzzle template render, feedback, resolution.
-- **Cross-layer restoration flow**: slot completion → mastery evidence recorded → restoration event → board segment value increases → world aggregate increases → Overworld region value increases → avatar restoration value increases. One event, four consumers, all derived from persisted state.
-
-## C — Component inventory
-
-| Component | Purpose | Spec reference | Status |
-|---|---|---|---|
-| OverworldMap | Illustrated geography, region selection | OVERWORLD | Functional |
-| WorldRegion | One subject region + its restoration render | OVERWORLD, ART-DIRECTION | Functional |
-| ZoomTransition | Spatial zoom overworld→world | OVERWORLD, ART-DIRECTION | Functional |
-| WorldBoard | Biome scene + route + slots | WORLD-BOARD | Functional |
-| BoardRoute | Path geometry between slot anchors | WORLD-BOARD | Functional |
-| ActivitySlotMarker | Slot state (locked/available/done) | WORLD-BOARD | Functional |
-| MaitteToken | Avatar on board + movement | MAITTE, WORLD-BOARD | Functional |
-| RestorationLayer | Applies restoration value to art | ART-DIRECTION, PROGRESSION | Functional |
-| ChallengeStage | Stage shell, lifecycle, feedback slots | CHALLENGE-STAGE | Functional |
-| CompanionBriefing | Companion instruction, replayable | CHALLENGE-STAGE, UNIVERSE | Functional |
-| InstructionPlayer | Text + icon + replay control | CHALLENGE-STAGE | Functional (audio: see GAP-AUDIO) |
-| PuzzleTemplateHost | Resolves template id → component | PUZZLE-SYSTEM | Functional |
-| CH-NUM-BUILD | Compose/decompose interaction | MATH-G2 §6 | Functional (Phase 1) |
-| CH-NUM-PATH | Sequence/order/neighbor interaction | MATH-G2 §6 | Functional (Phase 1) |
-| CH-OP-SOLVE | Column algorithm + regrouping | MATH-G2 §6 | Functional (Phase 2) |
-| CH-OP-STORY | Choose relation, then compute | MATH-G2 §6 | Functional (Phase 2) |
-| CH-GEO-SORT | Classify figures | MATH-G2 §6 | Functional (Phase 3) |
-| CH-GEO-BUILD | Compose/decompose figures | MATH-G2 §6 | Functional (Phase 3) |
-| FeedbackSurface | Correct / first-error / repeated-error | MATH-G2 §8 | Functional |
-| DiegeticNav | In-world return/backpack affordance | OVERWORLD, DESIGN-PRINCIPLES §5 | Visual prototype (PROPOSAL) |
-| PageTurnTransition | Major narrative context change | DESIGN-PRINCIPLES §14 | Visual prototype |
-| SubjectRegistry | Subject → world config lookup | PRODUCT-VISION | Future-ready architectural element |
-| ContentPackRegistry | Pack lookup by skill/slot | CONTENT-PARAMETRIZATION | Functional |
-| MasteryStore | Per-skill evidence accumulation | MATH-G2 §9 | Functional (no thresholds — see GAP-MASTERY) |
-| ResponseEvaluator | Evaluates UserResponse against pack rules | LEARNING-MODEL, PUZZLE-SYSTEM | Functional |
-| PersistenceAdapter | Save/load interface | MVP-SCOPE | Functional (MVP infrastructure) |
-| LocalStoragePersistence | Adapter implementation for the MVP | MVP-SCOPE (PROVISIONAL scope) | Functional (MVP) |
-| RemotePersistence | Backend/account-backed save | — (not authorized) | Future |
-
-No XP UI component is planned: the economy is undecided (GAP-XP). Only the evidence field is reserved.
-
-## D — State model
-
-ASSUMPTION (all of section D): docs/technical/STATE.md does not exist, so the shape below is an architectural proposal requiring approval before build.
-
-1. **Overworld state** — `regions: { [subjectId]: { unlocked, restoration: 0..1, lastVisitedAt } }`. Derived, not authored: `restoration` is computed from world state, never written directly.
-2. **World/Board state** — `worlds: { [worldId]: { currentSlotId, slots: { [slotId]: 'locked'|'available'|'completed' }, segmentRestoration: { [segmentId]: 0..1 } } }`.
-3. **Challenge Stage state** — ephemeral, not persisted: `{ slotId, activityId, mode, attemptIndex, hintsUsed, errorCount, phase }`.
-4. **Per-skill mastery evidence** — `skills: { [skillId]: { independentCorrect, incorrect, assistedCorrect, representationsSeen: string[], recentOutcomes: Outcome[] } }`. Stored as raw counters. The exposed label (`not_started|learning|practicing|proficient`) is computed by one pure function whose thresholds are a single named constant awaiting product decision (GAP-MASTERY).
-5. **Color-restoration state** — derived selectors over slot completion; only completion facts are persisted, never the visual percentage. This keeps restoration re-derivable if granularity changes later.
-6. **Milestone state** — `milestones: { [milestoneId]: { recoveredAt } }` for stolen coloring tools. The milestone catalogue itself is content data (GAP-MILESTONES: none authored).
-7. **Persistence state** — `{ schemaVersion, savedAt, profileId? }` behind a `PersistenceAdapter` interface with a localStorage implementation for the MVP, per MVP-SCOPE PROVISIONAL. No backend, no accounts.
-
-Runtime shape: a single typed store (React context + reducer, or Zustand) holding *facts*; every visual value is a selector. TanStack Query is used for loading content packs/world config, not for game state.
-
-## E — Data model
-
-All content lives in data files (TypeScript modules validated by Zod at load), not components. Adding a Content Pack is adding a file + registry entry. Adding a compatible Puzzle Template is adding a component + registry entry — neither touches world data.
-
-```text
-Subject      { id, name, worldId }
-Curriculum   { id, subjectId, gradeLabel, source? }
-Skill        { id: 'MAT-NUM-PLACE-01', curriculumId, group, name }
-Objective    { id, skillId, statement }
-ContentPack  { id, skillIds[], objectiveIds[], difficultyDims,
-               eligibleTemplates: TemplateId[], representation,
-               items: Item[] | generator: GeneratorSpec,
-               feedback: { firstError, repeatedError, hint[] } }
-Activity     { id, contentPackId, templateId, difficulty, supportLevel,
-               mode: 'discover'|'practice'|'challenge', guidePetId?,
-               masteryRules }            // location-agnostic: no slotId
-Template     { id, accepts: representation[], render(props: TemplateProps) }
-Difficulty   { level: 1..4, mathComplexity, representationalDistance,
-               taskComplexity, assistance }   // per MATH-G2 §7
-SupportLevel { id, hintsAllowed, revealAllowed, ... }  // GAP-SUPPORT
-GuidePet     { id, name, tone }
-ActivitySlot { id, worldId, segmentId, order, anchor: {x,y},
-               restorationWeight,
-               sequence: { discover?: ActivityId,
-                           practice?: ActivityId[],
-                           challenge: ActivityId[] } }
-Evidence     { skillId, activityId, mode, correct, assisted,
-               representation, at }
-Restoration  { segmentId, worldId, value }   // derived
-```
-
-**Activity ↔ Activity Slot ownership (corrected).** The relationship is unidirectional: the **Activity Slot owns the assignment**. An Activity describes *what is practised and how*; it carries no board location and no `slotId`. A slot names the Activity sequence occupying that position, which is also how one slot can hold a Discover activity plus Practice and Challenge activities without any of them knowing where they live. Reassigning content to another slot edits one slot record, and the same Activity may be referenced by more than one slot.
-
-**Puzzle Template contract (corrected — templates never evaluate).** A template collects and reports a *response*. It does not know what is correct.
-
-```ts
-// What the child did — structured, never judged
-type UserResponse =
-  | { kind: 'selection';    optionIds: string[] }
-  | { kind: 'ordering';     orderedIds: string[] }
-  | { kind: 'placement';    placements: { itemId: string; targetId: string; rotation?: number }[] }
-  | { kind: 'composition';  parts: { partId: string; targetId: string; transform?: Transform }[] }
-  | { kind: 'numeric';      value: number; byColumn?: Record<'u'|'d'|'c', number>; regroupings?: Regroup[] }
-  | { kind: 'text';         value: string }
-  | { kind: 'relation';     relationId: string }        // CH-OP-STORY phase 1
-  | { kind: 'audio';        clipRef: string };          // FUTURE, not this MVP
-
-type TemplateProps = {
-  item: PackItem;            // content, opaque to the template
-  mode: LearningMode;
-  support: SupportLevel;
-  onRespond(response: UserResponse): void;   // raw response only
-  onSupportUsed(kind: SupportEventKind): void;
-  feedback: FeedbackSignal | null;           // rendered, not decided, by the template
-  onResolved(): void;
-};
-```
-
-The Activity/Evaluation layer judges the response using the Content Pack's rules:
-
-```ts
-type EvaluationResult = {
-  outcome: 'correct' | 'partially-correct' | 'incorrect';
-  matchedAnswerId?: string;                     // supports multiple valid answers
-  perTargetOutcome?: Record<string, boolean>;   // ordering/composition detail
-  diagnosticCode?: string;                      // e.g. 'missed-regrouping'
-};
-
-type AttemptResult = EvaluationResult & {
-  activityId: string; slotId: string; skillIds: string[];
-  mode: LearningMode; assisted: boolean;        // from support events, not the template
-  representation: string; at: string;
-};
-
-interface ResponseEvaluator<R extends UserResponse = UserResponse> {
-  kind: R['kind'];
-  evaluate(response: R, item: PackItem, rules: PackAnswerRules): EvaluationResult;
-}
-```
-
-Evaluators are registered by response kind and are pure, unit-testable without any UI. Content Packs carry `answerRules` (single answer, answer set, accepted orderings, tolerance, per-part targets), so multiple valid answers, partial credit for ordering and composition, typed answers and — later — spoken answers are handled by adding an evaluator, not by changing templates. The evidence layer consumes `AttemptResult` only and never sees a raw response. A template never imports a skill id, never contains an answer, never sets `assisted`, and never decides mastery.
-
-## F — Animation and transition plan
-
-| # | Transition | Proposed implementation | Risk | Fallback |
+| Area | What exists | Why preserved | Phase 1A may change | Forbidden violation |
 |---|---|---|---|---|
-| 1 | Overworld → World | CSS transform scale/translate on the map layer toward region centroid, 600–800ms | Layout thrash on large SVG | Cross-fade + short scale |
-| 2 | Board entry | Board fades up as zoom settles; route draws in | Timing mismatch with #1 | Instant board, no draw-in |
-| 3 | Maittê movement | Animate token along SVG path via `getPointAtLength` | Path math errors on responsive resize | Tween x/y between anchors |
-| 4 | Stage entry | Slot marker expands into stage container (FLIP from marker rect) | FLIP fragility across breakpoints | Scale-from-center + dim board |
-| 5 | Stage exit | Reverse FLIP into the marker | Same | Fade out |
-| 6 | Local color restoration | Animate segment mask/opacity 0→1 | Mask performance on tablet | Snap to colored state |
-| 7 | Overworld restoration | Region value animates from last-seen value on return | Missed if user never returns | Static correct value |
-| 8 | Maittê restoration | Per-part color layers fade in at milestones | Asset layering complexity | Whole-avatar cross-fade |
-| 9 | Companion entrance | Slide + squash-stretch in briefing | None material | Fade in |
-| 10 | Success feedback | Companion reaction + color pulse toward board | None material | Static confirmation |
-| 11 | First error | Gentle shake + "try again" cue, no answer shown | Must not read as punitive | Static non-punitive cue |
-| 12 | Repeated error | Representation swap / hint surface animates in | Content must supply the hint | Text hint from pack |
-| 13 | Page-turn | CSS 3D rotateY on a two-panel wrapper, only for narrative context changes | Perf + motion sensitivity | Cross-fade |
+| `src/game/domain/` | Zod schemas for Subject/Skill/Pack/Activity/Slot/World; `responses.ts` union | Contract layer for all content | Add optional, purely visual metadata on slot/world (e.g. `anchor`, `visualKind`) via schema extension, reviewed | Adding skill/answer/art coupling; putting asset URLs in domain |
+| `src/game/state/` | Facts-only store, reducer, selectors | Single source of progression truth | Add new *derived* selectors (e.g. per-slot restoration, avatar tier) | Persisting restoration %, storing visual state, second progress source |
+| `src/game/evaluation/` | Evaluator registry, orchestrator, AttemptResult→Evidence | ADR-009 boundary | Nothing | Any evaluation inside a visual component |
+| `stage/PuzzleTemplateHost` | Resolves template, forwards UserResponse | Seam between stage and template | Wrap it in a new illustrated shell; pass presentation props only | Making the shell evaluate or inspect answers |
+| `templates/` | `PlaceholderOrderTemplate`, contract, tap+drag | Touch-integrity rule | Restyle within the shell | Template importing state/selectors/assets registry |
+| `registries/` | Template + evaluator registration | Pluggability | Add a parallel, separate **visual asset registry** (not merged into this one) | Registering art in the template registry |
+| `persistence/` | Adapter + localStorage, schemaVersion 1 | Save compatibility | Nothing (no schema bump expected) | Writing visual prefs into the save without a version bump |
+| `restoration/RestorationLayer` | Derived 0..1 prop, mask/opacity techniques | Proven derived-restoration mechanism | Generalize: direction, feather, per-region masks, reduced-motion | Reading state inside it; local decorative CSS disconnected from selectors |
+| UserResponse boundary | Template → UserResponse → Evaluator | ADR-009 DECIDED | Nothing | Correctness in UI |
+| Activity / ActivitySlot | Activity location-agnostic; slot owns placement | DECIDED | Use existing `slot.anchor` for scenery placement | Adding `slotId` to Activity |
+| Route/spatial continuity | Board layout with `<Outlet />` overlay | **Spatial continuity is DECIDED**; the nested-route technique is the current default and PROVISIONAL | Keep as-is for Phase 1A | Replacing the overlay with a full page navigation that unmounts the board |
 
-All animations respect `prefers-reduced-motion` and every one has a state-equivalent no-animation path, per DESIGN-PRINCIPLES §13.
+No alternative to the nested-route technique is proposed for Phase 1A. It already satisfies continuity, state and orchestration.
 
-## G — Challenge system by MVP slice
+---
 
-Common contract for every family: receives one pack item + mode + support level; emits a structured `UserResponse` and support events; performs no evaluation and owns no curriculum. Touch targets ≥ 44px minimum, ≥ 64px for primary manipulables (tablet-first).
+## Section C — Removal / Replacement of Phase 0 scaffolding
 
-**Touch interaction integrity (binding requirement).** Any core drag interaction that could produce a false educational error through touch imprecision must ship with a reliable alternative interaction — tap-to-select then tap-to-place — unless the drag gesture itself is part of the skill being assessed. This is an evidence-integrity requirement, not only an accessibility one: an attempt lost to a slipped finger would otherwise be recorded as a mathematical error. It applies to CH-NUM-BUILD, CH-OP-SOLVE regrouping, CH-GEO-SORT and CH-GEO-BUILD, and is an acceptance condition of every phase that ships them.
+| Phase 0 pattern | Current location | Why non-canonical | Removal method | Adventure-language replacement | Risk |
+|---|---|---|---|---|---|
+| `<header>` + `<h1>Aventuras da Maittê</h1>` page heading | `routes/index.tsx` | Web-app heading, not a world | Delete from player path; title stays in `head()` meta only | Title appears as illustrated map cartouche/banner inside the parchment, or not at all | Loss of SEO H1 → keep one visually-integrated H1 styled as map lettering |
+| Subtitle "Fase 0 — esqueleto técnico…" | `routes/index.tsx` | Technical terminology visible to child | Delete | None (or diegetic first-visit hint) | None |
+| Section heading "Regiões" | `routes/index.tsx` | Dashboard section language | Delete | Regions readable as places; `aria-label` carries the semantics | Screen-reader nav → nav landmark with hidden label |
+| World as big gradient card + "Cor restaurada: N%" | `routes/index.tsx` | Card grid ≠ geography | Replace component | `OverworldMap` region hit areas over illustration; progress shown by restored color | Hit-area accuracy on illustration |
+| "Mundo de Demonstração Técnica" | `content/placeholder-fixture.ts` | Placeholder name in player path | Introduce a *presentation-level* display name for the Mathematics region; fixture stays technical or is renamed in a reviewed content module | "Deserto dos Números" (PROVISIONAL) | Must not become a curriculum decision |
+| "← Mapa do mundo" text link | `mundo.$worldId.tsx` | Corporate nav | Delete | Diegetic navigation object (Section G6) | Discoverability → must be tested |
+| Board `<h1>` + "Cor restaurada: N%" | `mundo.$worldId.tsx` | Dashboard | Delete/replace | Region name as small diegetic sign; progress via color | Accessibility → visually-hidden H1 |
+| "Trecho A"/"Trecho B" section labels + gray containers | `mundo.$worldId.tsx` | Dashboard sections | Replace with single continuous scene | Segments become route stretches in one illustration | Segment semantics must survive in state only |
+| Rectangular slot buttons "Desafio"/"Concluído" | `mundo.$worldId.tsx` | Level buttons | Replace with `ActivitySlotMarker` | Scenery objects (see G4) | Touch target size must stay ≥ 64px |
+| Dashed "Bloqueado" box | `mundo.$worldId.tsx` | Disabled-UI language | Replace | Stolen-color scenery + faded path; label via `aria-disabled` + hidden text | Must not rely on color alone |
+| Full-screen neutral scrim + white card + `<h1>Desafio</h1>` + "Voltar ao tabuleiro" button | `mundo.$worldId.desafio.$slotId.tsx` | Generic modal | Replace shell only | `ChallengeStageShell` growing from the slot, biome visible around | Focus trap and return path must be preserved |
 
-### Slice A
+---
 
-**CH-NUM-BUILD** (PLACE, COMP, DECOMP, REP). Interactions: drag hundreds/tens/units into place-value positions; select the numeral for a base-ten representation; build a requested numeral; repair a wrong decomposition. Discover: pre-filled worked example, one guided move, no mastery credit. Practice: full task, hint available, explanation after error. Challenge: no pre-attempt hint, representation varied from the practice item. First error: piece returns with a "look again" cue, answer not revealed. Repeated error: switch to a more concrete representation or reduce place-value count. Hint-assisted success: recorded as `assisted`, schedules an equivalent item later. Success: brief confirmation, restate the relation ("2 centenas e 3 unidades = 203"), resolve.
+## Section D — Component plan
 
-**CH-NUM-PATH** (SEQ, COMPARE, NEIGHBOR). Interactions: choose the missing stone, order stones, predecessor/successor, continue a rule. Spacing between stones is fixed and uniform regardless of value gaps so layout cannot reveal the answer. Same Discover/Practice/Challenge and error rules as above.
+| Component | Purpose | Governing spec | Replaces | State connection | Status |
+|---|---|---|---|---|---|
+| `world/OverworldScene` | Root of the illustrated map, camera/viewBox owner | OVERWORLD, VISUAL-IMPLEMENTATION §4 | index page body | reads region restoration selectors | Functional |
+| `world/MapLayer` | Generic ordered layer wrapper (z, parallax factor) | VISUAL-IMPL §5 | — | none | Functional |
+| `world/RegionHitArea` | Accessible SVG path/polygon destination | §4.1, §12 | world card link | slot/world availability | Functional |
+| `world/RegionRestoration` | Per-region stolen↔restored visual | §4.4 | percentage text | `selectRegionRestoration` | Functional |
+| `world/BaseDaEsperanca` | Origin landmark | UNIVERSE | — | none | Concept asset |
+| `world/DiegeticNav` | Map/backpack-style navigation object | §6 | text links | route only | Functional (concept art) |
+| `world/SpatialZoomTransition` | Overworld→Mathematics camera move | §4.5 | none | none | Functional |
+| `character/Maitte` | Character with scale + restoration tiers | MAITTE | — | `selectAvatarRestoration` | Concept asset |
+| `board/MathBoardScene` | Continuous illustrated route scene | WORLD-BOARD, §8 | segment sections | slot states | Functional |
+| `board/RoutePath` | Curved illustrated path w/ restored/stolen stretches | WORLD-BOARD | gray containers | segment restoration | Functional |
+| `board/ActivitySlotMarker` | Scenery object + 3 states | §8 | slot buttons | `selectSlotState`, `selectCurrentSlot` | Functional |
+| `board/Landmark` | Orientation scenery, curriculum-free | §8, MATH-WORLD | — | optional restoration | Concept asset |
+| `board/MaitteOnBoard` | Position binding + move animation | WORLD-BOARD | — | `selectCurrentSlot` | Functional |
+| `stage/ChallengeStageShell` | Illustrated frame around `PuzzleTemplateHost` | CHALLENGE-STAGE, §9 | white card modal | none (presentation) | Visual shell |
+| `stage/CompanionEntrance` | One concept companion appearing at stage | UNIVERSE §Companions | — | none; pet id passed as prop | Concept asset |
+| `stage/StageFeedback` | Success/retry visual response | CHALLENGE-STAGE | inline text | receives AttemptResult from route | Visual shell |
+| `visual/assetRegistry` | Maps logical ids → asset modules | §10 | — | none | Future-ready |
+| `visual/useReducedMotion`, `visual/useMapCamera` | Motion + framing utilities | §12, §11 | — | none | Functional |
+| `RestorationLayer` (modified) | Direction/feather/region options | STATE | — | prop only | Functional |
 
-### Slice B
+No component introduces new gameplay behavior.
 
-**CH-OP-SOLVE** (ADD/SUB CALC + PLACE). Vertical column layout with explicit units/tens/hundreds columns; regrouping is a manipulable action (drag ten units → one ten) with a visible carry mark, not an automatic result. Also supports "find the character's mistake" variants. Error escalation moves to concrete base-ten support rather than revealing the total.
+---
 
-**CH-OP-STORY** (ADD/SUB PROBLEM). Two explicit phases: (1) choose the relation the story describes (`relation` response), (2) compute (`numeric` response). Phase 1 outcome is recorded on the PROBLEM skill; phase 2 on the CALC skill. When the operation is given in advance, the item is flagged so it cannot yield full PROBLEM mastery. Pedagogical requirement: problems must require comprehension of the represented mathematical relationship and must not be reliably solvable through superficial keyword matching alone. The specific authoring strategies that achieve this belong to validated Content Packs and are not fixed by this plan.
+## Section E — Asset plan
 
-### Slice C
+All assets live under `src/assets/game/**` and are referenced through `src/visual/assetRegistry.ts`. Never inside `domain/`, `state/`, `content/`, `evaluation/`, `persistence/`.
 
-**CH-GEO-SORT** (GEO2D RECOG/PROP). Drag figures into property buckets. Every figure appears at varied rotation, scale and color across items, and the pack declares that variation, so orientation-independence is enforced by content rather than by chance. Prompts address sides/vertices explicitly.
+| Asset | Purpose | Format | Tablet scaling | States | State integration | Replaceability | Approval? |
+|---|---|---|---|---|---|---|---|
+| Overworld base (sky/parchment/atmosphere) | Backdrop | Raster (WebP) or CSS gradient+grain | 2048px wide, `object-fit: cover` in fixed viewBox | single | none | registry key `overworld.base` | Yes |
+| Overworld terrain + 6 region shapes | Geography | Hybrid: raster painting + SVG region outlines/hit paths | SVG scales; raster @1x/@2x | line-art / colored pair per region | per-region restoration selector | one file per region | Yes |
+| Mathematics region art | Destination identity | Layered raster (line, color, detail) | @2x max 1600px | stolen / partial / restored | `selectRegionRestoration` | swap folder | Yes |
+| Maittê | Protagonist | SVG (preferred) or layered PNG | vector; board ~180px, map ~90px | stolen (green heart only), partial, restored; idle + move | `selectAvatarRestoration` | single module | Yes |
+| Board scene (Number Desert) | Board backdrop | Layered raster + SVG path overlay | 2400px wide, horizontal camera | per-segment restoration | `selectSegmentRestoration` | folder swap | Yes |
+| Route path | Journey line | SVG path | vector | traversed / current / untraveled | slot states | data-driven path string | Yes |
+| Activity Slot markers (3-4 object kinds) | Slot presence | SVG sprites | vector | locked / available / completed | `selectSlotState` | registry map by `visualKind` | Yes |
+| Landmark (≥1) | Orientation | Layered raster or SVG | @2x | stolen / restored | segment restoration | registry key | Yes |
+| Diegetic nav object | Navigation | SVG | vector, ≥72px target | rest / hover / active | none | registry key | Yes |
+| Restoration masks | Reveal geometry | SVG mask paths / CSS gradients | vector | derived | progress prop | per-region mask file | Yes |
+| Challenge Stage shell frame | Focus frame | SVG 9-slice-like frame + CSS | vector | idle / success / retry | none | registry key | Yes |
+| Companion (1 pet, concept) | Guide presence | SVG or PNG | ~200px | idle / entrance | none | registry key, pet id prop | Yes |
 
-**CH-GEO-BUILD** (GEO2D COMP/DECOMP/MOSAIC). Drag/snap parts into a target silhouette; decompose a composite into parts; fill a mosaic region. Snap tolerance generous for touch; pieces rotatable where the objective requires it.
+Asset generation approach for Build: original illustrated concept assets produced for this project; no imitation of any existing artist/studio/character.
 
-## H — Pedagogy enforcement architecture
+---
 
-Structural mechanisms, not conventions:
+## Section F — Transition plan
 
-1. **Discover ≠ mastery** — `mode` is part of the Activity record and stamped on every Evidence row. The mastery selector reads only `mode === 'challenge'` rows for independent evidence, so it is structurally unable to count a Discover success.
-2. **Hint ≠ Challenge mastery** — `assisted: true` is set the moment any hint/support is consumed and cannot be cleared for that attempt. Assisted rows accumulate in a separate counter.
-3. **No curriculum in world components** — board/scenery components receive only `slotId`, `anchor`, `segmentId`, `state`. An ESLint `no-restricted-imports` boundary prevents them importing the content directory at build time.
-4. **Templates own no skills, answers or verdicts** — templates emit a `UserResponse`; all evaluation happens in the Activity/Evaluation layer against the pack's `answerRules`. The lint boundary blocks templates importing skill, curriculum or evaluator modules, so a template cannot compute correctness even accidentally.
-5. **No workbook photos as screens** — content packs carry structured items (numbers, figures, relations). The schema has no page-image field.
-6. **Layout cannot reveal answers** — uniform spacing/size rules in CH-NUM-PATH; option ordering randomized per attempt; distractors required to match the correct answer in visual weight. A pack validation check rejects option sets where the correct item is the only one of its size/length class.
-7. **One answer ≠ mastery** — mastery requires multiple independent correct attempts across ≥2 representations (`representationsSeen`). Exact counts are a product decision (GAP-MASTERY); until decided, the UI never claims "proficient".
+No new animation dependency is proposed. Rationale: every transition below is a transform/opacity/mask animation on a small number of layers, expressible with CSS transitions, CSS keyframes and (where sequencing is needed) the Web Animations API, which is available in all target browsers and already supported by the current stack. Framer Motion/GSAP would add ~30-120KB gzipped and a second animation paradigm without solving anything listed here. If, during Build, the zoom + crossfade sequencing proves unmaintainable in raw WAAPI, adding `motion` will be raised as a **PROPOSAL requiring approval**, not applied unilaterally.
 
-## I — Color restoration architecture
+| # | Transition | Intended experience | Implementation | New dep | Normal motion | Reduced motion | Fallback | Risk |
+|---|---|---|---|---|---|---|---|---|
+| 1 | App opening / Overworld reveal | Book/world waking up | CSS keyframes: slow atmospheric fade + 1.02→1.0 scale, staggered layer opacity | No | 900ms | Instant render, no scale | Static map | Low |
+| 2 | Overworld → Mathematics zoom | Traveling into the region | "Fake camera": animate `transform: scale()+translate()` on the map container with focal origin at region centroid; crossfade to board scene at ~70% | No | 700-900ms ease-in-out | 150ms crossfade only | Crossfade only | GPU cost on large rasters → mitigate with `will-change`, downscaled zoom-out texture |
+| 3 | Zoom landing → Board | Continuity of place | Board mounts pre-scaled at 1.06 and settles to 1.0 while zoom overlay fades | No | 300ms | Immediate | Immediate | Timing mismatch → single shared transition controller |
+| 4 | Board → Challenge Stage | Slot object opens into the challenge | Slot anchor drives transform-origin; frame scales up from marker; board behind gets slight blur+dim (never opaque neutral scrim) | No | 450ms | Fade 120ms, no scale | Fade | Blur perf on tablet → fallback to dim+desaturate only |
+| 5 | Challenge Stage → Board | Returning to the world | Reverse of #4, then restoration + move sequence | No | 400ms | Fade | Fade | Focus restoration to slot marker |
+| 6 | Color restoration | Color flows back | `RestorationLayer` mask position/opacity transition on the completed stretch | No | 800ms flow | Snap to final derived value | Opacity crossfade | Mask support → opacity technique fallback (already spiked) |
+| 7 | Maittê movement | She walks/hops on | CSS transform along precomputed path points, 2-3 keyframe hops | No | 600ms | Instant reposition | Instant reposition | Path/anchor mismatch |
+| 8 | Companion entrance | Pet appears from scenery | Translate + slight squash, opacity | No | 400ms | Fade in | Fade | None |
+| 9 | Return to Overworld | Camera pulls out | Inverse of #2 | No | 700ms | Crossfade | Crossfade | Same as #2 |
 
-- **State location (APPROVED DIRECTION)**: persisted state stores source facts only — slot completion, milestones and evidence. Restoration percentages are derived selectors, never persisted truth: `segment → completedSlots/totalSlots`, `world → aggregate`, `overworldRegion → world value`, `avatar → milestones + world value`. Changing granularity later changes selectors, not saved data.
-- **Update events**: `SLOT_COMPLETED` and `MILESTONE_RECOVERED`. Nothing else writes restoration.
-- **Board-area restoration**: each Activity Slot declares `segmentId` and `restorationWeight`; the segment's art layer receives the computed value.
-- **Overworld restoration**: the Mathematics region reads the world aggregate on mount and animates from its previously-seen value.
-- **Maittê restoration**: avatar art split into parts with a declared restoration order; the green heart is always colored (UNIVERSE: hope survives).
-- **Persistence**: `PersistenceAdapter` + `schemaVersion`, localStorage for MVP, swappable later without touching game logic.
-- **Extensibility**: restoration is keyed by `worldId`/`segmentId`; a new subject world adds config only.
-- **Proposed visual technique** (PROPOSAL): two stacked art layers per segment — grayscale/line-art beneath, full-colour above — with the coloured layer revealed by a CSS `mask-image` driven by a custom property. Broadly supported, animatable, no per-asset scripting.
-- **Fallback**: coloured-layer `opacity` cross-fade per segment, or a discrete asset swap at completion.
-- **Uncertainty flagged**: the exact visual restoration technique remains a Phase 0 spike. Partial *within-segment* restoration and mask performance with many simultaneous segments on tablet are unverified.
+All transitions read `prefers-reduced-motion` through one shared hook; state changes are never gated on animation completion.
 
-## J — Delivery phasing
+---
 
-Approval of one phase does not authorize the next. Each phase ends in a reviewable artifact.
+## Section G — Visual Concept Gate
 
-**Phase 0 — Foundation / architecture.** Deliverables: route skeleton for the spatial layers; typed state store + selectors; Zod schemas for all Section E entities; PersistenceAdapter + localStorage implementation (MVP infrastructure — reload survival is a Phase 0 acceptance condition, not a future concern); PuzzleTemplateHost + the response/evaluation contract with at least two evaluators (`selection`, `ordering`); content/world/template/evaluator registries; the lint boundary rules from Section H; a restoration-technique spike (mask vs. opacity) on a placeholder asset; one throwaway template proving the full loop with placeholder content and both drag and tap-to-place input paths. Dependencies: approval of Sections D, E, I as corrected. Acceptance: a placeholder slot can be completed, evaluation happens outside the template, state persists across reload, a segment visibly restores, and no world component or template can import content or evaluators. Reviewable: architecture + working technical loop with placeholder art.
+This section is a proposal for human visual approval. Nothing here is DECIDED by this plan.
 
-**Phase 1 — Slice A Number Sense.** Deliverables: CH-NUM-BUILD, CH-NUM-PATH; Mathematics world config with Slice A slots; content packs for the seven NUM skills across Discover/Practice/Challenge; companion briefing; feedback rules; board + Overworld restoration wired; first-pass Mathematics board art. Dependencies: Phase 0 accepted; Activity Slot count/order decided (GAP-SLOTS); support levels decided (GAP-SUPPORT); validated pack items supplied. Acceptance: a child completes the Slice A route end to end on a tablet-sized screen, evidence is recorded per skill with mode/assisted flags, colour restores locally and on the Overworld, progress survives reload. Reviewable: the first genuinely playable slice. **Explicitly not the completion of the useful Mathematics MVP.**
+### G1. Overworld composition
+A single landscape parchment-map illustration in an oblique, slightly elevated storybook perspective, framed at 16:10 for landscape tablet.
 
-**Phase 2 — Slice B Addition/Subtraction/Problems.** Deliverables: CH-OP-SOLVE with manipulable regrouping; CH-OP-STORY with two-phase relation/compute; packs for ADD/SUB skills including non-keyword problems; additional slots/segment in the same world with no scenery rewrite. Dependencies: Phase 1 accepted; problem content authored/validated. Acceptance: regrouping is performed by the child rather than automated; choosing the relation is recorded separately from calculating; adding these packs required zero changes to board components. Reviewable: the study path the teacher currently prioritizes.
+- **Base da Esperança** sits at lower-center-left: a small hillside camp with a warm lantern and a green pennant — the only fully colored element at zero progress. It is the compositional anchor and the visual "home" the paths radiate from.
+- **Six destinations**, arranged clockwise around the base so no ordering is implied:
+  - Portuguese — dense storybook forest, upper-left;
+  - Science — coastal/ocean bay with tidepools, left;
+  - Mathematics — **desert with dunes and ruins, right-center** (nearest the base, shortest path, since it is the playable world);
+  - Geography — layered valley and river canyon, lower-right;
+  - History — walled kingdom on a plateau, upper-right;
+  - English — small harbor town / city rooftops, upper-center.
+- **Terrain transitions** are illustrated, not abutted: forest thins into scrub, scrub into dune, dunes into canyon.
+- **Paths** are dotted trails from the base to each region; the Mathematics trail is the most defined.
+- **Focal point:** the base, with the Mathematics dune ridge as strong secondary silhouette.
+- **Maittê** stands at the base facing the desert trail, ~7% of frame height.
+- **Camera framing:** fixed SVG `viewBox` with responsive focal point; never a card list.
 
-**Phase 3 — Slice C Plane Geometry.** Deliverables: CH-GEO-SORT, CH-GEO-BUILD; geometry packs with declared orientation/scale/colour variation; mosaics where the source supports them; third segment. Dependencies: Phase 2 accepted; figure asset set. Acceptance: no figure is recognizable by orientation alone; sides/vertices assessed explicitly; drag/snap reliable with touch. Reviewable: the useful Mathematics MVP complete across A+B+C.
+### G2. Mathematics region (PROVISIONAL — "Deserto dos Números")
+- **Silhouette:** three overlapping dune curves with a rock arch and half-buried ruin fragments; readable at map scale as a distinct shape.
+- **Terrain:** wind-rippled sand, scattered stones, dry brush, one oasis pocket.
+- **Line-art treatment:** confident varying-weight ink outline, cross-hatch on dune shadow sides so depth survives desaturation.
+- **Stolen color:** warm-neutral paper tone, ink lines, hatch texture; NOT flat gray.
+- **Restored palette (PROVISIONAL):** sand amber, terracotta rock, teal oasis, dusk violet sky.
+- **Neighbors:** dunes fade into Geography's canyon rim to the south and dry scrub toward the base.
+- No landmark encodes a math skill.
 
-**Phase 4 — Hardening.** Deliverables: tablet device validation, touch-target audit, reduced-motion pass, transition polish and fallbacks, persistence migration path, instruction replay/audio decision applied, readability/accessibility pass, save-integrity handling. Acceptance: the MVP acceptance boundary in MVP-SCOPE is met on real tablet hardware.
+### G3. Maittê concept (per MAITTE.md)
+- **Proportions:** ~5.5 heads, eight-year-old; not chibi, not adult.
+- **Line:** clean tapered ink outline, minimal interior lines, light anime influence in eye and expression shapes; original design.
+- **Hair:** dark brown, slightly below shoulders, marked fringe, soft wave at the ends, one subtle light/bleached lock framing the face.
+- **Glasses:** pink frames (current canonical direction).
+- **Clothing:** skirt, simple tee with a **green heart**, colorful striped socks, high-top canvas sneakers with no protected branding.
+- **Stolen state:** everything desaturated to ink + paper except the green heart, which stays saturated and gently pulses.
+- **Partial restoration:** color returns in reviewable stages — heart → shirt → socks → skirt/hair → sneakers/glasses — driven by `selectAvatarRestoration` tiers.
+- **Asset states needed:** idle, move (2-3 frames or transform-based), map scale, board scale, plus the restoration tiers as separately toggleable color layers.
 
-## K — GAP / CONFLICT / ASSUMPTION register
+### G4. Mathematics Board concept
+- **Perspective:** oblique elevated storybook view, wider than the viewport, horizontal camera pan; not top-down, not side-scroller.
+- **Route:** one curving trail from an oasis at the left, over a dune saddle, past the rock arch, toward a distant ruin at the right edge (visible but unreachable — anticipation).
+- **Scenery:** overlapping dunes, brush clumps, stone piles, distant haze for depth.
+- **Slots as objects (proposal):** carved standing stone, oasis lantern, footprint pair in the sand, small bridge over a dry wash, arch doorway. Assigned per slot via a visual metadata field, not hardcoded to any skill.
+- **Completed:** object upright, colored, small life around it (a bird, water shimmer), path behind it fully colored.
+- **Current/available:** Maittê stands beside it; the green heart pulse echoes on the object; a soft light and slight environmental motion (blowing sand); no button chrome.
+- **Locked/future:** stolen-color, half-buried, path ahead drawn as faint dotted ink; a small "stolen-color" mark (drained crayon glyph) so the state is not color-only.
+- **Landmark:** the rock arch, mid-route — orientation only, no curriculum meaning.
+- **Local restoration:** each completed slot restores its surrounding stretch of the route.
 
-**[GAP] — Technical architecture spec absent**
-Specs: docs/technical/ARCHITECTURE.md, STATE.md, CONFIG-SCHEMAS.md (missing).
-Description: no approved architecture, state or schema decisions exist.
-Consequence: Sections D and E are proposals; building on them unapproved creates unreviewed decisions.
-Handling: approve Sections D/E as the seed of those spec files, or author them first.
+### G5. Color restoration concept
+- **Stolen:** ink lines + warm paper + hatch texture + full value range. Depth comes from line weight, hatching and atmospheric value, so the scene is attractive with zero color. Only Maittê's green heart is colored.
+- **Partially restored:** color returns as a *flow along the route* from the base outward — completed stretches fully colored, a feathered boundary, the rest still ink. Restored areas also gain small living details (a flower, water shimmer) so the difference is not hue-only.
+- **Restored:** full palette, all detail layers on, ambient motion.
+- **What remains constant:** composition, line work, silhouettes, hit areas — restoration only toggles color/detail layers and mask geometry.
+- **Progress without percentages:** the reviewer reads "how far the color has travelled along the trail". A numeric value remains available to assistive tech only.
 
-**[GAP] — Persistence not decided**
-Specs: MVP-SCOPE (PROVISIONAL local/client-side), docs/technical/PERSISTENCE.md (missing).
-Description: no decision on multi-device, multiple children, or reset.
-Consequence: localStorage loses progress on device/browser change; no parent-visible reset.
-Handling: build behind PersistenceAdapter; request an explicit decision before Phase 4.
+### G6. Diegetic navigation concept — PROPOSAL
+**Preferred object: Maittê's canvas backpack with a folded map tucked in the side pocket.**
+- **Why it fits:** she is a traveler on a journey; a backpack is the natural carrier of the map and, later, the recovered coloring tools (a direct hook for the villain's stolen-tools narrative).
+- **What it does:** tapping the folded map returns to the Overworld from any world; tapping the backpack body opens a small diegetic pouch with secondary/parent access (out of scope to implement fully in Phase 1A).
+- **Where:** bottom-left corner, resting on the scene, ~96px, always visible during play, never a bar.
+- **Interaction:** touch/hover → the map corner lifts and the strap sways; press → map unfolds briefly into the zoom-out transition.
+- **Accessibility:** `<button aria-label="Voltar ao mapa do mundo">`, visible focus ring drawn as a warm glow, ≥72px touch target, reduced motion removes the sway.
+- Alternatives considered and rejected for Phase 1A: standalone compass (weaker narrative tie), book (reserved for the page-turn narrative metaphor).
 
-**[GAP] — Activity Slot count and order**
-Specs: docs/gameplay/ACTIVITY-SLOTS.md (missing); MATHEMATICS-WORLD (route length unresolved); MVP-SCOPE (PROVISIONAL, not fixed in advance).
-Consequence: the Slice A board cannot be laid out without a slot count.
-Handling: product decides Slice A slot count and skill order before Phase 1; Phase 0 uses placeholders.
+### G7. Challenge Stage concept
+- The selected slot object **grows** into the stage: its transform-origin is the slot anchor, so the frame appears to unfold from that place in the sand.
+- The board stays visible around the frame — dimmed and slightly blurred, never covered by a neutral scrim; the dune horizon remains recognizable.
+- **Frame:** an illustrated stretched-canvas/parchment panel with rope corners, occupying the center ~72% of the viewport, leaving biome visible on all sides.
+- **Interaction area:** large central zone with tablet-scale targets, instruction line at the top, support/audio affordance reserved at the top-right of the frame.
+- **Companion:** one pet sits at the lower-left edge, partly outside the frame, watching; it never overlaps interactive targets.
+- **Return:** success → frame flash + companion reaction → frame recedes into the slot object → the object restores color → color flows along its route stretch → Maittê reacts and hops to the next slot.
 
-**[GAP] — Support Levels undefined**
-Specs: docs/gameplay/SUPPORT-LEVELS.md (missing); LEARNING-MODEL treats it as first-class.
-Consequence: hint escalation is unspecified; `SupportLevel` remains a typed placeholder.
-Handling: define the level set before Phase 1.
+### G8. Concept approval register
 
-**[GAP] — XP economy undefined**
-Specs: docs/gameplay/XP.md (missing); PROGRESSION marks the numeric economy PROVISIONAL.
-Consequence: no XP values may be assigned. Plan reserves an evidence field and ships no XP UI.
-Handling: defer until after Slice A telemetry.
+| Concept | DECIDED constraints | Proposed solution | Still PROVISIONAL | Approve before Build? |
+|---|---|---|---|---|
+| Overworld composition | One coherent geography; six regions; origin; no cards | G1 layout | region placement, terrain art | Yes |
+| Base da Esperança | Shared origin exists | Lower-center-left camp, only colored element at 0% | visual design, name display | Yes |
+| Mathematics region | Physical destination; no curriculum in scenery | G2 desert | biome, palette, name "Deserto dos Números" | Yes |
+| Maittê | MAITTE.md traits | G3 concept | exact face/style, restoration tier order | Yes |
+| Route & slot language | Slots in scenery; 3 states | G4 objects | object set, route length, slot count | Yes |
+| Restoration treatment | Derived from facts; not color-only | G5 flow-along-route | feather size, granularity | Yes |
+| Diegetic navigation | No corporate header | G6 backpack + map | final object | Yes |
+| Challenge Stage | Spatial continuity | G7 frame from slot | frame art, dim/blur amount | Yes |
+| Companion shell | No skill binding | One pet, concept | which pet, behavior | Yes |
+| Landmark | Scenery only | Rock arch | final landmark | Yes |
 
-**[GAP] — Mastery thresholds undefined**
-Specs: MATH-G2 §9 ("must not be invented by the UI").
-Consequence: `proficient` cannot be displayed; counters are collected and the label function stays conservative.
-Handling: decide after Phase 1 evidence exists.
+---
 
-**[GAP] — Color-restoration granularity**
-Specs: docs/design/COLOR-RESTORATION.md (missing).
-Consequence: unknown whether restoration is per-slot, per-segment, per-landmark or continuous.
-Handling: Section I proposes per-segment derived from slot completions; requires approval.
+## Section H — Visual Acceptance Matrix
 
-**[GAP] — Navigation affordance**
-Specs: docs/ux/NAVIGATION.md (missing); OVERWORLD forbids a conventional header but names no replacement.
-Consequence: return-to-overworld and settings entry have no approved form.
-Handling: Phase 1 ships a minimal diegetic affordance as a visual PROPOSAL, not a decision.
+Against the 12 criteria in `docs/design/VISUAL-IMPLEMENTATION.md` §13.
 
-**[GAP] — Transition timing and easing**
-Specs: docs/design/ANIMATION.md, docs/ux/TRANSITIONS.md (missing).
-Consequence: Section F durations are engineering defaults, not design decisions.
-Handling: tune in Phase 4 against design review.
+| # | Criterion | Intended experience | Components | Assets | State | Transition | Tablet | Reduced motion | Risk | Fallback | Human acceptance test |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Opening shows illustrated world, not dashboard | Map fills the screen | OverworldScene, MapLayer | Overworld base+terrain | region restoration | #1 | Fixed viewBox, landscape-first | No scale-in | Asset weight | CSS/SVG-only map | Open `/`: reviewer sees one continuous illustrated geography; no card, no "Regiões", no page title bar |
+| 2 | Mathematics identifiable as a place | Desert reads as a region | RegionHitArea, Math region art | Math region | availability | — | Region ≥120px | n/a | Silhouette legibility | Diegetic carved sign | Reviewer points at the desert without reading a label |
+| 3 | Stolen color visible in the illustration | Ink world with green heart | RegionRestoration, RestorationLayer | line/color pairs | `selectRegionRestoration` | #6 | same | static | Gray-UI look | Paper texture + hatching | With empty save, map is ink-on-paper yet attractive; heart is the only color |
+| 4 | Entering Mathematics feels spatial | Camera flies in | SpatialZoomTransition | zoom textures | none | #2, #3 | GPU transform | crossfade | Jank | crossfade | Tap the desert: camera zooms into it; no white page flash |
+| 5 | Board reads as a route | One scene with a trail | MathBoardScene, RoutePath | board scene | segment restoration | #3 | horizontal pan | static | Pan discoverability | Fit-to-width framing | Board shows a continuous desert route; no "Trecho A/B", no gray containers |
+| 6 | Maittê visibly present | Real character | Maitte, MaitteOnBoard | Maittê asset | `selectCurrentSlot` | #7 | ~180px board | instant move | Art quality | concept SVG | Reviewer recognizes an 8-year-old with glasses, skirt, sneakers, green heart |
+| 7 | Progress derives from Phase 0 state and changes the world | Color travels | RestorationLayer, RoutePath | masks | selectors | #6 | same | snap | Mask support | opacity crossfade | Complete a challenge, reload: restored stretch persists with no percentage read |
+| 8 | No conventional header in play | World-only chrome | DiegeticNav | backpack | none | — | corner ≥72px | no sway | Discoverability | subtle first-visit nudge | No header/nav bar anywhere in play; return happens via the backpack map |
+| 9 | No Phase 0 technical language | Child-safe copy | all | — | — | — | — | — | Leaks in fixtures | copy audit | Search the rendered page: no "Fase 0", "Trecho", "Bloqueado", "Demonstração Técnica" |
+| 10 | Phase 0 boundaries intact | Same pipeline | unchanged domain/eval | — | — | — | — | — | Refactor drift | revert visuals | Evaluator unit tests still pass; lint boundary rules unchanged and passing |
+| 11 | No invented curriculum | Placeholder puzzle only | PuzzleTemplateHost | — | — | — | — | — | Content creep | keep fixture | Only the placeholder ordering activity exists; no addition/subtraction/geometry items |
+| 12 | Assets isolated & replaceable | Registry indirection | assetRegistry | all | none | — | — | — | Import leakage | lint rule | Swapping one registry entry changes the art with no change under `src/game/**` |
 
-**[GAP] — Mathematics landmarks and minion**
-Specs: MATHEMATICS-WORLD (explicitly PROVISIONAL/GAP).
-Consequence: board art needs landmark anchors before layout.
-Handling: Phase 1 uses neutral, curriculum-agnostic anchors; minion and named landmarks stay unbuilt pending decision.
+---
 
-**[GAP] — Companion assignment**
-Specs: MATHEMATICS-WORLD ("must not hardcode a permanent pedagogical role"); docs/narrative/PET-COMPANIONS.md (missing).
-Consequence: guide pet per activity is undecided.
-Handling: `guidePetId` stays optional data on Activity; no hardcoded pairing.
+## Section I — Phase 1A / Concept / Out-of-scope boundary
 
-**[GAP] — Milestone/tool catalogue**
-Specs: PROGRESSION (stolen tools as milestones); no catalogue authored.
-Consequence: milestone state has no content.
-Handling: schema built, catalogue empty until authored.
-
-**[GAP] — Audio and spoken instruction**
-Specs: CHALLENGE-STAGE (spoken instruction is product direction); docs/design/AUDIO.md (missing).
-Consequence: literacy-aware UX partly depends on audio, but no source/voice/asset decision exists.
-Handling: InstructionPlayer built with replay control and an audio slot; Phase 1 ships text + icon + demonstration; audio source decided before Phase 4. Microphone answers remain out of scope.
-
-**[GAP] — Content authoring authority**
-Specs: MATH-G2 §11/§12; CONTENT-PARAMETRIZATION rule 5.
-Description: packs need validated items; the workbook reconstruction backlog is unfinished.
-Consequence: implementation must not author curriculum items.
-Handling: build the pack schema and loader; item content supplied/validated by product before each phase.
-
-**[CONFLICT] — Page-turn scope**
-Specs: DESIGN-PRINCIPLES §14 ("preferred major transition metaphor") vs. OVERWORLD/ART-DIRECTION (spatial zoom for world entry, page-turn only "when appropriate") vs. this prompt §10 ("do not apply indiscriminately").
-Consequence: without a rule, page-turn could displace spatial zoom.
-Handling: plan applies zoom for world entry and reserves page-turn for narrative context changes only; requires confirmation.
-
-**[ASSUMPTION] — Challenge Stage as overlay route**
-Specs: CHALLENGE-STAGE ("preserve spatial continuity"); no technical spec.
-Consequence: determines routing and animation feasibility.
-Handling: stated in Section B; approve or replace.
-
-**[ASSUMPTION] — Restoration values derived, never stored**
-Consequence: granularity can change without data migration, at the cost of recomputation on load.
-Handling: approve as an architectural principle.
-
-**[ASSUMPTION] — Single local profile**
-Consequence: no account model, one child per device/browser, matching MVP-SCOPE.
-Handling: confirm; multi-profile would change persistence in Phase 0.
-
-## L — Technical risk register
-
-| Risk | Affected area | Impact | Mitigation / fallback |
+| Feature | Phase 1A Functional | Concept / Visual prototype | Out of scope |
 |---|---|---|---|
-| Masked partial colour restoration performs poorly on tablet | Section I visuals | Core feedback device feels janky | Phase 0 spike; fall back to per-segment opacity cross-fade or discrete swap |
-| FLIP continuity board→stage unreliable across breakpoints | Transitions 4/5 | Challenge feels like a web form (spec violation) | Scale-from-centre + board dimming fallback |
-| Complex illustrated SVG board weight/perf | World Board | Slow entry on tablet | Split layers, lazy-load, rasterize static scenery |
-| Multi-touch drag precision on tablet | CH-NUM-BUILD, CH-GEO-BUILD, CH-OP-SOLVE | Errors caused by the interface, not the maths — corrupts evidence | Pointer Events + generous snap; tap-to-select/tap-to-place alternative for every drag interaction |
-| Path-following avatar movement under responsive resize | Transition 3 | Token misaligned with route | Recompute anchors on resize; anchor-to-anchor tween fallback |
-| Page-turn 3D transform cost / motion sensitivity | Transition 13 | Discomfort, dropped frames | Reduced-motion cross-fade; limit to rare narrative moments |
-| Original art production volume (board, avatar layers, figures, companions) | All phases | Largest non-code dependency; can stall phases | Phase with placeholders; treat asset delivery as an explicit phase dependency |
-| Evidence/mastery logic drifting into UI components | Section H | Silent pedagogy violation | Pure functions + unit tests; lint import boundaries; review each phase against §H |
-| localStorage quota/corruption | Persistence | Lost progress | schemaVersion + safe parse + graceful reset |
-| **May exceed reliable Lovable capability** — precise FLIP/spatial-continuity choreography, path-following animation, multi-layer masked restoration at scale | Sections F and I | Escalation may be required | Per docs/WORKFLOW.md escalation clause, route these specific items to Codex/Claude Code if the Phase 0 spike underperforms; specs remain authoritative |
-| Content authoring bottleneck (validated packs) | Phases 1–3 | Templates ready with nothing valid to render | Ship schema + a small product-validated pilot pack per family before scaling content |
+| Overworld visual foundation | ✔ | art is concept-quality | — |
+| Mathematics entry (zoom) | ✔ | — | — |
+| Mathematics Board shell | ✔ (states, positions, restoration) | scenery art | final route length |
+| Maittê | ✔ (position, restoration tiers) | character art | customization |
+| Restoration | ✔ (derived, persisted-fact driven) | mask granularity | weighting rules |
+| Challenge Stage shell | ✔ (transition, focus, return) | frame art | real challenge content |
+| Companion shell | — | ✔ one pet entrance | assignment, dialogue system |
+| Other five worlds | — | ✔ visible geography only | functional worlds, routes |
+| Real Number Sense challenges | — | — | ✖ |
+| Addition / subtraction / geometry | — | — | ✖ |
+| XP economy | — | — | ✖ |
+| Backend / accounts | — | — | ✖ |
+| Avatar customization | — | — | ✖ |
+| Final production art | — | — | ✖ |
+| Final audio / microphone | — | — | ✖ |
+| Final animation system | — | — | ✖ |
 
-## M — Phase 0 blocking decisions (updated after corrections)
+---
 
-Blocking — Phase 0 cannot start until each is resolved:
+## Section J — GAP / CONFLICT / ASSUMPTION register
 
-1. **Architecture/state/schema approval** — Sections D and E as corrected (evaluation boundary, slot-owns-activity), standing in for the missing docs/technical/ specs.
-2. **Restoration is derived, not persisted** — approved in principle above; needs to be recorded as the binding rule, since the whole persisted shape depends on it.
-3. **Single local profile, no backend/account** — confirms the persistence surface Phase 0 builds against.
-4. **Challenge Stage continuity requirement** — approved; the overlay implementation stays PROVISIONAL and Phase 0 must not assume it is final.
+[GAP] — Absent UX/design specs (NAVIGATION, TRANSITIONS, FEEDBACK, COLOR-RESTORATION, RESPONSIVE, ANIMATION)
+Specs involved: `docs/ux/`, `docs/design/`
+Description: Six specs referenced by the reading list and by code comments do not exist.
+Phase 1A consequence: navigation object, transition timing, restoration granularity, responsive rules and motion rules have no binding source.
+Proposed handling: this plan's Sections F/G are proposals; approved answers should be written into those files before or during Build.
+Must resolve before Build? YES (at least NAVIGATION, TRANSITIONS, COLOR-RESTORATION)
 
-Not blocking for Phase 0, blocking for Phase 1: Activity Slot count and order; Support Levels; validated Content Pack items; navigation affordance; Mathematics landmarks/minion; companion assignment.
+[GAP] — Stale spec references in Phase 0 code
+Specs involved: `docs/ux/BOARDS.md`, `docs/design/RESTORATION-OF-COLOR.md`
+Description: code comments cite files that do not exist (real names: WORLD-BOARD.md, COLOR-RESTORATION.md).
+Phase 1A consequence: cosmetic, but misleading for future agents.
+Proposed handling: correct the comments during Build.
+Must resolve before Build? NO
 
-Not blocking at all in Phase 0: mastery thresholds, XP economy, milestone catalogue, audio source, transition timing. Phase 0 stores the evidence and exposes the seams without asserting any value.
+[GAP] — Other five subject worlds have no specs
+Specs involved: `docs/worlds/*`
+Description: Portuguese/Science/History/Geography/English worlds have no approved biome.
+Phase 1A consequence: their Overworld appearance is concept-level only.
+Proposed handling: render as non-interactive geography; mark PROVISIONAL.
+Must resolve before Build? NO
 
-## N — Can Phase 0 begin with pedagogical GAPs open?
+[ASSUMPTION] — Mathematics biome, landmark, route length, slot count, minion
+Specs involved: `docs/worlds/MATHEMATICS-WORLD.md` (PROVISIONAL items)
+Description: desert direction and the specific objects in G2/G4 are proposals.
+Phase 1A consequence: board art depends on them.
+Proposed handling: approve or amend in the Visual Concept Gate; no minion is implemented in Phase 1A.
+Must resolve before Build? YES (visual approval only)
 
-Yes. Phase 0 builds only structure: schemas, registries, the response→evaluation→evidence pipeline, persistence, boundaries and the restoration spike. It authors no curriculum, asserts no mastery threshold, assigns no XP, fixes no slot count and ships no child-facing content. Every open pedagogical GAP is represented as a typed seam awaiting a decided value, so resolving those decisions later changes data and constants rather than architecture.
+[ASSUMPTION] — Display name "Deserto dos Números" in the child-facing UI
+Specs involved: MATHEMATICS-WORLD (PROVISIONAL name)
+Description: the current fixture name is a technical placeholder that must not be shown.
+Phase 1A consequence: a presentation display name is required.
+Proposed handling: use the provisional name behind a replaceable presentation mapping.
+Must resolve before Build? YES
 
-The one condition: Phase 0 must not emit a "proficient" label, an XP number, or a fixed slot layout as a placeholder that could later be mistaken for a decision. Placeholders in Phase 0 are explicitly named as such.
+[ASSUMPTION] — Companion selection for the concept entrance
+Specs involved: `docs/narrative/UNIVERSE.md`; PET-COMPANIONS.md absent
+Description: which pet appears in the Challenge Stage concept.
+Phase 1A consequence: one asset needed.
+Proposed handling: pet passed as a prop/config value; no skill binding.
+Must resolve before Build? NO
 
-## Build authorization
+[ASSUMPTION] — Restoration granularity
+Specs involved: STATE.md, COLOR-RESTORATION.md (absent)
+Description: whether restoration flows per slot, per segment or per region.
+Phase 1A consequence: mask geometry design.
+Proposed handling: implement per-slot stretch on the board, per-region on the map, both derived; revisit after review.
+Must resolve before Build? NO
 
-No build begins on this plan. Approval authorizes **Phase 0 only**, and only after the four blocking decisions in Section M are resolved.
+[ASSUMPTION] — Maittê restoration tier order
+Specs involved: MAITTE.md
+Description: the order heart→shirt→socks→skirt/hair→shoes is proposed, not decided.
+Phase 1A consequence: avatar layer structure.
+Proposed handling: data-driven tier list, easily reordered.
+Must resolve before Build? NO
+
+[ASSUMPTION] — Diegetic navigation object
+Specs involved: OVERWORLD §Navigation; NAVIGATION.md absent
+Description: backpack + folded map proposed.
+Phase 1A consequence: primary navigation affordance.
+Proposed handling: approve in Concept Gate G6.
+Must resolve before Build? YES
+
+[ASSUMPTION] — Animation timing and easing
+Specs involved: ANIMATION.md (absent)
+Description: durations in Section F are proposals.
+Phase 1A consequence: perceived feel.
+Proposed handling: centralize as tokens; tune after preview review.
+Must resolve before Build? NO
+
+[ASSUMPTION] — No new animation dependency
+Specs involved: product-owner correction 1.4
+Description: CSS + WAAPI assumed sufficient.
+Phase 1A consequence: sequencing code written by hand.
+Proposed handling: if insufficient during Build, raise a dependency PROPOSAL and stop.
+Must resolve before Build? NO
+
+[CONFLICT] — SEO/head metadata vs. no visible page headings
+Specs involved: VISUAL-IMPLEMENTATION §3, platform SEO requirements
+Description: routes need titles/descriptions and a semantic H1 while the child-facing surface must not show a web heading.
+Phase 1A consequence: heading strategy.
+Proposed handling: keep `head()` meta; render one visually-hidden or map-lettering H1 per route.
+Must resolve before Build? NO
+
+---
+
+## Section K — Technical risk register
+
+| Risk | Area | Impact | Likelihood | Mitigation | Graceful fallback | Codex/Claude Code needed? |
+|---|---|---|---|---|---|---|
+| Layered Overworld raster weight / paint cost | Performance | High | Medium | WebP, ≤2048px, few layers, `content-visibility`, composite only transform/opacity | Fewer layers, single flattened base | Possibly, for asset pipeline |
+| Restoration mask support / cost | Restoration | High | Medium | Keep both mask and opacity techniques already spiked; feature-detect | Opacity crossfade | No |
+| Spatial zoom jank on tablet | Transition | High | Medium | GPU transforms only, pre-scaled low-res zoom texture, no layout animation | Crossfade | Possibly |
+| Responsive map framing collapsing the composition | Layout | High | Low | Fixed aspect viewBox + focal-point crop + controlled pan; never card list | Fit-to-width with pan | No |
+| Touch hit areas over illustration drift from art | Interaction | High | Medium | SVG paths in the same coordinate space as the art; slot anchors from domain `anchor` | Invisible rounded rect fallback ≥72px | No |
+| Asset replacement breaking layout | Assets | Medium | Medium | Registry + fixed logical dimensions per asset slot | Placeholder silhouette | No |
+| Challenge Stage continuity lost (blur cost, focus loss) | Stage | High | Medium | Dim+desaturate instead of blur if slow; explicit focus management and restore | Static dim | No |
+| Character asset scaling across map/board/icon | Character | Medium | Medium | SVG with layered groups; single source, CSS scale | Two raster sizes | No |
+| Reduced motion breaking sequencing | Motion | Medium | Low | State never depends on animation completion | Instant final state | No |
+| Tablet GPU/memory limits with many layers | Performance | High | Medium | Layer budget (≤8 composited layers per scene), measure on device | Reduce parallax/detail layers | Possibly |
+| New animation dependency creep | Dependencies | Medium | Low | Dependency requires explicit approval | Stay on CSS/WAAPI | No |
+| Phase 0 boundary erosion during visual refactor | Architecture | High | Low | Extend existing `no-restricted-imports` lint rules to forbid `@/assets` and visual imports inside `src/game/{domain,state,evaluation,persistence}` | Revert visual layer | No |
+
+---
+
+## Build gate
+
+Build Mode must not begin until: (1) Section G is visually approved; (2) the YES items in Section J are resolved; (3) Section B preservation is accepted; (4) Section H is accepted as the acceptance protocol.
