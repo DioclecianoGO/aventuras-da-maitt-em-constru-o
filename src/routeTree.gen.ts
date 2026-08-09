@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MundoWorldIdRouteImport } from './routes/mundo.$worldId'
+import { Route as MundoWorldIdIndexRouteImport } from './routes/mundo.$worldId.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,38 @@ const MundoWorldIdRoute = MundoWorldIdRouteImport.update({
   path: '/mundo/$worldId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MundoWorldIdIndexRoute = MundoWorldIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MundoWorldIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/mundo/$worldId': typeof MundoWorldIdRoute
+  '/mundo/$worldId': typeof MundoWorldIdRouteWithChildren
+  '/mundo/$worldId/': typeof MundoWorldIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/mundo/$worldId': typeof MundoWorldIdRoute
+  '/mundo/$worldId': typeof MundoWorldIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/mundo/$worldId': typeof MundoWorldIdRoute
+  '/mundo/$worldId': typeof MundoWorldIdRouteWithChildren
+  '/mundo/$worldId/': typeof MundoWorldIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/mundo/$worldId'
+  fullPaths: '/' | '/mundo/$worldId' | '/mundo/$worldId/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/mundo/$worldId'
-  id: '__root__' | '/' | '/mundo/$worldId'
+  id: '__root__' | '/' | '/mundo/$worldId' | '/mundo/$worldId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  MundoWorldIdRoute: typeof MundoWorldIdRoute
+  MundoWorldIdRoute: typeof MundoWorldIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +73,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MundoWorldIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mundo/$worldId/': {
+      id: '/mundo/$worldId/'
+      path: '/'
+      fullPath: '/mundo/$worldId/'
+      preLoaderRoute: typeof MundoWorldIdIndexRouteImport
+      parentRoute: typeof MundoWorldIdRoute
+    }
   }
 }
 
+interface MundoWorldIdRouteChildren {
+  MundoWorldIdIndexRoute: typeof MundoWorldIdIndexRoute
+}
+
+const MundoWorldIdRouteChildren: MundoWorldIdRouteChildren = {
+  MundoWorldIdIndexRoute: MundoWorldIdIndexRoute,
+}
+
+const MundoWorldIdRouteWithChildren = MundoWorldIdRoute._addFileChildren(
+  MundoWorldIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  MundoWorldIdRoute: MundoWorldIdRoute,
+  MundoWorldIdRoute: MundoWorldIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
