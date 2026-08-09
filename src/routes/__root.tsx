@@ -77,14 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Aventuras da Maittê" },
+      { name: "description", content: "Projeto em construção — Aventuras da Maittê." },
+      { name: "author", content: "Aventuras da Maittê" },
+      { property: "og:title", content: "Aventuras da Maittê" },
+      { property: "og:description", content: "Projeto em construção — Aventuras da Maittê." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@AventurasDaMaitte" },
     ],
     links: [
       {
