@@ -40,6 +40,8 @@ The detailed sequence belongs in `docs/pedagogy/MATHEMATICS-GRADE-2.md` and the 
 - challenge-stage framework;
 - reusable/parametrizable challenge templates;
 - contextual instructions with pet companions;
+- **spoken/replayable essential challenge instruction support so the child is not required to read independently to begin a task;**
+- concept-quality character acting sufficient for Maittê and a companion to participate in the challenge loop;
 - XP/progression foundation;
 - color-restoration feedback;
 - basic narrative framing around stolen/restored colors;
@@ -76,7 +78,7 @@ Spatial solids remain documented supporting/follow-up content and are not requir
 - every subject fully playable;
 - every planned world/region completed;
 - final production character illustrations;
-- final production sound effects/music;
+- **final voice casting/recording, music or production sound-effects library**;
 - advanced cinematic sequences;
 - multiplayer/social systems;
 - complex administrative platform;
@@ -84,11 +86,13 @@ Spatial solids remain documented supporting/follow-up content and are not requir
 - backend account model unless a concrete need is approved;
 - spatial-solid activities for the current useful MVP, unless their status is explicitly changed.
 
+The exclusion of final audio production does **not** remove the requirement for functional spoken essential instructions. MVP narration may use replaceable concept audio or system/browser speech synthesis fallback as defined in `docs/design/AUDIO.md`.
+
 ## Provisional MVP decisions
 
 **PROVISIONAL:** persistence may initially be local/client-side if that is sufficient to validate the experience. A backend account model should not be added only for architectural completeness.
 
-**PROVISIONAL:** richer movement animation is desirable, but not a release blocker.
+**PROVISIONAL:** richer movement animation is desirable, but not a release blocker beyond the minimum acting/comprehension states defined for Phase 1B.
 
 **PROVISIONAL:** the exact number of Mathematics stages/challenges will be derived from the pedagogical sequence and not fixed in advance.
 
@@ -97,5 +101,7 @@ Spatial solids remain documented supporting/follow-up content and are not requir
 ## Acceptance boundary
 
 The MVP is successful when a child can open the experience on a tablet-sized screen, enter the Mathematics path, understand what to do without adult interpretation for every step, complete multiple curriculum-aligned challenges across the approved useful Mathematics slices, receive meaningful feedback, observe progress/color restoration, and return to continue the journey.
+
+**For essential challenge instructions, understanding without adult interpretation must not depend on independent reading alone.**
 
 A visually impressive prototype that does not preserve curricular correctness or reusable content architecture is not considered a successful MVP.
