@@ -30,7 +30,7 @@ import { useNarration } from "@/audio/useNarration";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
 import { getChallengeNarration } from "@/visual/world-config/narration";
 import { ChallengeStageShell } from "@/visual/stage/ChallengeStageShell";
-import { getSlotVisual, getWorldVisual } from "@/visual/world-config";
+import { getSlotVisual } from "@/visual/world-config";
 import { useSuccessReturn } from "@/game/stage/useSuccessReturn";
 
 export const Route = createFileRoute("/mundo/$worldId/desafio/$slotId")({
