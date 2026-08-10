@@ -23,6 +23,11 @@ import type { AttemptResult } from "@/game/domain/responses";
 import { toEvidence } from "@/game/evaluation/orchestrator";
 import { PuzzleTemplateHost } from "@/game/stage/PuzzleTemplateHost";
 import { useGameState } from "@/game/state/GameStateProvider";
+import { selectAvatarRestoration } from "@/game/state/selectors";
+import { playSfx } from "@/audio/sfx";
+import { useNarration } from "@/audio/useNarration";
+import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
+import { getChallengeNarration } from "@/visual/world-config/narration";
 import { ChallengeStageShell } from "@/visual/stage/ChallengeStageShell";
 
 export const Route = createFileRoute("/mundo/$worldId/desafio/$slotId")({
@@ -50,13 +55,36 @@ export const Route = createFileRoute("/mundo/$worldId/desafio/$slotId")({
 function ChallengeStage() {
   const { slotId, worldId } = Route.useParams();
   const navigate = useNavigate();
-  const { dispatch } = useGameState();
+  const { facts, dispatch } = useGameState();
   const [lastAttempt, setLastAttempt] = React.useState<AttemptResult | null>(null);
 
   const slot = findSlot(slotId);
   const activityId = slot?.sequence.challenge[0];
   const activity = activityId ? findActivity(activityId) : null;
   const item = placeholderPack.items[0];
+
+  // Narration copy is configuration, resolved by placement. Nothing spoken here
+  // is authored by the template, the pet component or the domain layer.
+  const narrationConfig = getChallengeNarration(slotId, activityId);
+  const line =
+    lastAttempt === null
+      ? narrationConfig.instruction
+      : lastAttempt.outcome === "correct"
+        ? narrationConfig.success
+        : narrationConfig.retry;
+
+  const narration = useNarration(
+    {
+      captionText: line.captionText,
+      spokenText: line.spokenText,
+      locale: narrationConfig.locale,
+      ...(line.audioKey ? { audioKey: line.audioKey } : {}),
+      ...(narrationConfig.voiceProfileKey
+        ? { voiceProfileKey: narrationConfig.voiceProfileKey }
+        : {}),
+    },
+    { autoPlay: true },
+  );
 
   const close = React.useCallback(() => {
     void navigate({ to: "/mundo/$worldId", params: { worldId } });
@@ -65,6 +93,7 @@ function ChallengeStage() {
   const handleAttempt = React.useCallback(
     (attempt: AttemptResult) => {
       setLastAttempt(attempt);
+      playSfx(attempt.outcome === "correct" ? "success" : "retry");
       dispatch({
         type: "RECORD_ATTEMPT",
         evidence: toEvidence(attempt),
@@ -75,6 +104,7 @@ function ChallengeStage() {
       });
 
       if (attempt.outcome === "correct") {
+        playSfx("restore");
         const slots = [...placeholderWorld.slots].sort((a, b) => a.order - b.order);
         const nextSlot = slots[slots.findIndex((entry) => entry.id === attempt.slotId) + 1];
         dispatch({
@@ -90,19 +120,40 @@ function ChallengeStage() {
 
   if (!slot || !activity || !item) return null;
 
+  // Acting states are read from an ALREADY COMMITTED result. Presentation only.
+  const maitteState: MaitteActingState =
+    lastAttempt === null
+      ? "listen-think"
+      : lastAttempt.outcome === "correct"
+        ? "success"
+        : "retry-thinking";
+  const companionState: CompanionActingState =
+    lastAttempt === null
+      ? "watch"
+      : lastAttempt.outcome === "correct"
+        ? "success-reaction"
+        : "retry-reaction";
+
   return (
     <ChallengeStageShell
       worldId={worldId}
       title="Pedra esculpida"
       onClose={close}
+      caption={line.captionText}
+      narrationStatus={narration.status}
+      audioUnavailable={narration.audioUnavailable}
+      onReplay={narration.play}
+      petId={narrationConfig.petId}
+      petDisplayName={narrationConfig.petDisplayName}
+      maitteState={maitteState}
+      companionState={companionState}
+      avatarProgress={selectAvatarRestoration(facts, [placeholderWorld])}
       feedback={
-        lastAttempt ? (
+        lastAttempt && lastAttempt.outcome !== "correct" ? (
           <span role="status">
-            {lastAttempt.outcome === "correct"
-              ? "Isso! A cor voltou a este trecho da trilha."
-              : lastAttempt.outcome === "partially-correct"
-                ? placeholderPack.feedback.firstError
-                : placeholderPack.feedback.repeatedError}
+            {lastAttempt.outcome === "partially-correct"
+              ? placeholderPack.feedback.firstError
+              : placeholderPack.feedback.repeatedError}
           </span>
         ) : undefined
       }
@@ -112,6 +163,7 @@ function ChallengeStage() {
         slot={slot}
         pack={placeholderPack}
         item={item}
+        confirmLabel={narrationConfig.confirmLabel}
         onAttempt={handleAttempt}
       />
     </ChallengeStageShell>
