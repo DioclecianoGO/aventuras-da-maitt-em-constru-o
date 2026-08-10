@@ -28,7 +28,7 @@ import {
   type Subject,
   type WorldConfig,
 } from "@/game/domain/schemas";
-import type { ContentBundle } from "@/game/content/registry";
+import type { ContentBundle } from "@/game/content/types";
 
 export const SCIENCE_WORLD_ID = "world-science-oceano";
 export const SCIENCE_SUBJECT_ID = "subject-science";

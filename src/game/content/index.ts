@@ -2,16 +2,12 @@
  * Content composition root.
  * Spec: docs/technical/CONTENT-ORCHESTRATION.md §1
  *
- * Importing this module registers every authored world/content set. Routes
- * import the registry, never a specific subject fixture: Mathematics and
- * Science coexist behind one generic resolution boundary.
+ * Routes import this module, never a specific subject fixture: Mathematics and
+ * Science coexist behind one generic resolution boundary. Registration is
+ * deterministic composition (see bundles.ts + registry.ts), not an import-time
+ * side effect.
  */
-import { registerContentBundle } from "@/game/content/registry";
-import { mathematicsBundle } from "@/game/content/placeholder-fixture";
-import { scienceBundle } from "@/game/content/science/slice-a";
-
-registerContentBundle(mathematicsBundle);
-registerContentBundle(scienceBundle);
-
+export type { ContentBundle } from "@/game/content/types";
+export { contentBundles } from "@/game/content/bundles";
 export * from "@/game/content/registry";
 export * from "@/game/content/sequence";

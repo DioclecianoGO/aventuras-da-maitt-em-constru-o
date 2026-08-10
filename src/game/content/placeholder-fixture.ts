@@ -19,7 +19,7 @@ import {
   type Subject,
   type WorldConfig,
 } from "@/game/domain/schemas";
-import type { ContentBundle } from "@/game/content/registry";
+import type { ContentBundle } from "@/game/content/types";
 
 export const PLACEHOLDER_WORLD_ID = "world-placeholder";
 
