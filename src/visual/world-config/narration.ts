@@ -67,6 +67,7 @@ const bySlot: Record<string, ChallengeNarration> = {
 /** Keyed by activity id, used when a slot has no dedicated narration. */
 const byActivity: Record<string, ChallengeNarration> = {
   "activity-placeholder-challenge": DEFAULT_NARRATION,
+  ...scienceNarration(),
 };
 
 export function getChallengeNarration(
@@ -74,8 +75,10 @@ export function getChallengeNarration(
   activityId?: string,
 ): ChallengeNarration {
   return (
-    bySlot[slotId] ??
+    // Activity-first: a Slot runs a SEQUENCE of activities, so the spoken
+    // instruction belongs to the activity. Slot entries remain a fallback.
     (activityId ? byActivity[activityId] : undefined) ??
+    bySlot[slotId] ??
     DEFAULT_NARRATION
   );
 }
