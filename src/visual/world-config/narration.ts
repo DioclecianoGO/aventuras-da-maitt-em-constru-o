@@ -58,6 +58,54 @@ const DEFAULT_NARRATION: ChallengeNarration = {
 };
 
 /** Keyed by slot id. Absent keys fall back to the activity/default entry. */
+/* --------------------------------------------------------------------------
+ * Science Slice A — Oceano das Descobertas / Praia das Conchas.
+ * Spoken instruction copy only. No answer, no evaluation, no curriculum data.
+ * Spec: docs/design/AUDIO.md, docs/pedagogy/SCIENCE-SLICE-A-BUILD-GATE.md
+ * ----------------------------------------------------------------------- */
+function coastLine(
+  instruction: string,
+  success = "Muito bem! Esta parte da praia recuperou a cor.",
+  retry = "Vamos observar de novo, com calma.",
+): ChallengeNarration {
+  return {
+    petId: "burpee",
+    petDisplayName: "Burpee",
+    locale: "pt-BR",
+    instruction: { captionText: instruction, spokenText: instruction },
+    success: { captionText: success, spokenText: success },
+    retry: { captionText: retry, spokenText: retry },
+    confirmLabel: "Mostrar para Burpee",
+  };
+}
+
+const SCIENCE_INSTRUCTIONS: Record<string, string> = {
+  "activity-sci-s1-discover": "Observe o ambiente e toque no que faz parte dele.",
+  "activity-sci-s1-practice": "Separe o que é natural do que foi construído pelas pessoas.",
+  "activity-sci-s1-challenge": "Escolha a conclusão e mostre a pista que apoia ela.",
+  "activity-sci-s2-discover": "Olhe este ambiente brasileiro e toque no que você reconhece.",
+  "activity-sci-s2-practice": "Ligue cada ambiente brasileiro ao seu nome.",
+  "activity-sci-s2-challenge": "Diga qual é o ambiente e mostre a pista que apoia ela.",
+  "activity-sci-s3-discover": "Procure onde cada animal vive nesta cena.",
+  "activity-sci-s3-practice": "Ligue cada animal ao seu habitat.",
+  "activity-sci-s3-challenge": "Escolha o habitat do animal e mostre a pista que apoia ela.",
+  "activity-sci-s4-discover": "Observe quem vive na terra e quem vive na água.",
+  "activity-sci-s4-practice": "Separe os animais de terra dos animais de água.",
+  "activity-sci-s4-challenge": "Escolha onde o animal vive e mostre a pista que apoia ela.",
+  "activity-sci-s5-discover": "Olhe o corpo dos animais e toque no que ajuda cada um a viver ali.",
+  "activity-sci-s5-practice": "Ligue cada característica ao que ela ajuda o animal a fazer.",
+  "activity-sci-s5-challenge": "Escolha a adaptação e mostre a pista que apoia ela.",
+  "activity-sci-s6-discover": "Procure o animal escondido nesta cena.",
+  "activity-sci-s6-practice": "Ligue cada animal ao lugar onde ele se camufla.",
+  "activity-sci-s6-challenge": "Explique por que ele se esconde bem e mostre a pista.",
+};
+
+function scienceNarration(): Record<string, ChallengeNarration> {
+  return Object.fromEntries(
+    Object.entries(SCIENCE_INSTRUCTIONS).map(([id, text]) => [id, coastLine(text)]),
+  );
+}
+
 const bySlot: Record<string, ChallengeNarration> = {
   "slot-1": DEFAULT_NARRATION,
   "slot-2": DEFAULT_NARRATION,
