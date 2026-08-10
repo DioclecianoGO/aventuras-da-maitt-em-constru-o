@@ -421,6 +421,21 @@ h2,
   }
 }
 
+@keyframes bird-glide {
+  from {
+    transform: translate(-60px, 6px);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 0.8;
+  }
+  to {
+    transform: translate(220px, -14px);
+    opacity: 0;
+  }
+}
+
 @keyframes stone-lift {
   from {
     transform: translateY(0);
