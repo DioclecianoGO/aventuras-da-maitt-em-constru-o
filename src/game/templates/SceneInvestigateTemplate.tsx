@@ -75,10 +75,10 @@ export function SceneInvestigateTemplate({
                 aria-pressed={isSelected}
                 aria-label={option?.label ?? hotspot.label}
                 onClick={() => pick(hotspot.optionId)}
-                className={`absolute rounded-full border-2 transition-transform duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] motion-reduce:transition-none ${
+                className={`absolute rounded-full border-[3px] transition-transform duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] motion-reduce:transition-none ${
                   isSelected
-                    ? "scene-observed scale-105 border-[var(--ink)] bg-[var(--hope)]/25"
-                    : "border-transparent hover:border-[var(--ink-soft)] hover:bg-[var(--paper)]/20"
+                    ? "scene-observed border-[var(--ink)] bg-[var(--paper)]/10 shadow-[0_0_0_4px_var(--hope)]"
+                    : "border-transparent hover:border-[var(--ink-soft)]"
                 } disabled:pointer-events-none`}
                 style={{
                   left: `${((hotspot.cx - hotspot.rx) / scene.width) * 100}%`,
