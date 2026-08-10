@@ -141,11 +141,7 @@ export function PlaceholderOrderTemplate({
                   disabled && "opacity-60",
                 )}
               >
-                <svg
-                  viewBox="-60 -86 120 116"
-                  className="h-24 w-20 sm:h-28 sm:w-24"
-                  aria-hidden
-                >
+                <svg viewBox="-60 -86 120 116" className="h-24 w-20 sm:h-28 sm:w-24" aria-hidden>
                   <g transform="translate(0 18)">
                     <SandSocketArt index={index} />
                   </g>
@@ -154,13 +150,13 @@ export function PlaceholderOrderTemplate({
                       settling === id ? "stone-settle" : isSelected ? "stone-lift" : undefined
                     }
                   >
-                  <OrderStoneArt
-                    label={labelOf(id)}
-                    shape={getStoneIdentity(stoneIdentities, id).shape}
-                    detail={getStoneIdentity(stoneIdentities, id).detail}
-                    tilt={getStoneIdentity(stoneIdentities, id).tilt}
-                    selected={isSelected}
-                  />
+                    <OrderStoneArt
+                      label={labelOf(id)}
+                      shape={getStoneIdentity(stoneIdentities, id).shape}
+                      detail={getStoneIdentity(stoneIdentities, id).detail}
+                      tilt={getStoneIdentity(stoneIdentities, id).tilt}
+                      selected={isSelected}
+                    />
                   </g>
                 </svg>
               </button>

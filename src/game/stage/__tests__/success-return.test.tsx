@@ -6,11 +6,7 @@ import * as React from "react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 
-import {
-  findActivity,
-  findSlot,
-  placeholderPack,
-} from "@/game/content/placeholder-fixture";
+import { findActivity, findSlot, placeholderPack } from "@/game/content/placeholder-fixture";
 import type { AttemptResult } from "@/game/domain/responses";
 import { PuzzleTemplateHost } from "@/game/stage/PuzzleTemplateHost";
 import { SUCCESS_REACTION_MS, useSuccessReturn } from "@/game/stage/useSuccessReturn";
@@ -49,8 +45,8 @@ function Harness({ onAttempt }: { onAttempt?: (a: AttemptResult) => void }) {
 }
 
 function visibleOrder(): string[] {
-  return [...document.querySelectorAll("li button[aria-label^='Pedra']")].map(
-    (node) => node.getAttribute("aria-label")!.split(" ")[1]!.replace(",", ""),
+  return [...document.querySelectorAll("li button[aria-label^='Pedra']")].map((node) =>
+    node.getAttribute("aria-label")!.split(" ")[1]!.replace(",", ""),
   );
 }
 

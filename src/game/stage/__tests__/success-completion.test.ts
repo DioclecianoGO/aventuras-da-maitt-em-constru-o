@@ -19,15 +19,8 @@ import { resolveAttempt, toEvidence } from "@/game/evaluation/orchestrator";
 import { gameReducer } from "@/game/state/reducer";
 import { createLocalStoragePersistence } from "@/game/persistence/local-storage";
 import { SAVE_SCHEMA_VERSION, emptyFacts, type GameFacts } from "@/game/state/types";
-import {
-  selectCurrentSlot,
-  selectSlotState,
-  selectWorldRestoration,
-} from "@/game/state/selectors";
-import {
-  getBoardRestorationUnits,
-  isUnitRestored,
-} from "@/visual/world-config/restoration-units";
+import { selectCurrentSlot, selectSlotState, selectWorldRestoration } from "@/game/state/selectors";
+import { getBoardRestorationUnits, isUnitRestored } from "@/visual/world-config/restoration-units";
 
 const slot = findSlot("slot-1")!;
 const activity = findActivity("activity-placeholder-challenge")!;
