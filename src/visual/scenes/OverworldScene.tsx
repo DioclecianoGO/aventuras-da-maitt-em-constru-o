@@ -14,9 +14,14 @@ import {
   OverworldInk,
 } from "@/assets/game/overworld/OverworldArt";
 import { RestoreGroup } from "@/visual/RestoreGroup";
+import { RestoredUnit } from "@/visual/RestoredUnit";
 import { MaitteAvatar } from "@/visual/character/MaitteAvatar";
 import { useHydrated } from "@/visual/motion";
 import { OVERWORLD_SCENE, baseVisual, overworldRegions } from "@/visual/world-config";
+import {
+  getOverworldRestorationUnits,
+  isUnitRestored,
+} from "@/visual/world-config/restoration-units";
 
 export type OverworldSceneProps = {
   /** Derived 0..1 restoration per region id. Missing = 0. */
@@ -93,6 +98,26 @@ export function OverworldScene({
           ))}
 
           <OverworldInk prefix="ow" />
+
+          {/*
+            Region details that stay restored. Driven by the SAME derived
+            progress the region mask uses — no new milestone concept, no second
+            source of truth. Drawn above the ink so the restored object is the
+            thing the child can point at.
+          */}
+          {overworldRegions.flatMap((region) =>
+            getOverworldRestorationUnits(region.id).map((unit) => (
+              <RestoredUnit
+                key={unit.id}
+                unit={unit}
+                restored={isUnitRestored(unit, {
+                  completedSlotIds: [],
+                  progress: regionProgress[region.id] ?? 0,
+                })}
+              />
+            )),
+          )}
+
           <BaseDaEsperancaArt />
 
           {/* Maittê waits at the Base — her heart is the only saturated point. */}

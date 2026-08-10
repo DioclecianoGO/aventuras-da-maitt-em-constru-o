@@ -15,6 +15,11 @@
  * "complete", so evaluating each swap would turn touch slips and intermediate
  * arrangements into educational evidence. The seal stays inert until the child
  * has actually moved a stone, which also prevents accidental first-tap submits.
+ *
+ * Phase 1B.1: each stone now has a handcrafted silhouette that belongs to the
+ * OPTION, not to the position. The identity map is built once per item from the
+ * authored option order and looked up by option id, so dragging a stone never
+ * changes its body (docs/design/PHASE-1B-1-VISUAL-POLISH.md, Correction 3).
  */
 import * as React from "react";
 
@@ -25,6 +30,7 @@ import {
   SandSocketArt,
 } from "@/assets/game/objects/DesertPuzzleArt";
 import type { PuzzleTemplateProps } from "@/game/templates/contract";
+import { buildStoneIdentities, getStoneIdentity } from "@/visual/puzzle/stoneIdentity";
 import { cn } from "@/lib/utils";
 
 export function PlaceholderOrderTemplate({
@@ -38,6 +44,15 @@ export function PlaceholderOrderTemplate({
   const [touched, setTouched] = React.useState(false);
   const [settling, setSettling] = React.useState<string | null>(null);
   const dragIdRef = React.useRef<string | null>(null);
+
+  /**
+   * Stable presentation identity, seeded by the AUTHORED option order — never
+   * by the current position, the label or the accepted answer.
+   */
+  const stoneIdentities = React.useMemo(
+    () => buildStoneIdentities(item.options.map((option) => option.id)),
+    [item],
+  );
 
   React.useEffect(() => {
     setOrder(item.options.map((option) => option.id));
@@ -131,7 +146,13 @@ export function PlaceholderOrderTemplate({
                       settling === id ? "stone-settle" : isSelected ? "stone-lift" : undefined
                     }
                   >
-                    <OrderStoneArt label={labelOf(id)} variant={index} selected={isSelected} />
+                  <OrderStoneArt
+                    label={labelOf(id)}
+                    shape={getStoneIdentity(stoneIdentities, id).shape}
+                    detail={getStoneIdentity(stoneIdentities, id).detail}
+                    tilt={getStoneIdentity(stoneIdentities, id).tilt}
+                    selected={isSelected}
+                  />
                   </g>
                 </svg>
               </button>

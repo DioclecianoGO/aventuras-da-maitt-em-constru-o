@@ -316,6 +316,60 @@ h2,
   .replay-call {
     animation: replay-call 1500ms ease-in-out infinite;
   }
+
+  /* --- speaker-anchored bubble (Phase 1B.1) -------------------------- */
+  .bubble-appear {
+    animation: bubble-appear 320ms var(--ease-settle) both;
+  }
+
+  .bubble-pulse {
+    animation: bubble-pulse 1400ms ease-in-out infinite;
+  }
+
+  /* --- concrete restoration units (Phase 1B.1) ----------------------- */
+  .unit-restore {
+    animation: unit-restore 720ms var(--ease-settle) both;
+  }
+}
+
+@keyframes bubble-appear {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bubble-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/**
+ * Transition choreography only. The unit is already rendered in its restored
+ * state; this merely makes the change noticeable when it happens.
+ */
+@keyframes unit-restore {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.985);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes char-breathe {
@@ -551,7 +605,10 @@ h2,
   .stone-lift,
   .stone-settle,
   .replay-call,
-  .bird-glide {
+  .bird-glide,
+  .bubble-appear,
+  .bubble-pulse,
+  .unit-restore {
     animation: none !important;
   }
 

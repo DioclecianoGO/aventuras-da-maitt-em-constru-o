@@ -11,10 +11,12 @@ import { Link } from "@tanstack/react-router";
 
 import { InkDefs } from "@/assets/game/ink";
 import { RestoreBloom, RestoreGroup } from "@/visual/RestoreGroup";
+import { RestoredUnit } from "@/visual/RestoredUnit";
 import { MaitteAvatar } from "@/visual/character/MaitteAvatar";
 import { getAsset } from "@/visual/assetRegistry";
 import { useHydrated } from "@/visual/motion";
 import { getSlotVisual, getWorldVisual } from "@/visual/world-config";
+import { getBoardRestorationUnits, isUnitRestored } from "@/visual/world-config/restoration-units";
 
 export type BoardSlotView = {
   id: string;
@@ -52,6 +54,8 @@ export function WorldBoardScene({
   const FoldedMap = getAsset("object.folded-map");
 
   const current = slots.find((slot) => slot.id === currentSlotId) ?? slots[0];
+  const completedSlotIds = slots.filter((slot) => slot.state === "completed").map((slot) => slot.id);
+  const units = getBoardRestorationUnits(worldId);
   const currentOffset = current ? (getSlotVisual(current.id).offset ?? { x: 0, y: 0 }) : { x: 0, y: 0 };
   const avatarPoint = current
     ? {
@@ -107,6 +111,20 @@ export function WorldBoardScene({
         </RestoreGroup>
 
         <Ink prefix="bd" />
+
+        {/*
+          Concrete restoration units. The mask above is the transition
+          choreography; THESE are the things that stay restored. Each one is
+          resolved from the completion fact of a slot that already exists, so a
+          reload rebuilds exactly the same set with no extra persisted state.
+        */}
+        {units.map((unit) => (
+          <RestoredUnit
+            key={unit.id}
+            unit={unit}
+            restored={isUnitRestored(unit, { completedSlotIds, progress: worldProgress })}
+          />
+        ))}
 
         {/* Illustrated route — a worn trail, never a progress bar. */}
         <path
