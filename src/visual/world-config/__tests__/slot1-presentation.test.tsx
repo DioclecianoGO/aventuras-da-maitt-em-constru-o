@@ -70,7 +70,7 @@ describe("template response contract stays generic", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "a água" }));
     expect(onObserve).toHaveBeenCalledWith(["obs-agua"]);
-    fireEvent.click(screen.getByRole("button", { name: /mostrar/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Mostrar" }));
     expect(onRespond).toHaveBeenCalledWith({ kind: "selection", optionIds: ["obs-agua"] });
   });
 
@@ -84,7 +84,7 @@ describe("template response contract stays generic", () => {
       fireEvent.click(screen.getByRole("button", { name: option.label }));
       fireEvent.click(screen.getByRole("button", { name: /Colocar aqui: Seres vivos/ }));
     }
-    fireEvent.click(screen.getByRole("button", { name: /mostrar/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Mostrar" }));
     expect(onRespond.mock.calls[0][0].kind).toBe("placement");
   });
 
@@ -96,7 +96,7 @@ describe("template response contract stays generic", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: /muitos elementos/ }));
     fireEvent.click(screen.getByRole("button", { name: /plantas, animais e água/ }));
-    fireEvent.click(screen.getByRole("button", { name: /mostrar/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Mostrar" }));
     expect(onRespond.mock.calls[0][0].kind).toBe("composition");
   });
 });
