@@ -93,8 +93,8 @@ export const overworldRestorationUnits: Record<string, RestorableUnit[]> = {
     {
       id: "ow-math-arch",
       kind: "arch-detail",
-      anchor: { x: 288, y: 704 },
-      scale: 0.8,
+      anchor: { x: 288, y: 708 },
+      scale: 1.02,
       label: "Arco do deserto com a cor de volta",
       requiresProgressAtLeast: 0.01,
     },

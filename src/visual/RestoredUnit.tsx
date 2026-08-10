@@ -29,7 +29,7 @@ function PlantCluster({ restored }: Parts) {
           <path
             d="M-30 0 C -34 -22, -22 -38, -6 -40 C 12 -42, 26 -28, 24 -8 C 22 2, 0 6, -30 0 Z"
             fill="var(--world-forest)"
-            opacity="0.55"
+            opacity="0.38"
             stroke="none"
           />
           <ellipse cx="-2" cy="2" rx="38" ry="8" fill="var(--world-desert)" opacity="0.5" stroke="none" />
