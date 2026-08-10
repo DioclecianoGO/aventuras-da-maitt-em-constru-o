@@ -56,13 +56,16 @@ docs/
 │   ├── MATHEMATICS-GRADE-2.md
 │   ├── SCIENCE-GRADE-2.md
 │   ├── SCIENCE-SOURCE-MAP.md
+│   ├── SCIENCE-SLICE-A-BUILD-GATE.md
 │   └── CURRICULUM-SOURCES.md
 ├── technical/
 │   ├── ARCHITECTURE.md
 │   ├── CONFIG-SCHEMAS.md
+│   ├── CONTENT-ORCHESTRATION.md
 │   ├── STATE.md
 │   └── PERSISTENCE.md
 └── adr/
+    └── ADR-010-GENERIC-MULTIPART-EVALUATION.md
 ```
 
 The tree above is the agreed target structure. Files are added as their contents are consolidated; an absent file must not be interpreted as permission to invent its decisions.
