@@ -12,6 +12,8 @@ const orderingItem: PackItem = {
   id: "item-1",
   prompt: "Ordene",
   representation: "symbolic",
+  targets: [],
+  parts: [],
   options: [
     { id: "a", label: "1" },
     { id: "b", label: "2" },
@@ -28,6 +30,8 @@ const selectionItem: PackItem = {
   id: "item-2",
   prompt: "Escolha",
   representation: "symbolic",
+  targets: [],
+  parts: [],
   options: [
     { id: "x", label: "X" },
     { id: "y", label: "Y" },

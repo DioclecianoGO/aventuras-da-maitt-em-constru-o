@@ -17,7 +17,11 @@ export type TemplateItemView = {
    */
   id: string;
   prompt: string;
-  options: { id: string; label: string }[];
+  options: { id: string; label: string; partId?: string | undefined }[];
+  /** Placement destinations (groups, categories, matching slots). */
+  targets: { id: string; label: string }[];
+  /** Authored parts of a multi-part response. Ids carry no domain meaning. */
+  parts: { id: string; label: string }[];
 };
 
 export type PuzzleTemplateProps = {

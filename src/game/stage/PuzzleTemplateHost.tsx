@@ -46,8 +46,14 @@ export function PuzzleTemplateHost({
    * response state — wiping the child's solved arrangement.
    */
   const itemView = React.useMemo(
-    () => ({ id: item.id, prompt: item.prompt, options: item.options }),
-    [item.id, item.prompt, item.options],
+    () => ({
+      id: item.id,
+      prompt: item.prompt,
+      options: item.options,
+      targets: item.targets,
+      parts: item.parts,
+    }),
+    [item.id, item.prompt, item.options, item.targets, item.parts],
   );
 
   const handleRespond = React.useCallback(

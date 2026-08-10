@@ -51,6 +51,37 @@ export const learningObjectiveSchema = z.object({
   statement: z.string(),
 });
 
+/**
+ * Generic authoring traceability metadata.
+ * Spec: docs/pedagogy/SCIENCE-SLICE-A-BUILD-GATE.md §8, docs/pedagogy/SCIENCE-SOURCE-MAP.md
+ *
+ * It exists for validation/audit only and NEVER affects correctness. It is not
+ * visual metadata and it is not curriculum semantics: it only says which
+ * approved source range an authored item can be traced back to.
+ */
+export const SOURCE_GAP_PAGES = [117] as const;
+
+export const sourceAuditSchema = z.enum([
+  "SOURCE-CONFIRMED",
+  "ADAPTATION",
+  "SECONDARY-ONLY",
+]);
+
+export const sourceRefSchema = z
+  .object({
+    /** Stable id of the approved source work. */
+    work: z.string(),
+    /** Textbook pages backing this item/cluster. */
+    pages: z.array(z.number().int().positive()).min(1),
+    audit: sourceAuditSchema.default("SOURCE-CONFIRMED"),
+    /** Free-text pointer to the approved seed/anchor. Audit aid only. */
+    seed: z.string().optional(),
+  })
+  .refine(
+    (ref) => !ref.pages.some((page) => (SOURCE_GAP_PAGES as readonly number[]).includes(page)),
+    { message: "Source page 117 is SOURCE-GAP and is not authorized for content authoring." },
+  );
+
 /** Answer / evaluation rules live with the Content Pack, never with the template. */
 export const answerRulesSchema = z.discriminatedUnion("kind", [
   z.object({
@@ -63,13 +94,71 @@ export const answerRulesSchema = z.discriminatedUnion("kind", [
     acceptedOrders: z.array(z.object({ id: z.string(), orderedIds: z.array(z.string()) })),
     allowPartial: z.boolean().default(true),
   }),
+  /**
+   * Generic placement rules (ADR-010). Used for group sorting, item -> category
+   * and pair/target matching. Carries NO subject semantics: `targetId` is an
+   * authored id, never a scientific concept known to the domain.
+   */
+  z.object({
+    kind: z.literal("placement"),
+    acceptedMappings: z
+      .array(
+        z.object({
+          id: z.string(),
+          mapping: z.array(z.object({ itemId: z.string(), targetId: z.string() })).min(1),
+        }),
+      )
+      .min(1),
+    /** When true, a subset of correct placements reports `partially-correct`. */
+    allowPartial: z.boolean().default(false),
+  }),
+  /**
+   * Generic multi-part rules (ADR-010). Part ids are authored content ids only
+   * (e.g. "conclusion", "evidence"); the domain assigns them no meaning.
+   */
+  z.object({
+    kind: z.literal("composition"),
+    parts: z
+      .array(
+        z.object({
+          partId: z.string(),
+          acceptedTargetIds: z.array(z.string()).min(1),
+          /** Required parts must all be correct for a `correct` outcome. */
+          required: z.boolean().default(true),
+          /** A wrong primary part forces `incorrect`, never partial credit. */
+          primary: z.boolean().default(false),
+        }),
+      )
+      .min(1),
+    /** Optional authored diagnostic codes for feedback selection. */
+    diagnostics: z
+      .object({ partial: z.string().optional(), incorrect: z.string().optional() })
+      .optional(),
+  }),
 ]);
 
 export const packItemSchema = z.object({
   id: z.string(),
   prompt: z.string(),
   representation: z.string(),
-  options: z.array(z.object({ id: z.string(), label: z.string() })).default([]),
+  options: z
+    .array(
+      z.object({
+        id: z.string(),
+        label: z.string(),
+        /** Authored grouping id for multi-part interactions. Never semantics. */
+        partId: z.string().optional(),
+      }),
+    )
+    .default([]),
+  /**
+   * Generic authored interaction data consumed by the template through the
+   * template item view. Presentation-neutral: no asset paths, no answers.
+   */
+  targets: z.array(z.object({ id: z.string(), label: z.string() })).default([]),
+  parts: z.array(z.object({ id: z.string(), label: z.string() })).default([]),
+  /** Authoring traceability. Never used by evaluation. */
+  source: sourceRefSchema.optional(),
   answerRules: answerRulesSchema,
 });
 
@@ -87,6 +176,7 @@ export const contentPackSchema = z.object({
   }),
   /** TECHNICAL PLACEHOLDER content is never curriculum. */
   placeholder: z.boolean().default(false),
+  source: sourceRefSchema.optional(),
 });
 
 export const activitySchema = z.object({
@@ -147,6 +237,7 @@ export type Curriculum = z.infer<typeof curriculumSchema>;
 export type Skill = z.infer<typeof skillSchema>;
 export type LearningObjective = z.infer<typeof learningObjectiveSchema>;
 export type AnswerRules = z.infer<typeof answerRulesSchema>;
+export type SourceRef = z.infer<typeof sourceRefSchema>;
 export type PackItem = z.infer<typeof packItemSchema>;
 export type ContentPack = z.infer<typeof contentPackSchema>;
 export type Activity = z.infer<typeof activitySchema>;
