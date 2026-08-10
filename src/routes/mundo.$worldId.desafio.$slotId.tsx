@@ -219,9 +219,7 @@ function ChallengeStage() {
         item={item}
         confirmLabel={narrationConfig.confirmLabel}
         disabled={frozen}
-        {...(getItemPresentation(item.id)
-          ? { presentation: getItemPresentation(item.id)! }
-          : {})}
+        {...(getItemPresentation(item.id) ? { presentation: getItemPresentation(item.id)! } : {})}
         onObserve={(optionIds) => setObservedOptionId(optionIds[0] ?? null)}
         onAttempt={handleAttempt}
       />

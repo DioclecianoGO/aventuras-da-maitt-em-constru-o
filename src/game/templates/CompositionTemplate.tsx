@@ -63,7 +63,10 @@ export function CompositionTemplate({
       ) : null}
 
       {item.parts.map((part) => (
-        <fieldset key={part.id} className="rounded-3xl border-2 border-[var(--ink)] bg-[var(--paper)]/80 p-3">
+        <fieldset
+          key={part.id}
+          className="rounded-3xl border-2 border-[var(--ink)] bg-[var(--paper)]/80 p-3"
+        >
           <legend className="px-2 text-sm font-semibold tracking-wide text-ink uppercase">
             {part.label}
           </legend>

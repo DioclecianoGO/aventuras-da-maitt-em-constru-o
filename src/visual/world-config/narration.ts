@@ -127,12 +127,7 @@ function scienceNarration(): Record<string, ChallengeNarration> {
   return Object.fromEntries(
     Object.entries(SCIENCE_INSTRUCTIONS).map(([id, text]) => [
       id,
-      coastLine(
-        text,
-        undefined,
-        undefined,
-        SCIENCE_OBSERVATIONS[id],
-      ),
+      coastLine(text, undefined, undefined, SCIENCE_OBSERVATIONS[id]),
     ]),
   );
 }
@@ -171,15 +166,10 @@ const byActivity: Record<string, ChallengeNarration> = {
   ...scienceNarration(),
 };
 
-export function getChallengeNarration(
-  slotId: string,
-  activityId?: string,
-): ChallengeNarration {
+export function getChallengeNarration(slotId: string, activityId?: string): ChallengeNarration {
   return (
     // Activity-first: a Slot runs a SEQUENCE of activities, so the spoken
     // instruction belongs to the activity. Slot entries remain a fallback.
-    (activityId ? byActivity[activityId] : undefined) ??
-    bySlot[slotId] ??
-    DEFAULT_NARRATION
+    (activityId ? byActivity[activityId] : undefined) ?? bySlot[slotId] ?? DEFAULT_NARRATION
   );
 }

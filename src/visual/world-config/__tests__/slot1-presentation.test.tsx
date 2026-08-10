@@ -27,7 +27,9 @@ describe("Slot 1 narration criterion", () => {
 
   it("expresses the authored living / non-living criterion", () => {
     expect(narration.instruction.captionText).toMatch(/vida/i);
-    const targets = getActivityContent("activity-sci-s1-practice")!.item.targets.map((t) => t.label);
+    const targets = getActivityContent("activity-sci-s1-practice")!.item.targets.map(
+      (t) => t.label,
+    );
     expect(targets).toEqual(["Seres vivos", "Não vivos"]);
   });
 
@@ -55,7 +57,13 @@ describe("Slot 1 presentation", () => {
 
 const view = (id: string) => {
   const { item } = getActivityContent(id)!;
-  return { id: item.id, prompt: item.prompt, options: item.options, targets: item.targets, parts: item.parts };
+  return {
+    id: item.id,
+    prompt: item.prompt,
+    options: item.options,
+    targets: item.targets,
+    parts: item.parts,
+  };
 };
 
 describe("template response contract stays generic", () => {
@@ -81,25 +89,33 @@ describe("template response contract stays generic", () => {
     const onRespond = vi.fn();
     const item = view("activity-sci-s1-practice");
     render(
-      <GroupSortTemplate item={item} onRespond={onRespond} presentation={getItemPresentation(item.id)!} />,
+      <GroupSortTemplate
+        item={item}
+        onRespond={onRespond}
+        presentation={getItemPresentation(item.id)!}
+      />,
     );
     for (const option of item.options) {
       fireEvent.click(screen.getByRole("button", { name: option.label }));
       fireEvent.click(screen.getByRole("button", { name: /Colocar aqui: Seres vivos/ }));
     }
     fireEvent.click(screen.getByRole("button", { name: "Mostrar" }));
-    expect(onRespond.mock.calls[0][0].kind).toBe("placement");
+    expect(onRespond.mock.calls[0]?.[0].kind).toBe("placement");
   });
 
   it("composition still emits generic composition", () => {
     const onRespond = vi.fn();
     const item = view("activity-sci-s1-challenge");
     render(
-      <CompositionTemplate item={item} onRespond={onRespond} presentation={getItemPresentation(item.id)!} />,
+      <CompositionTemplate
+        item={item}
+        onRespond={onRespond}
+        presentation={getItemPresentation(item.id)!}
+      />,
     );
     fireEvent.click(screen.getByRole("button", { name: /muitos elementos/ }));
     fireEvent.click(screen.getByRole("button", { name: /plantas, animais e água/ }));
     fireEvent.click(screen.getByRole("button", { name: "Mostrar" }));
-    expect(onRespond.mock.calls[0][0].kind).toBe("composition");
+    expect(onRespond.mock.calls[0]?.[0].kind).toBe("composition");
   });
 });

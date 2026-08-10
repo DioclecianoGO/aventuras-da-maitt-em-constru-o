@@ -30,7 +30,10 @@ export function CoastalEnvironmentScene() {
         opacity="0.9"
       />
       {/* wet then dry sand */}
-      <path d="M0 344 C 300 334, 560 344, 800 316 V 366 C 520 392, 260 384, 0 392 Z" fill="var(--world-sand-wet, #d8c39a)" />
+      <path
+        d="M0 344 C 300 334, 560 344, 800 316 V 366 C 520 392, 260 384, 0 392 Z"
+        fill="var(--world-sand-wet, #d8c39a)"
+      />
       <path d="M0 392 C 260 384, 520 392, 800 366 V 450 H0 Z" fill="var(--world-sand, #ecd9ad)" />
 
       <g fill="none" stroke={INK} strokeLinecap="round" strokeLinejoin="round">
@@ -38,7 +41,11 @@ export function CoastalEnvironmentScene() {
         {/* surf lines */}
         <path d="M0 274 C 74 282, 160 286, 250 280 C 420 268, 620 282, 800 262" strokeWidth="2.8" />
         <path d="M0 344 C 300 334, 560 344, 800 316" strokeWidth="3" />
-        <path d="M90 300 q 70 -12 140 -2 M470 296 q 80 -14 160 -2" stroke={INK_SOFT} strokeWidth="2" />
+        <path
+          d="M90 300 q 70 -12 140 -2 M470 296 q 80 -14 160 -2"
+          stroke={INK_SOFT}
+          strokeWidth="2"
+        />
 
         {/* rock, left foreground */}
         <path
@@ -46,7 +53,11 @@ export function CoastalEnvironmentScene() {
           strokeWidth="3.2"
           fill={PAPER_DEEP}
         />
-        <path d="M136 384 q 24 -18 48 -6 M170 398 q 20 -10 40 -4" stroke={INK_SOFT} strokeWidth="2" />
+        <path
+          d="M136 384 q 24 -18 48 -6 M170 398 q 20 -10 40 -4"
+          stroke={INK_SOFT}
+          strokeWidth="2"
+        />
 
         {/* plant / coastal bush, right foreground */}
         <g transform="translate(628 402)">
@@ -63,7 +74,11 @@ export function CoastalEnvironmentScene() {
         {/* small grasses */}
         {[210, 330, 470, 760].map((x) => (
           <g key={x} transform={`translate(${x} 424)`}>
-            <path d="M0 0 c -4 -18, -10 -28, -18 -36 M3 0 c 0 -20, 4 -30, 10 -40" stroke={INK_SOFT} strokeWidth="2.2" />
+            <path
+              d="M0 0 c -4 -18, -10 -28, -18 -36 M3 0 c 0 -20, 4 -30, 10 -40"
+              stroke={INK_SOFT}
+              strokeWidth="2.2"
+            />
           </g>
         ))}
 
@@ -74,7 +89,10 @@ export function CoastalEnvironmentScene() {
         </g>
 
         {/* shells */}
-        {[[250, 418], [520, 408]].map(([x, y]) => (
+        {[
+          [250, 418],
+          [520, 408],
+        ].map(([x, y]) => (
           <g key={`${x}-${y}`} transform={`translate(${x} ${y})`}>
             <path d="M-11 0 q 1 -14 11 -14 q 10 0 11 14 Z" strokeWidth="2.4" fill={PAPER_DEEP} />
           </g>
@@ -103,7 +121,11 @@ export function TreeObjectArt() {
   return (
     <Box>
       <path d="M32 56 v -20" />
-      <path d="M32 38 c -18 -2, -26 -14, -24 -30 c 16 0, 24 12, 24 26 M32 34 c 18 -2, 26 -14, 24 -30 c -16 0, -24 12, -24 26" fill="var(--world-forest, #6f9c5a)" fillOpacity="0.5" />
+      <path
+        d="M32 38 c -18 -2, -26 -14, -24 -30 c 16 0, 24 12, 24 26 M32 34 c 18 -2, 26 -14, 24 -30 c -16 0, -24 12, -24 26"
+        fill="var(--world-forest, #6f9c5a)"
+        fillOpacity="0.5"
+      />
       <path d="M22 56 q 10 6 20 0" stroke={INK_SOFT} />
     </Box>
   );
@@ -122,7 +144,10 @@ export function CrabObjectArt() {
 export function RockObjectArt() {
   return (
     <Box>
-      <path d="M8 48 c 4 -20, 22 -30, 38 -22 c 12 6, 14 16, 12 22 c -16 8, -34 8, -50 0 Z" fill={PAPER_DEEP} />
+      <path
+        d="M8 48 c 4 -20, 22 -30, 38 -22 c 12 6, 14 16, 12 22 c -16 8, -34 8, -50 0 Z"
+        fill={PAPER_DEEP}
+      />
       <path d="M22 40 q 10 -8 20 -2" stroke={INK_SOFT} />
     </Box>
   );
@@ -142,7 +167,11 @@ export function LivingZoneArt() {
   return (
     <svg viewBox="0 0 64 40" className="h-8 w-12" aria-hidden>
       <g fill="none" stroke={INK} strokeWidth="3" strokeLinecap="round">
-        <path d="M32 36 c -14 -8, -24 -16, -24 -25 c 0 -7, 10 -11, 24 2 c 14 -13, 24 -9, 24 -2 c 0 9, -10 17, -24 25 Z" fill="var(--joy, #e2795b)" fillOpacity="0.4" />
+        <path
+          d="M32 36 c -14 -8, -24 -16, -24 -25 c 0 -7, 10 -11, 24 2 c 14 -13, 24 -9, 24 -2 c 0 9, -10 17, -24 25 Z"
+          fill="var(--joy, #e2795b)"
+          fillOpacity="0.4"
+        />
       </g>
     </svg>
   );
@@ -152,7 +181,10 @@ export function NonLivingZoneArt() {
   return (
     <svg viewBox="0 0 64 40" className="h-8 w-12" aria-hidden>
       <g fill="none" stroke={INK} strokeWidth="3" strokeLinecap="round">
-        <path d="M6 34 c 4 -16, 20 -24, 32 -18 c 10 5, 12 13, 10 18 c -14 6, -28 6, -42 0 Z" fill={PAPER_DEEP} />
+        <path
+          d="M6 34 c 4 -16, 20 -24, 32 -18 c 10 5, 12 13, 10 18 c -14 6, -28 6, -42 0 Z"
+          fill={PAPER_DEEP}
+        />
         <path d="M44 34 q 8 -10 16 0" stroke={INK_SOFT} />
       </g>
     </svg>
