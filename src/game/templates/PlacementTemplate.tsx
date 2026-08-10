@@ -21,6 +21,7 @@ export function PlacementTemplate({
   onRespond,
   disabled,
   confirmLabel,
+  presentation,
   variant = "groups",
 }: PuzzleTemplateProps & { variant?: "groups" | "pairs" }) {
   const [placed, setPlaced] = React.useState<Placed>({});
@@ -81,13 +82,14 @@ export function PlacementTemplate({
                 onClick={() => setSelectedId(selected ? null : option.id)}
                 disabled={disabled}
                 aria-pressed={selected}
-                className={`min-h-14 min-w-32 rounded-2xl border-2 border-[var(--ink)] px-4 py-3 text-base font-semibold text-ink transition-transform duration-200 motion-reduce:transition-none ${
+                className={`flex min-h-20 min-w-32 flex-col items-center gap-1 rounded-2xl border-2 border-[var(--ink)] px-4 py-3 text-base font-semibold text-ink transition-transform duration-200 motion-reduce:transition-none ${
                   selected
                     ? "-translate-y-1 bg-[var(--hope)]/25 shadow-[0_6px_0_var(--ink-soft)]"
                     : "bg-[var(--paper-deep)] hover:-translate-y-0.5"
                 } disabled:opacity-60`}
               >
-                {option.label}
+                {presentation?.optionArt?.[option.id]?.()}
+                <span>{option.label}</span>
               </button>
             </li>
           );
@@ -120,10 +122,11 @@ export function PlacementTemplate({
                 type="button"
                 onClick={() => selectedId && place(selectedId, target.id)}
                 disabled={disabled || !selectedId}
-                className="min-h-12 w-full rounded-2xl px-3 py-2 text-left text-sm font-semibold tracking-wide text-ink uppercase focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] disabled:cursor-default"
+                className="flex min-h-12 w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm font-semibold tracking-wide text-ink uppercase focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] disabled:cursor-default"
                 aria-label={`Colocar aqui: ${target.label}`}
               >
-                {target.label}
+                {presentation?.targetArt?.[target.id]?.()}
+                <span>{target.label}</span>
               </button>
               <ul className="mt-2 flex min-h-14 flex-wrap gap-2">
                 {contents.map((option) => (
@@ -132,10 +135,11 @@ export function PlacementTemplate({
                       type="button"
                       onClick={() => unplace(option.id)}
                       disabled={disabled}
-                      className="min-h-12 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper-deep)] px-3 py-2 text-base font-semibold text-ink disabled:opacity-70"
+                      className="flex min-h-12 items-center gap-2 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper-deep)] px-3 py-2 text-base font-semibold text-ink disabled:opacity-70"
                       aria-label={`Tirar ${option.label} de ${target.label}`}
                     >
-                      {option.label}
+                      {presentation?.optionArt?.[option.id]?.()}
+                      <span>{option.label}</span>
                     </button>
                   </li>
                 ))}
