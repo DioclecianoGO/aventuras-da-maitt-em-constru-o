@@ -42,12 +42,12 @@ export function CompositionTemplate({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={`flex flex-col gap-4 ${presentation?.scene ? "pb-24" : ""}`}>
       <p className="sr-only">{item.prompt}</p>
 
       {presentation?.scene ? (
         <div
-          className="relative mx-auto w-full max-w-md overflow-hidden rounded-[2rem] border-2 border-[var(--ink)] shadow-[0_6px_0_var(--ink-soft)]"
+          className="relative mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] border-2 border-[var(--ink)] shadow-[0_6px_0_var(--ink-soft)]"
           style={{ aspectRatio: `${presentation.scene.width} / ${presentation.scene.height}` }}
         >
           <svg
