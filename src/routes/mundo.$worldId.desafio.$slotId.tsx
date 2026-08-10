@@ -29,14 +29,7 @@ import { useNarration } from "@/audio/useNarration";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
 import { getChallengeNarration } from "@/visual/world-config/narration";
 import { ChallengeStageShell } from "@/visual/stage/ChallengeStageShell";
-
-/**
- * Bounded success reaction before the stage closes. PROVISIONAL choreography
- * (docs/ux/PHASE-1B-1A-SUCCESS-RETURN-HOTFIX.md): long enough to perceive the
- * success, short enough to preserve flow. It never waits for narration, SFX or
- * animation, because audio may be blocked or unavailable.
- */
-export const SUCCESS_REACTION_MS = 1600;
+import { useSuccessReturn } from "@/game/stage/useSuccessReturn";
 
 export const Route = createFileRoute("/mundo/$worldId/desafio/$slotId")({
   loader: ({ params }) => {
@@ -98,18 +91,12 @@ function ChallengeStage() {
     void navigate({ to: "/mundo/$worldId", params: { worldId } });
   }, [navigate, worldId]);
 
-  const solved = lastAttempt?.outcome === "correct";
-
   /**
-   * Automatic success return. The completion facts are already committed by
-   * handleAttempt (synchronously, before this effect runs), so the Board can
-   * derive its restored state the moment it reappears.
+   * Automatic success return. Completion facts are already committed by
+   * handleAttempt before this runs, so the Board derives its restored state
+   * the moment it reappears. `frozen` locks the template during the reaction.
    */
-  React.useEffect(() => {
-    if (!solved) return;
-    const timer = window.setTimeout(close, SUCCESS_REACTION_MS);
-    return () => window.clearTimeout(timer);
-  }, [solved, close]);
+  const { frozen } = useSuccessReturn(lastAttempt?.outcome ?? null, close);
 
   const handleAttempt = React.useCallback(
     (attempt: AttemptResult) => {
@@ -185,7 +172,7 @@ function ChallengeStage() {
         pack={placeholderPack}
         item={item}
         confirmLabel={narrationConfig.confirmLabel}
-        disabled={solved}
+        disabled={frozen}
         onAttempt={handleAttempt}
       />
     </ChallengeStageShell>
