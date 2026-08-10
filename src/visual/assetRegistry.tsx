@@ -11,6 +11,10 @@ import type { ComponentType } from "react";
 import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
 import { DunasDouradasColor, DunasDouradasInk } from "@/assets/game/board/DunasDouradasArt";
+import {
+  PraiaDasConchasColor,
+  PraiaDasConchasInk,
+} from "@/assets/game/board/PraiaDasConchasArt";
 import { INK_SOFT, PAPER_DEEP } from "@/assets/game/ink";
 import {
   BackpackArt,
@@ -49,6 +53,8 @@ const registry: Record<string, ComponentType<any>> = {
   "overworld.base": BaseDaEsperancaArt,
   "board.dunas-douradas.color": DunasDouradasColor,
   "board.dunas-douradas.ink": DunasDouradasInk,
+  "board.praia-das-conchas.color": PraiaDasConchasColor,
+  "board.praia-das-conchas.ink": PraiaDasConchasInk,
   "landmark.rock-arch": RockArchArt,
   "object.slot": SlotObjectArt,
   "object.folded-map": FoldedMapArt,

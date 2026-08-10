@@ -8,7 +8,7 @@
  */
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 
-import { PLACEHOLDER_WORLD_ID, placeholderWorld } from "@/game/content/placeholder-fixture";
+import { getWorld, requireWorld } from "@/game/content";
 import { useGameState } from "@/game/state/GameStateProvider";
 import {
   selectAvatarRestoration,
@@ -17,10 +17,12 @@ import {
   selectWorldRestoration,
 } from "@/game/state/selectors";
 import { WorldBoardScene, type BoardSlotView } from "@/visual/scenes/WorldBoardScene";
+import { getWorldVisual } from "@/visual/world-config";
 
 export const Route = createFileRoute("/mundo/$worldId")({
   loader: ({ params }) => {
-    if (params.worldId !== PLACEHOLDER_WORLD_ID) throw notFound();
+    // Generic resolution: any registered world can render this board.
+    if (!getWorld(params.worldId)) throw notFound();
     return null;
   },
   head: () => ({
@@ -42,8 +44,10 @@ export const Route = createFileRoute("/mundo/$worldId")({
 });
 
 function WorldBoardLayout() {
+  const { worldId } = Route.useParams();
   const { facts } = useGameState();
-  const world = placeholderWorld;
+  const world = requireWorld(worldId);
+  const visual = getWorldVisual(world.id);
   const currentSlot = selectCurrentSlot(facts, world);
   const worldRestoration = selectWorldRestoration(facts, world);
 
@@ -58,7 +62,9 @@ function WorldBoardLayout() {
 
   return (
     <div className="relative h-[100svh] w-full">
-      <h1 className="sr-only">Deserto dos Números — Dunas Douradas</h1>
+      <h1 className="sr-only">
+        {visual.displayName} — {visual.zoneName}
+      </h1>
       <WorldBoardScene
         worldId={world.id}
         slots={slots}
