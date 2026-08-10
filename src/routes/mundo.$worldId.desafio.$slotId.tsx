@@ -13,12 +13,13 @@ import * as React from "react";
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 
 import {
-  PLACEHOLDER_WORLD_ID,
-  findActivity,
-  findSlot,
-  placeholderPack,
-  placeholderWorld,
-} from "@/game/content/placeholder-fixture";
+  getActivityContent,
+  getSlot,
+  isSlotSequenceComplete,
+  requireWorld,
+  resolveNextActivityId,
+  sequencePosition,
+} from "@/game/content";
 import type { AttemptResult } from "@/game/domain/responses";
 import { toEvidence } from "@/game/evaluation/orchestrator";
 import { PuzzleTemplateHost } from "@/game/stage/PuzzleTemplateHost";
@@ -29,11 +30,12 @@ import { useNarration } from "@/audio/useNarration";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
 import { getChallengeNarration } from "@/visual/world-config/narration";
 import { ChallengeStageShell } from "@/visual/stage/ChallengeStageShell";
+import { getSlotVisual, getWorldVisual } from "@/visual/world-config";
 import { useSuccessReturn } from "@/game/stage/useSuccessReturn";
 
 export const Route = createFileRoute("/mundo/$worldId/desafio/$slotId")({
   loader: ({ params }) => {
-    if (params.worldId !== PLACEHOLDER_WORLD_ID || !findSlot(params.slotId)) throw notFound();
+    if (!getSlot(params.worldId, params.slotId)) throw notFound();
     return null;
   },
   head: () => ({
@@ -58,11 +60,22 @@ function ChallengeStage() {
   const navigate = useNavigate();
   const { facts, dispatch } = useGameState();
   const [lastAttempt, setLastAttempt] = React.useState<AttemptResult | null>(null);
+  /**
+   * While a success reaction plays, the committed fact has already advanced the
+   * sequence. Pinning keeps the finished Activity on screen until the stage
+   * either advances deliberately or returns to the board.
+   */
+  const [pinnedActivityId, setPinnedActivityId] = React.useState<string | null>(null);
 
-  const slot = findSlot(slotId);
-  const activityId = slot?.sequence.challenge[0];
-  const activity = activityId ? findActivity(activityId) : null;
-  const item = placeholderPack.items[0];
+  const world = requireWorld(worldId);
+  const slot = getSlot(worldId, slotId);
+  const completedActivityIds = facts.slots[slotId]?.completedActivityIds ?? [];
+  const nextActivityId = slot ? resolveNextActivityId(slot, completedActivityIds) : null;
+  const activityId = pinnedActivityId ?? nextActivityId ?? undefined;
+  const resolved = activityId ? getActivityContent(activityId) : null;
+  const activity = resolved?.activity ?? null;
+  const pack = resolved?.pack ?? null;
+  const item = resolved?.item ?? null;
 
   // Narration copy is configuration, resolved by placement. Nothing spoken here
   // is authored by the template, the pet component or the domain layer.
@@ -91,16 +104,30 @@ function ChallengeStage() {
     void navigate({ to: "/mundo/$worldId", params: { worldId } });
   }, [navigate, worldId]);
 
+  /** Slot completes only when EVERY activity in its sequence is done. */
+  const slotComplete = slot ? isSlotSequenceComplete(slot, completedActivityIds) : false;
+
+  const afterSuccess = React.useCallback(() => {
+    if (slotComplete) {
+      close();
+      return;
+    }
+    // Stay in the stage and continue the sequence with the next activity.
+    setPinnedActivityId(null);
+    setLastAttempt(null);
+  }, [close, slotComplete]);
+
   /**
    * Automatic success return. Completion facts are already committed by
    * handleAttempt before this runs, so the Board derives its restored state
    * the moment it reappears. `frozen` locks the template during the reaction.
    */
-  const { frozen } = useSuccessReturn(lastAttempt?.outcome ?? null, close);
+  const { frozen } = useSuccessReturn(lastAttempt?.outcome ?? null, afterSuccess);
 
   const handleAttempt = React.useCallback(
     (attempt: AttemptResult) => {
       setLastAttempt(attempt);
+      setPinnedActivityId(attempt.activityId);
       playSfx(attempt.outcome === "correct" ? "success" : "retry");
       dispatch({
         type: "RECORD_ATTEMPT",
@@ -111,22 +138,29 @@ function ChallengeStage() {
         mode: attempt.mode,
       });
 
-      if (attempt.outcome === "correct") {
-        playSfx("restore");
-        const slots = [...placeholderWorld.slots].sort((a, b) => a.order - b.order);
-        const nextSlot = slots[slots.findIndex((entry) => entry.id === attempt.slotId) + 1];
-        dispatch({
-          type: "SLOT_COMPLETED",
-          slotId: attempt.slotId,
-          worldId: attempt.worldId,
-          ...(nextSlot ? { nextSlotId: nextSlot.id } : {}),
-        });
-      }
+      if (attempt.outcome !== "correct" || !slot) return;
+
+      const done = completedActivityIds.includes(attempt.activityId)
+        ? completedActivityIds
+        : [...completedActivityIds, attempt.activityId];
+      if (!isSlotSequenceComplete(slot, done)) return;
+
+      playSfx("restore");
+      const slots = [...world.slots].sort((a, b) => a.order - b.order);
+      const nextSlot = slots[slots.findIndex((entry) => entry.id === attempt.slotId) + 1];
+      dispatch({
+        type: "SLOT_COMPLETED",
+        slotId: attempt.slotId,
+        worldId: attempt.worldId,
+        ...(nextSlot ? { nextSlotId: nextSlot.id } : {}),
+      });
     },
-    [dispatch],
+    [completedActivityIds, dispatch, slot, world],
   );
 
-  if (!slot || !activity || !item) return null;
+  if (!slot || !activity || !item || !pack) return null;
+
+  const position = sequencePosition(slot, activity.id);
 
   // Acting states are read from an ALREADY COMMITTED result. Presentation only.
   const maitteState: MaitteActingState =
@@ -145,7 +179,7 @@ function ChallengeStage() {
   return (
     <ChallengeStageShell
       worldId={worldId}
-      title="Pedra esculpida"
+      title={`${getSlotVisual(slotId).label} — etapa ${position.index + 1} de ${position.total}`}
       onClose={close}
       caption={line.captionText}
       narrationStatus={narration.status}
@@ -155,13 +189,13 @@ function ChallengeStage() {
       petDisplayName={narrationConfig.petDisplayName}
       maitteState={maitteState}
       companionState={companionState}
-      avatarProgress={selectAvatarRestoration(facts, [placeholderWorld])}
+      avatarProgress={selectAvatarRestoration(facts, [world])}
       feedback={
         lastAttempt && lastAttempt.outcome !== "correct" ? (
           <span role="status">
             {lastAttempt.outcome === "partially-correct"
-              ? placeholderPack.feedback.firstError
-              : placeholderPack.feedback.repeatedError}
+              ? pack.feedback.firstError
+              : pack.feedback.repeatedError}
           </span>
         ) : undefined
       }
@@ -169,7 +203,7 @@ function ChallengeStage() {
       <PuzzleTemplateHost
         activity={activity}
         slot={slot}
-        pack={placeholderPack}
+        pack={pack}
         item={item}
         confirmLabel={narrationConfig.confirmLabel}
         disabled={frozen}
