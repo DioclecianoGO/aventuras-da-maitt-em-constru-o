@@ -47,7 +47,7 @@ export function CompositionTemplate({
 
       {presentation?.scene ? (
         <div
-          className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-[2rem] border-2 border-[var(--ink)] shadow-[0_6px_0_var(--ink-soft)]"
+          className="relative mx-auto w-full max-w-md overflow-hidden rounded-[2rem] border-2 border-[var(--ink)] shadow-[0_6px_0_var(--ink-soft)]"
           style={{ aspectRatio: `${presentation.scene.width} / ${presentation.scene.height}` }}
         >
           <svg

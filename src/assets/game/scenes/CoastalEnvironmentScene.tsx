@@ -16,7 +16,7 @@ export function CoastalEnvironmentScene() {
     <g>
       {/* sky */}
       <rect x="0" y="0" width="800" height="450" fill="var(--world-sky, #cfe6f2)" />
-      <circle cx="678" cy="70" r="34" fill="var(--hope, #f4c95d)" opacity="0.55" />
+      <circle cx="678" cy="70" r="34" fill="var(--world-sun, #f2c45a)" opacity="0.6" />
 
       {/* sea */}
       <path
@@ -82,8 +82,8 @@ export function CoastalEnvironmentScene() {
           </g>
         ))}
 
-        {/* bird in flight */}
-        <g className="bird-glide" transform="translate(350 118)">
+        {/* bird — a touchable element of this environment, so it stays put */}
+        <g transform="translate(350 118)">
           <path d="M-30 0 q 16 -22 30 -4 q 14 -18 30 4" strokeWidth="3.4" />
           <path d="M-6 2 q 6 8 12 0" strokeWidth="2.4" stroke={INK_SOFT} />
         </g>
