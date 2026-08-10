@@ -27,7 +27,9 @@ export type RestorableUnitKind =
   | "rock-cluster"
   | "trail-marker"
   | "arch-detail"
-  | "ruin-detail";
+  | "ruin-detail"
+  | "shell-cluster"
+  | "tidepool-life";
 
 export type RestorableUnit = {
   id: string;
@@ -85,6 +87,56 @@ export const boardRestorationUnits: Record<string, RestorableUnit[]> = {
       requiresCompletedSlotId: "slot-3",
     },
   ],
+  "world-science-oceano": [
+    {
+      id: "praia-shells-1",
+      kind: "shell-cluster",
+      anchor: { x: 300, y: 742 },
+      scale: 1.3,
+      label: "Conchas da praia que recuperaram a cor",
+      requiresCompletedSlotId: "sci-slot-1",
+    },
+    {
+      id: "praia-tidepool-1",
+      kind: "tidepool-life",
+      anchor: { x: 560, y: 720 },
+      scale: 1.25,
+      label: "Poça de maré com vida de volta",
+      requiresCompletedSlotId: "sci-slot-2",
+    },
+    {
+      id: "praia-plants",
+      kind: "plant-cluster",
+      anchor: { x: 830, y: 700 },
+      scale: 1.2,
+      label: "Vegetação costeira que recuperou a cor",
+      requiresCompletedSlotId: "sci-slot-3",
+    },
+    {
+      id: "praia-rocks",
+      kind: "rock-cluster",
+      anchor: { x: 1090, y: 690 },
+      scale: 1.25,
+      label: "Rochas da costa que recuperaram a cor",
+      requiresCompletedSlotId: "sci-slot-4",
+    },
+    {
+      id: "praia-shells-2",
+      kind: "shell-cluster",
+      anchor: { x: 1290, y: 668 },
+      scale: 1.1,
+      label: "Mais conchas com a cor de volta",
+      requiresCompletedSlotId: "sci-slot-5",
+    },
+    {
+      id: "praia-marker",
+      kind: "trail-marker",
+      anchor: { x: 1470, y: 632 },
+      scale: 1.2,
+      label: "Marco da expedição na praia",
+      requiresCompletedSlotId: "sci-slot-6",
+    },
+  ],
 };
 
 /** Overworld details, keyed by region id. Scene space 1600x1000. */
@@ -104,6 +156,24 @@ export const overworldRestorationUnits: Record<string, RestorableUnit[]> = {
       anchor: { x: 452, y: 744 },
       scale: 0.78,
       label: "Vegetação do deserto com a cor de volta",
+      requiresProgressAtLeast: 0.6,
+    },
+  ],
+  "region-science": [
+    {
+      id: "ow-sci-shells",
+      kind: "shell-cluster",
+      anchor: { x: 852, y: 872 },
+      scale: 1,
+      label: "Conchas da costa com a cor de volta",
+      requiresProgressAtLeast: 0.01,
+    },
+    {
+      id: "ow-sci-tidepool",
+      kind: "tidepool-life",
+      anchor: { x: 1010, y: 892 },
+      scale: 0.85,
+      label: "Poça de maré da costa com vida de volta",
       requiresProgressAtLeast: 0.6,
     },
   ],

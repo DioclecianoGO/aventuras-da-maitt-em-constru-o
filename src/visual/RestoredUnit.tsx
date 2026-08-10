@@ -186,6 +186,8 @@ const UNIT_ART: Record<RestorableUnitKind, (props: Parts) => ReactElement> = {
   "trail-marker": TrailMarker,
   "arch-detail": ArchDetail,
   "ruin-detail": RuinDetail,
+  "shell-cluster": ShellCluster,
+  "tidepool-life": TidepoolLife,
 };
 
 export function RestoredUnit({ unit, restored }: { unit: RestorableUnit; restored: boolean }) {
