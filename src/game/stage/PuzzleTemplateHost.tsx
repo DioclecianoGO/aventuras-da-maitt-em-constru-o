@@ -19,6 +19,7 @@ export function PuzzleTemplateHost({
   item,
   onAttempt,
   disabled,
+  confirmLabel,
 }: {
   activity: Activity;
   slot: ActivitySlot;
@@ -26,6 +27,8 @@ export function PuzzleTemplateHost({
   item: PackItem;
   onAttempt(attempt: AttemptResult): void;
   disabled?: boolean;
+  /** Presentation copy passed through from narration config. Never content. */
+  confirmLabel?: string;
 }) {
   const [supportUsed, setSupportUsed] = React.useState(false);
 
@@ -57,6 +60,7 @@ export function PuzzleTemplateHost({
       item={{ prompt: item.prompt, options: item.options }}
       onRespond={handleRespond}
       onSupportUsed={() => setSupportUsed(true)}
+      {...(confirmLabel === undefined ? {} : { confirmLabel })}
       {...(disabled === undefined ? {} : { disabled })}
     />
   );

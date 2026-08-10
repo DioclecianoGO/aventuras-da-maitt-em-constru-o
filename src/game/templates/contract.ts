@@ -21,6 +21,12 @@ export type PuzzleTemplateProps = {
   /** Notifies the stage that support was used. Feeds AttemptResult.assisted. */
   onSupportUsed?(): void;
   disabled?: boolean;
+  /**
+   * Child-facing copy for a diegetic confirmation affordance, supplied by the
+   * presentation/narration configuration. Presentation only: the template
+   * never authors this sentence and never derives meaning from it.
+   */
+  confirmLabel?: string;
 };
 
 export type PuzzleTemplateDefinition = {

@@ -7,6 +7,7 @@
  * arrangement used is provisional configuration, not a decided reward order.
  */
 import { MaitteFigure, MAITTE_BOX } from "@/assets/game/characters/MaitteFigure";
+import type { MaitteActingState } from "@/visual/character/acting";
 import { characterVisual } from "@/visual/world-config";
 import type { CharacterRegionId, CharacterVisualConfig } from "@/visual/world-config/types";
 
@@ -27,6 +28,7 @@ export function MaitteAvatar({
   y,
   scale = 1,
   animated = true,
+  state = "idle-curious",
   title = "Maittê",
 }: {
   progress: number;
@@ -35,6 +37,8 @@ export function MaitteAvatar({
   y: number;
   scale?: number;
   animated?: boolean;
+  /** Acting state. Presentation only — never derived from correctness here. */
+  state?: MaitteActingState;
   title?: string;
 }) {
   const restored = resolveRestoredRegions(progress);
@@ -43,7 +47,7 @@ export function MaitteAvatar({
       transform={`translate(${x - (MAITTE_BOX.width / 2) * scale} ${y - MAITTE_BOX.height * scale}) scale(${scale})`}
       style={{ transition: "transform var(--motion-travel) var(--ease-travel)" }}
     >
-      <MaitteFigure restored={restored} animated={animated} title={title} />
+      <MaitteFigure restored={restored} state={state} animated={animated} title={title} />
     </g>
   );
 }

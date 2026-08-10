@@ -237,6 +237,234 @@ h2,
   .drift-slow {
     animation: drift-slow 16s ease-in-out infinite alternate;
   }
+
+  /* --- character acting motion (docs/design/ANIMATION.md) ------------- */
+  .maitte-breathe {
+    animation: char-breathe 4200ms ease-in-out infinite;
+  }
+
+  .maitte-hop {
+    animation: char-hop 620ms var(--ease-settle) 2;
+  }
+
+  .maitte-walk {
+    animation: char-walk 900ms ease-in-out infinite;
+  }
+
+  .maitte-blink {
+    animation: char-blink 5200ms step-end infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .heart-burst {
+    animation: heart-burst 900ms var(--ease-settle) 2;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .pet-breathe {
+    animation: char-breathe 3800ms ease-in-out infinite;
+  }
+
+  .pet-speak {
+    animation: pet-speak 620ms ease-in-out infinite;
+  }
+
+  .pet-hop {
+    animation: char-hop 560ms var(--ease-settle) 2;
+  }
+
+  .pet-tail-wag {
+    animation: pet-tail-wag 420ms ease-in-out infinite;
+  }
+
+  .pet-blink {
+    animation: char-blink 6100ms step-end infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .pet-speech-cue {
+    animation: speech-cue 900ms ease-in-out infinite;
+  }
+
+  /* --- ambient world motion; suppressed inside a focused challenge --- */
+  .sand-drift {
+    animation: sand-drift 12s linear infinite;
+  }
+
+  /* Distant birds gliding across the sky. Ambient only. */
+  .bird-glide {
+    animation: bird-glide 22s linear infinite;
+  }
+
+  .stage-focused .sand-drift,
+  .stage-focused .drift-slow {
+    animation: none;
+  }
+
+  /* --- puzzle object response --------------------------------------- */
+  .stone-lift {
+    animation: stone-lift 260ms var(--ease-settle) both;
+  }
+
+  .stone-settle {
+    animation: stone-settle 320ms var(--ease-settle) both;
+  }
+
+  .replay-call {
+    animation: replay-call 1500ms ease-in-out infinite;
+  }
+}
+
+@keyframes char-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-1.5px) scaleY(1.012);
+  }
+}
+
+@keyframes char-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-14px);
+  }
+  70% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes char-walk {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.6deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(0.6deg);
+  }
+}
+
+@keyframes char-blink {
+  0%,
+  95% {
+    transform: scaleY(1);
+  }
+  96%,
+  99% {
+    transform: scaleY(0.12);
+  }
+}
+
+@keyframes heart-burst {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pet-speak {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2.5px) rotate(-1.2deg);
+  }
+}
+
+@keyframes pet-tail-wag {
+  0%,
+  100% {
+    transform: rotate(-9deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+
+@keyframes speech-cue {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-4px);
+  }
+}
+
+@keyframes sand-drift {
+  from {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 0.7;
+  }
+  to {
+    transform: translateX(160px);
+    opacity: 0;
+  }
+}
+
+@keyframes bird-glide {
+  from {
+    transform: translate(-60px, 6px);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 0.8;
+  }
+  to {
+    transform: translate(220px, -14px);
+    opacity: 0;
+  }
+}
+
+@keyframes stone-lift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes stone-settle {
+  0% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes replay-call {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
 }
 
 @keyframes world-reveal {
@@ -307,7 +535,28 @@ h2,
   .stage-emerge,
   .heart-pulse,
   .slot-breathe,
-  .drift-slow {
+  .drift-slow,
+  .maitte-breathe,
+  .maitte-hop,
+  .maitte-walk,
+  .maitte-blink,
+  .heart-burst,
+  .pet-breathe,
+  .pet-speak,
+  .pet-hop,
+  .pet-tail-wag,
+  .pet-blink,
+  .pet-speech-cue,
+  .sand-drift,
+  .stone-lift,
+  .stone-settle,
+  .replay-call,
+  .bird-glide {
     animation: none !important;
+  }
+
+  /* Poses and final states still apply; only movement is removed. */
+  .sand-drift {
+    opacity: 0;
   }
 }

@@ -79,6 +79,52 @@ export function DunasDouradasInk({ prefix }: { prefix: string }) {
         <path d="M1526 562 v -34 M1526 528 q -20 -10 -30 2 M1526 528 q 20 -10 30 2" />
         <path d="M1420 566 q 100 12 180 0" />
       </g>
+
+      {/* --- environmental density (Phase 1B): the desert as an inhabited place --- */}
+
+      {/* wind-carved rock arch, mid distance */}
+      <g stroke={INK} strokeWidth="3.2">
+        <path
+          d="M96 596 c -6 -70, 30 -122, 96 -124 c 62 -2, 100 46, 96 122 l -30 2 c 2 -56, -22 -92, -66 -92 c -46 0, -68 38, -64 94 Z"
+          fill={PAPER_DEEP}
+        />
+        <path d="M118 540 q 30 -16 58 -6 M226 548 q 20 -12 40 -4" stroke={INK_SOFT} strokeWidth="2.2" fill="none" />
+      </g>
+
+      {/* eroded number-stone ruins half buried in the sand */}
+      <g stroke={INK} strokeWidth="3">
+        <path d="M700 646 l 6 -54 q 20 -8 38 2 l 6 52 q -26 8 -50 0 Z" fill={PAPER_DEEP} />
+        <path d="M756 650 l 4 -34 q 14 -6 26 2 l 4 32 q -18 6 -34 0 Z" fill={PAPER_DEEP} />
+        <path d="M712 620 q 20 -8 38 2" stroke={INK_SOFT} strokeWidth="2" fill="none" />
+      </g>
+
+      {/* desert plants: dry shrubs and a tall succulent */}
+      <g stroke={INK} strokeWidth="3">
+        <path d="M1352 700 v -66 q -26 -6 -28 22 q -2 22 22 26 M1352 668 q 26 -10 30 14 q 2 20 -22 20" fill={PAPER_DEEP} />
+      </g>
+      <g stroke={INK_SOFT} strokeWidth="2.4">
+        <path d="M520 700 l -10 -30 m 10 30 l 0 -34 m 0 34 l 12 -28 m -12 28 l 22 -20" />
+        <path d="M880 848 l -12 -34 m 12 34 l 0 -40 m 0 40 l 14 -32 m -14 32 l 26 -24" />
+        <path d="M180 806 l -10 -26 m 10 26 l 2 -32 m -2 32 l 12 -24" />
+      </g>
+
+      {/* two distant birds — small signs of life */}
+      <g stroke={INK_SOFT} strokeWidth="2.4" className="bird-glide">
+        <path d="M980 210 q 16 -12 30 0 q 14 -12 30 0" />
+        <path d="M1056 250 q 12 -9 22 0 q 10 -9 22 0" />
+      </g>
+
+      {/* animated sand veils skimming the crests */}
+      <g className="sand-drift" opacity="0.55" stroke={INK_SOFT} strokeWidth="2.2">
+        <path d="M-40 660 q 200 -34 400 -8 q 160 20 320 -6" />
+        <path d="M840 742 q 200 -30 400 -6" />
+      </g>
+
+      {/* foreground grasses framing the near edge */}
+      <g stroke={INK} strokeWidth="2.8" opacity="0.85">
+        <path d="M40 900 l -6 -60 m 6 60 l 6 -66 m -6 66 l 20 -52" />
+        <path d="M1560 900 l -8 -70 m 8 70 l 4 -76 m -4 76 l 22 -58" />
+      </g>
     </g>
   );
 }

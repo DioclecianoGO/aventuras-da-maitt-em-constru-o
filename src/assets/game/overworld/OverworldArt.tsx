@@ -261,6 +261,40 @@ export function OverworldInk({ prefix }: { prefix: string }) {
         <path d="M762 578 C 640 640, 510 690, 402 726" />
         <path d="M812 600 C 828 690, 862 750, 892 806" />
       </g>
+
+      {/* --- environmental density (Phase 1B): a world that reads as inhabited --- */}
+
+      {/* small waymarker cairns along the trails, hinting at travel */}
+      <g stroke={INK_SOFT} strokeWidth="2.6">
+        <path d="M556 452 q 12 -14 24 0 q -12 8 -24 0 Z M560 440 q 8 -10 16 0 q -8 6 -16 0 Z" fill={PAPER_DEEP} />
+        <path d="M1064 452 q 12 -14 24 0 q -12 8 -24 0 Z M1068 440 q 8 -10 16 0 q -8 6 -16 0 Z" fill={PAPER_DEEP} />
+        <path d="M566 664 q 12 -14 24 0 q -12 8 -24 0 Z" fill={PAPER_DEEP} />
+        <path d="M1074 636 q 12 -14 24 0 q -12 8 -24 0 Z" fill={PAPER_DEEP} />
+      </g>
+
+      {/* scattered vegetation and rock clusters between regions */}
+      <g stroke={INK_SOFT} strokeWidth="2.4">
+        <path d="M640 520 l -8 -22 m 8 22 l 0 -26 m 0 26 l 10 -20" />
+        <path d="M980 546 l -8 -22 m 8 22 l 0 -26 m 0 26 l 10 -20" />
+        <path d="M700 700 l -8 -22 m 8 22 l 2 -26 m -2 26 l 10 -20" />
+        <path d="M930 690 l -8 -22 m 8 22 l 2 -26 m -2 26 l 10 -20" />
+      </g>
+      <g stroke={INK_SOFT} strokeWidth="2.6">
+        <path d="M498 560 q 16 -18 34 -2 q -16 10 -34 2 Z" fill={PAPER_DEEP} />
+        <path d="M1108 570 q 16 -18 34 -2 q -16 10 -34 2 Z" fill={PAPER_DEEP} />
+      </g>
+
+      {/* faint high clouds drifting over the map */}
+      <g className="sand-drift" opacity="0.4" stroke={INK_SOFT} strokeWidth="2.4">
+        <path d="M300 150 q 40 -26 80 -4 q 40 -18 74 8 q -80 16 -154 -4 Z" fill="none" />
+        <path d="M1080 118 q 34 -22 68 -4 q 34 -16 64 8 q -70 14 -132 -4 Z" fill="none" />
+      </g>
+
+      {/* distant birds over the centre of the map */}
+      <g className="bird-glide" stroke={INK_SOFT} strokeWidth="2.2" opacity="0.7">
+        <path d="M720 214 q 14 -10 26 0 q 12 -10 26 0" />
+        <path d="M786 246 q 10 -8 20 0 q 9 -8 20 0" />
+      </g>
     </g>
   );
 }

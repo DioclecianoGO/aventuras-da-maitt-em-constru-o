@@ -1,11 +1,24 @@
 /**
- * CONCEPT ASSET — companion creature (original artwork).
- * Spec: docs/narrative/PET-COMPANIONS.md — companions are configuration, are
- * not bound to a subject, and never evaluate the child. Purely presentational.
+ * Companion RENDERER — resolves a configured pet id to its concept artwork.
+ * Spec: docs/narrative/PET-COMPANIONS.md, docs/design/CHARACTER-ART.md
+ *
+ * Companions are configuration. No subject, skill or evaluation code may name
+ * a pet, and a pet id with no finished asset degrades to the neutral concept
+ * creature below instead of crashing. Purely presentational.
  */
 import { INK, INK_SOFT, PAPER_DEEP } from "@/assets/game/ink";
+import { BurpeeArt } from "@/assets/game/characters/pets/BurpeeArt";
+import type { CompanionActingState } from "@/visual/character/acting";
 
-export function CompanionArt({ animated = true }: { animated?: boolean }) {
+export type CompanionArtProps = {
+  /** Configured pet id. Unknown ids fall back gracefully. */
+  petId?: string;
+  state?: CompanionActingState;
+  animated?: boolean;
+};
+
+/** Neutral stand-in used when a configured pet has no finished asset yet. */
+function FallbackCompanionArt({ animated = true }: { animated?: boolean }) {
   return (
     <g fill="none" strokeLinecap="round" strokeLinejoin="round">
       <ellipse cx="0" cy="46" rx="34" ry="9" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2" />
@@ -31,4 +44,24 @@ export function CompanionArt({ animated = true }: { animated?: boolean }) {
       </g>
     </g>
   );
+}
+
+/** Scene-space viewBox each pet asset is drawn in. */
+const PET_VIEWBOX: Record<string, string> = {
+  burpee: "-120 -155 240 200",
+};
+
+export const FALLBACK_PET_VIEWBOX = "-56 -60 112 116";
+
+export function getCompanionViewBox(petId: string): string {
+  return PET_VIEWBOX[petId] ?? FALLBACK_PET_VIEWBOX;
+}
+
+export function hasCompanionArt(petId: string): boolean {
+  return petId in PET_VIEWBOX;
+}
+
+export function CompanionArt({ petId = "", state = "idle", animated = true }: CompanionArtProps) {
+  if (petId === "burpee") return <BurpeeArt state={state} animated={animated} />;
+  return <FallbackCompanionArt animated={animated} />;
 }
