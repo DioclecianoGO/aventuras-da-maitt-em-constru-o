@@ -5,9 +5,25 @@
  * pointer drag and tap-to-place, because tap-to-place is the accessible
  * fallback when drag is unreliable on touch (technical risk register R1).
  *
- * It emits an ordering UserResponse and knows nothing about correctness.
+ * Phase 1B change is PRESENTATION ONLY: the option buttons became carved
+ * desert stones resting in sand sockets, and the generic `Pronto` submit
+ * became a diegetic confirmation seal. The template still emits exactly one
+ * ordering UserResponse per confirmation and still knows nothing about
+ * correctness. Labels come from item data; the art encodes no answer.
+ *
+ * Confirmation, not auto-evaluation: every permutation is technically
+ * "complete", so evaluating each swap would turn touch slips and intermediate
+ * arrangements into educational evidence. The seal stays inert until the child
+ * has actually moved a stone, which also prevents accidental first-tap submits.
  */
 import * as React from "react";
+
+import { playSfx } from "@/audio/sfx";
+import {
+  ConfirmSealArt,
+  OrderStoneArt,
+  SandSocketArt,
+} from "@/assets/game/objects/DesertPuzzleArt";
 import type { PuzzleTemplateProps } from "@/game/templates/contract";
 import { cn } from "@/lib/utils";
 
@@ -15,18 +31,21 @@ export function PlaceholderOrderTemplate({
   item,
   onRespond,
   disabled = false,
+  confirmLabel = "Confirmar",
 }: PuzzleTemplateProps) {
   const [order, setOrder] = React.useState(() => item.options.map((option) => option.id));
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [touched, setTouched] = React.useState(false);
+  const [settling, setSettling] = React.useState<string | null>(null);
   const dragIdRef = React.useRef<string | null>(null);
 
   React.useEffect(() => {
     setOrder(item.options.map((option) => option.id));
     setSelectedId(null);
+    setTouched(false);
   }, [item]);
 
-  const labelOf = (id: string) =>
-    item.options.find((option) => option.id === id)?.label ?? id;
+  const labelOf = (id: string) => item.options.find((option) => option.id === id)?.label ?? id;
 
   function move(sourceId: string, targetId: string) {
     if (sourceId === targetId) return;
@@ -39,13 +58,22 @@ export function PlaceholderOrderTemplate({
       next.splice(to, 0, sourceId);
       return next;
     });
+    setTouched(true);
+    setSettling(sourceId);
+    playSfx("place");
+    window.setTimeout(() => setSettling(null), 340);
   }
 
-  /** Tap-to-place: first tap selects, second tap places. */
+  /** Tap-to-place: first tap lifts a stone, second tap swaps it into place. */
   function handleTap(id: string) {
     if (disabled) return;
     if (selectedId === null) {
       setSelectedId(id);
+      playSfx("select");
+      return;
+    }
+    if (selectedId === id) {
+      setSelectedId(null);
       return;
     }
     move(selectedId, id);
@@ -53,11 +81,13 @@ export function PlaceholderOrderTemplate({
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 text-center">
-      <p className="text-[clamp(1.05rem,2vw,1.5rem)] font-medium text-ink">{item.prompt}</p>
+    <div className="flex w-full flex-col items-center gap-5">
+      {/* The visible instruction lives on the stage caption plate; this keeps
+          the same sentence available to assistive technology. */}
+      <p className="sr-only">{item.prompt}</p>
 
-      <ul className="flex flex-wrap justify-center gap-4" role="list">
-        {order.map((id) => {
+      <ul className="flex flex-wrap items-end justify-center gap-2 sm:gap-4" role="list">
+        {order.map((id, index) => {
           const isSelected = selectedId === id;
           return (
             <li key={id}>
@@ -66,40 +96,67 @@ export function PlaceholderOrderTemplate({
                 disabled={disabled}
                 draggable={!disabled}
                 aria-pressed={isSelected}
+                aria-label={`Pedra ${labelOf(id)}, posição ${index + 1} de ${order.length}`}
                 onClick={() => handleTap(id)}
                 onDragStart={() => {
                   dragIdRef.current = id;
+                  setSelectedId(id);
                 }}
+                onDragEnd={() => setSelectedId(null)}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
                   event.preventDefault();
                   if (dragIdRef.current) move(dragIdRef.current, id);
                   dragIdRef.current = null;
+                  setSelectedId(null);
                 }}
                 className={cn(
-                  "min-h-20 min-w-20 rounded-[42%_58%_46%_54%/54%_44%_56%_46%] border-[3px] border-[var(--ink)]",
-                  "bg-[var(--paper-deep)] px-6 py-4 text-2xl font-semibold text-ink shadow-none",
-                  "touch-manipulation transition-transform duration-200 select-none motion-reduce:transition-none",
-                  isSelected
-                    ? "-translate-y-1 outline-2 outline-offset-4 outline-[var(--hope)]"
-                    : "hover:-translate-y-0.5",
+                  "touch-manipulation rounded-3xl p-1 transition-transform duration-200 select-none",
+                  "focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)]",
+                  "motion-reduce:transition-none",
+                  isSelected ? "-translate-y-2" : "hover:-translate-y-1",
                   disabled && "opacity-60",
                 )}
               >
-                {labelOf(id)}
+                <svg
+                  viewBox="-60 -86 120 116"
+                  className="h-24 w-20 sm:h-28 sm:w-24"
+                  aria-hidden
+                >
+                  <g transform="translate(0 18)">
+                    <SandSocketArt index={index} />
+                  </g>
+                  <g
+                    className={
+                      settling === id ? "stone-settle" : isSelected ? "stone-lift" : undefined
+                    }
+                  >
+                    <OrderStoneArt label={labelOf(id)} variant={index} selected={isSelected} />
+                  </g>
+                </svg>
               </button>
             </li>
           );
         })}
       </ul>
 
+      {/* Diegetic confirmation: a carved hand-print seal, not a form button. */}
       <button
         type="button"
-        disabled={disabled}
+        disabled={disabled || !touched}
+        aria-label={confirmLabel}
         onClick={() => onRespond({ kind: "ordering", orderedIds: order })}
-        className="rounded-full border-[3px] border-[var(--hope-deep)] bg-[var(--hope)] px-8 py-3 text-lg font-semibold text-[var(--paper)] transition-transform duration-200 hover:scale-105 disabled:opacity-60 motion-reduce:transition-none"
+        className={cn(
+          "flex items-center gap-3 rounded-full px-3 py-2 text-ink transition-transform duration-200",
+          "focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)]",
+          "motion-reduce:transition-none",
+          touched ? "hover:scale-105" : "opacity-45",
+        )}
       >
-        Pronto
+        <svg viewBox="-52 -52 104 104" className="h-16 w-16" aria-hidden>
+          <ConfirmSealArt ready={touched && !disabled} />
+        </svg>
+        <span className="text-base font-semibold">{confirmLabel}</span>
       </button>
     </div>
   );
