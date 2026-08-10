@@ -55,5 +55,8 @@ export function toEvidence(attempt: AttemptResult): EvidenceRecord[] {
     assisted: attempt.assisted,
     representation: attempt.representation,
     at: attempt.at,
+    // Generic component detail only (ADR-010 §"Evidence persistence").
+    ...(attempt.perTargetOutcome ? { perTargetOutcome: attempt.perTargetOutcome } : {}),
+    ...(attempt.diagnosticCode ? { diagnosticCode: attempt.diagnosticCode } : {}),
   }));
 }

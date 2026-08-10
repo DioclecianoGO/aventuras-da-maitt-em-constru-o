@@ -119,6 +119,11 @@
   --world-desert: oklch(0.81 0.12 78);
   --world-desert-deep: oklch(0.69 0.13 62);
   --world-ocean: oklch(0.68 0.11 220);
+  /* Coastal Science tokens (Praia das Conchas). PROVISIONAL concept values. */
+  --world-ocean-deep: oklch(0.52 0.1 224);
+  --world-sky: oklch(0.87 0.05 225);
+  --world-sand: oklch(0.88 0.07 88);
+  --world-sand-wet: oklch(0.78 0.06 84);
 
   /* Typography — illustrated storybook, deliberately not a UI/dashboard face. */
   --font-display: "Fraunces", ui-serif, Georgia, serif;

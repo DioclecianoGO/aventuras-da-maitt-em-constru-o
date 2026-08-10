@@ -7,7 +7,7 @@
  */
 import { createFileRoute } from "@tanstack/react-router";
 
-import { placeholderWorld } from "@/game/content/placeholder-fixture";
+import { getWorld, listWorlds } from "@/game/content";
 import { useGameState } from "@/game/state/GameStateProvider";
 import { selectAvatarRestoration, selectRegionRestoration } from "@/game/state/selectors";
 import { OverworldScene } from "@/visual/scenes/OverworldScene";
@@ -34,12 +34,13 @@ export const Route = createFileRoute("/")({
 
 function Overworld() {
   const { facts } = useGameState();
+  const worlds = listWorlds();
 
   const regionProgress: Record<string, number> = {};
   for (const region of overworldRegions) {
-    regionProgress[region.id] = region.worldId
-      ? selectRegionRestoration(facts, placeholderWorld)
-      : 0;
+    // Each region reads ITS OWN world. No subject is hardcoded here.
+    const world = region.worldId ? getWorld(region.worldId) : null;
+    regionProgress[region.id] = world ? selectRegionRestoration(facts, world) : 0;
   }
 
   return (
@@ -47,7 +48,7 @@ function Overworld() {
       <h1 className="sr-only">Aventuras da Maittê — mapa do mundo</h1>
       <OverworldScene
         regionProgress={regionProgress}
-        avatarProgress={selectAvatarRestoration(facts, [placeholderWorld])}
+        avatarProgress={selectAvatarRestoration(facts, worlds)}
       />
     </main>
   );

@@ -19,6 +19,7 @@ import {
   type Subject,
   type WorldConfig,
 } from "@/game/domain/schemas";
+import type { ContentBundle } from "@/game/content/registry";
 
 export const PLACEHOLDER_WORLD_ID = "world-placeholder";
 
@@ -127,3 +128,16 @@ export function findSlot(slotId: string) {
 export function findActivity(activityId: string) {
   return placeholderActivities.find((activity) => activity.id === activityId) ?? null;
 }
+
+/**
+ * Mathematics stays registered and functional while Science is added.
+ * Its content is still the Phase 0 technical placeholder; only the resolution
+ * path changed (docs/technical/CONTENT-ORCHESTRATION.md §1 rule 1).
+ */
+export const mathematicsBundle: ContentBundle = {
+  subject: placeholderSubject,
+  skills: placeholderSkills,
+  world: placeholderWorld,
+  activities: placeholderActivities,
+  packs: [placeholderPack],
+};

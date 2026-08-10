@@ -82,6 +82,13 @@ export type EvidenceRecord = {
   assisted: boolean;
   representation: string;
   at: string;
+  /**
+   * Optional GENERIC evaluation detail (ADR-010). Preserved for later analysis
+   * of multi-part responses. It is not a mastery claim and carries no
+   * subject-specific semantics.
+   */
+  perTargetOutcome?: Record<string, boolean>;
+  diagnosticCode?: string;
 };
 
 export type SupportEventKind = "hint" | "representation-change" | "worked-example";

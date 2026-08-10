@@ -63,6 +63,51 @@ export function SlotObjectArt({
           <path d="M-20 -6 q 12 -12 24 -2" stroke={INK_SOFT} strokeWidth="2.2" />
         </g>
       ) : null}
+
+      {/* --- Coastal expedition stations (concept art, replaceable) --- */}
+      {kind === "observation-point" ? (
+        <g stroke={stroke} strokeWidth={width}>
+          <path d="M-4 2 v -70" />
+          <path d="M-4 -70 q 30 -10 44 6 q -26 12 -44 4 Z" fill={PAPER_DEEP} />
+          <path d="M-26 2 q 22 -10 44 0" stroke={INK_SOFT} strokeWidth="2.4" />
+          <circle cx="-4" cy="-76" r="5" fill={PAPER_DEEP} />
+        </g>
+      ) : null}
+      {kind === "field-stand" ? (
+        <g stroke={stroke} strokeWidth={width}>
+          <path d="M-30 2 l 10 -46 h 40 l 10 46 Z" fill={PAPER_DEEP} />
+          <path d="M-22 -34 h 44" stroke={INK_SOFT} strokeWidth="2.4" />
+          <path d="M-30 -46 q 30 -18 60 0" fill={PAPER_DEEP} />
+        </g>
+      ) : null}
+      {kind === "map-table" ? (
+        <g stroke={stroke} strokeWidth={width}>
+          <path d="M-40 -34 h 80 l -8 12 h -64 Z" fill={PAPER_DEEP} />
+          <path d="M-30 -22 l -6 24 M30 -22 l 6 24" />
+          <path d="M-24 -40 q 24 -10 48 0 q -24 8 -48 0 Z" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2.4" />
+        </g>
+      ) : null}
+      {kind === "specimen-panel" ? (
+        <g stroke={stroke} strokeWidth={width}>
+          <rect x="-34" y="-72" width="68" height="52" rx="8" fill={PAPER_DEEP} />
+          <path d="M-20 -56 q 10 -10 20 0 M4 -44 q 12 -10 22 -2" stroke={INK_SOFT} strokeWidth="2.4" />
+          <path d="M-16 -20 l -6 22 M16 -20 l 6 22" />
+        </g>
+      ) : null}
+      {kind === "tide-pool" ? (
+        <g stroke={stroke} strokeWidth={width - 0.6}>
+          <ellipse cx="0" cy="-8" rx="42" ry="18" fill={PAPER_DEEP} />
+          <path d="M-24 -10 q 12 -8 24 0 q 12 8 24 0" stroke={INK_SOFT} strokeWidth="2.4" fill="none" />
+          <path d="M-40 -18 q -8 -18 6 -26 M36 -20 q 10 -16 -2 -24" stroke={INK_SOFT} strokeWidth="2.4" />
+        </g>
+      ) : null}
+      {kind === "lookout-scope" ? (
+        <g stroke={stroke} strokeWidth={width}>
+          <path d="M-18 2 l 14 -38 M18 2 l -14 -38" />
+          <path d="M-16 -46 l 40 -16 l 8 16 l -40 16 Z" fill={PAPER_DEEP} />
+          <path d="M22 -58 l 6 12" stroke={INK_SOFT} strokeWidth="2.4" />
+        </g>
+      ) : null}
       {state === "completed" ? (
         <path
           d="M0 -104 l 5 12 l 12 5 l -12 5 l -5 12 l -5 -12 l -12 -5 l 12 -5 Z"

@@ -180,12 +180,91 @@ function RuinDetail({ restored }: Parts) {
   );
 }
 
+/** Shells on the tide line: pattern and iridescence return with the colour. */
+function ShellCluster({ restored }: Parts) {
+  const shells: [number, number, number][] = [
+    [-24, 0, 1],
+    [4, 2, 1.25],
+    [30, 0, 0.9],
+  ];
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      {restored ? (
+        <ellipse cx="2" cy="4" rx="46" ry="10" fill="var(--world-sand-wet)" opacity="0.6" stroke="none" />
+      ) : null}
+      {shells.map(([x, y, s]) => (
+        <g key={`${x}-${y}`} transform={`translate(${x} ${y}) scale(${s})`}>
+          <path
+            d="M-14 0 q 1 -22 14 -22 q 13 0 14 22 Z"
+            fill={restored ? "var(--world-desert)" : PAPER_DEEP}
+            stroke={INK}
+            strokeWidth="3"
+          />
+          <path
+            d="M0 -21 v 19 M-8 -16 l 4 15 M8 -16 l -4 15"
+            stroke={restored ? INK : INK_SOFT}
+            strokeWidth={restored ? 2.2 : 1.8}
+          />
+        </g>
+      ))}
+      {restored ? (
+        <>
+          {/* a small crab has come back to the shells */}
+          <g stroke={INK} strokeWidth="2.2">
+            <ellipse cx="-44" cy="-6" rx="8" ry="6" fill="var(--world-desert-deep)" />
+            <path d="M-52 -10 l -6 -5 M-36 -10 l 6 -5 M-50 0 l -6 4 M-38 0 l 6 4" />
+          </g>
+          <path d="M-52 6 q 52 -10 104 0" stroke="var(--world-ocean)" strokeWidth="2.6" />
+        </>
+      ) : (
+        <path d="M-46 4 q 48 -8 96 0" stroke={INK_FAINT} strokeWidth="2" />
+      )}
+    </g>
+  );
+}
+
+/** A tide pool that fills with clear water, algae and small living things. */
+function TidepoolLife({ restored }: Parts) {
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      {restored ? (
+        <ellipse cx="0" cy="-10" rx="44" ry="19" fill="var(--world-ocean)" opacity="0.75" stroke="none" />
+      ) : null}
+      <ellipse
+        cx="0"
+        cy="-10"
+        rx="44"
+        ry="19"
+        fill={restored ? "none" : PAPER_DEEP}
+        stroke={INK}
+        strokeWidth="3.4"
+      />
+      <path d="M-26 -12 q 13 -8 26 0 q 13 8 26 0" stroke={INK_SOFT} strokeWidth="2.4" />
+      {restored ? (
+        <>
+          {/* algae, an anemone and a small fish: the pool is alive again */}
+          <path d="M-34 -6 c -4 -14, 2 -22, 8 -28" stroke="var(--world-forest)" strokeWidth="3.2" />
+          <path d="M30 -8 c 4 -12, 0 -20, -4 -26" stroke="var(--world-forest)" strokeWidth="3" />
+          <g stroke={INK} strokeWidth="2.2">
+            <circle cx="8" cy="-14" r="6" fill="var(--hope)" />
+            <path d="M-14 -14 q 10 -7 20 0 q -10 7 -20 0 Z" fill="var(--world-desert)" />
+          </g>
+        </>
+      ) : (
+        <path d="M-48 4 q 48 -8 96 0" stroke={INK_FAINT} strokeWidth="2" />
+      )}
+    </g>
+  );
+}
+
 const UNIT_ART: Record<RestorableUnitKind, (props: Parts) => ReactElement> = {
   "plant-cluster": PlantCluster,
   "rock-cluster": RockCluster,
   "trail-marker": TrailMarker,
   "arch-detail": ArchDetail,
   "ruin-detail": RuinDetail,
+  "shell-cluster": ShellCluster,
+  "tidepool-life": TidepoolLife,
 };
 
 export function RestoredUnit({ unit, restored }: { unit: RestorableUnit; restored: boolean }) {

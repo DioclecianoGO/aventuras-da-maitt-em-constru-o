@@ -8,6 +8,7 @@
  * without touching src/game/**.
  */
 import { PLACEHOLDER_WORLD_ID } from "@/game/content/placeholder-fixture";
+import { SCIENCE_WORLD_ID } from "@/game/content/science/slice-a";
 import type {
   CharacterVisualConfig,
   RegionVisual,
@@ -68,6 +69,7 @@ export const overworldRegions: RegionVisual[] = [
   {
     id: "region-science",
     displayName: "Oceano das Descobertas",
+    worldId: SCIENCE_WORLD_ID,
     centroid: { x: 900, y: 880 },
     bloomRadius: 320,
     hit: "620,790 1180,770 1230,960 660,980",
@@ -102,6 +104,25 @@ export const worldVisuals: Record<string, WorldVisual> = {
     ],
     stageSkin: "desert",
   },
+  [SCIENCE_WORLD_ID]: {
+    displayName: "Oceano das Descobertas",
+    zoneName: "Praia das Conchas",
+    nextZonePreview: "Recife das Correntes",
+    sceneAssetKey: "board.praia-das-conchas",
+    scene: { width: 1600, height: 900 },
+    routePath:
+      "M 40 760 C 200 736, 330 700, 452 706 C 610 714, 720 664, 872 660 C 1010 656, 1130 692, 1252 676 C 1390 658, 1480 620, 1572 596",
+    landmarks: [
+      {
+        id: "landmark-ilha",
+        assetKey: "landmark.rock-arch",
+        anchor: { x: 1196, y: 250 },
+        scale: 0.7,
+        label: "Ilha distante, próxima etapa da expedição",
+      },
+    ],
+    stageSkin: "coast",
+  },
 };
 
 /**
@@ -122,6 +143,24 @@ export const slotVisuals: Record<string, SlotVisual> = {
     bloomRadius: 320,
     label: "marco gasto pelo vento",
   },
+
+  /* Praia das Conchas — expedition stations along the tide line. */
+  "sci-slot-1": { objectKind: "observation-point", bloomRadius: 300, label: "ponto de observação" },
+  "sci-slot-2": {
+    objectKind: "map-table",
+    offset: { x: 0, y: 20 },
+    bloomRadius: 300,
+    label: "mesa de mapas dos ambientes",
+  },
+  "sci-slot-3": { objectKind: "field-stand", bloomRadius: 300, label: "posto de campo" },
+  "sci-slot-4": {
+    objectKind: "tide-pool",
+    offset: { x: 0, y: 30 },
+    bloomRadius: 300,
+    label: "poça de maré",
+  },
+  "sci-slot-5": { objectKind: "specimen-panel", bloomRadius: 310, label: "painel de observações" },
+  "sci-slot-6": { objectKind: "lookout-scope", bloomRadius: 320, label: "luneta da praia" },
 };
 
 export const fallbackSlotVisual: SlotVisual = {
