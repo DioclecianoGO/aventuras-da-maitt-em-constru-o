@@ -54,6 +54,8 @@ docs/
 │   ├── LEARNING-MODEL.md
 │   ├── CONTENT-PARAMETRIZATION.md
 │   ├── MATHEMATICS-GRADE-2.md
+│   ├── SCIENCE-GRADE-2.md
+│   ├── SCIENCE-SOURCE-MAP.md
 │   └── CURRICULUM-SOURCES.md
 ├── technical/
 │   ├── ARCHITECTURE.md
