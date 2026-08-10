@@ -89,6 +89,52 @@ function DefaultSkin() {
 }
 
 /**
+ * Coast skin — Praia das Conchas. Same functional shell, different place:
+ * a low tide line, wet sand and quiet surf behind the staged characters.
+ */
+function CoastSkin() {
+  return (
+    <svg
+      className="absolute inset-0 h-full w-full"
+      viewBox="0 0 1200 720"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden
+    >
+      <rect x="0" y="0" width="1200" height="720" fill="var(--paper)" />
+      <path d="M-20 300 H1220" fill="none" stroke={INK_SOFT} strokeWidth="2.4" />
+      <path
+        d="M-20 420 C 220 386, 520 398, 780 428 C 960 448, 1080 440, 1220 418 L 1220 720 L -20 720 Z"
+        fill="var(--paper)"
+        stroke={INK}
+        strokeWidth="3"
+      />
+      <path
+        d="M-20 470 C 240 436, 540 448, 800 478 M120 530 q 60 -16 120 0 M900 546 q 50 -14 100 0"
+        fill="none"
+        stroke={INK_SOFT}
+        strokeWidth="2.2"
+      />
+      {/* rock shelf and shells on the sand */}
+      <path
+        d="M60 470 c 30 -30, 96 -34, 142 -12 c 30 14, 54 12, 76 20 c -78 20, -180 16, -218 -8 Z"
+        fill={PAPER_DEEP}
+        stroke={INK_SOFT}
+        strokeWidth="2.6"
+      />
+      {[[420, 560], [700, 590], [980, 556]].map(([x, y]) => (
+        <g key={`${x}-${y}`} transform={`translate(${x} ${y})`}>
+          <path d="M-12 0 q 1 -16 12 -16 q 11 0 12 16 Z" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2.4" />
+          <path d="M0 -15 v 13" fill="none" stroke={INK_SOFT} strokeWidth="1.8" />
+        </g>
+      ))}
+      <g className="bird-glide" opacity="0.6">
+        <path d="M320 220 q 12 -10 22 0 q 10 -10 20 0" fill="none" stroke={INK_SOFT} strokeWidth="2.2" />
+      </g>
+    </svg>
+  );
+}
+
+/**
  * One placement decision. A short line spoken by a companion who is actually
  * on stage belongs in his bubble; anything longer, or with no visible speaker,
  * falls back to the detached plate.
@@ -161,7 +207,7 @@ export function ChallengeStageShell({
         aria-label={title}
         className="stage-emerge absolute inset-0 overflow-hidden"
       >
-        {skin === "desert" ? <DesertSkin /> : <DefaultSkin />}
+        {skin === "desert" ? <DesertSkin /> : skin === "coast" ? <CoastSkin /> : <DefaultSkin />}
 
         <div className="relative flex h-full flex-col">
           <header className="flex items-start justify-between gap-4 px-5 pt-5 sm:px-8">
