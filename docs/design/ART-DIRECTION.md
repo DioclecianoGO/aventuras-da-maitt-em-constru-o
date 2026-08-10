@@ -25,6 +25,20 @@ Translate mood references into original attributes rather than copied style:
 
 A schematic drawing made mostly from primitive circles, straight lines and generic icons is acceptable only as temporary technical scaffolding. It is not the reviewed art target after Phase 1B.
 
+## Coloring-book feeling
+
+The target is the feeling of a richly illustrated coloring-book/storybook page. This does **not** require literal notebook chrome, spiral binding or a paper UI frame around every screen.
+
+Prefer achieving the feeling through the illustration itself:
+
+- hand-drawn contour variation;
+- enclosed areas that invite color restoration;
+- organic irregularity;
+- denser clusters of small scenic discoveries;
+- visible material texture/value even before color returns;
+- warm paper/ink language;
+- asymmetry in natural and handmade objects.
+
 ## Scene richness
 
 Primary game scenes should not feel empty.
@@ -41,6 +55,23 @@ Overworld/Board concept art should normally contain:
 
 Richness must support exploration without making challenge areas visually noisy.
 
+## Handcrafted object rule
+
+Repeated game/scenery objects should not look like perfectly cloned geometric UI symbols when the fiction says they are physical handmade/natural objects.
+
+For rocks, tablets, trees, plants, ruins and similar elements, use controlled variation in:
+
+- silhouette;
+- chipped/irregular edges;
+- line wobble/weight;
+- tilt;
+- surface marks;
+- overlap/ground contact.
+
+Variation must preserve functional fairness. In assessed manipulables, visual size/shape/color must not leak the correct answer unless the mechanic explicitly assesses those properties.
+
+A movable physical object must keep a stable visual identity when moved; its silhouette should not change merely because its current position index changed.
+
 ## Character standard
 
 Maittê and companions should look like inhabitants of the same illustrated world, not SVG icons placed over scenery.
@@ -48,6 +79,8 @@ Maittê and companions should look like inhabitants of the same illustrated worl
 Character requirements are further specified in `CHARACTER-ART.md` and `MAITTE.md`.
 
 At challenge scale, faces/poses must communicate speaker, attention, thought, success and retry states clearly.
+
+Named real pets must also preserve recognizable species identity at runtime scale; a label/comment cannot substitute for visual recognizability.
 
 ## Color as system
 
@@ -61,6 +94,8 @@ The visual system must support partial restoration at:
 
 Stolen-color is not flat gray UI. It should remain attractive through warm paper values, ink hierarchy, texture, hatching/value and depth cues.
 
+Restoration should leave identifiable restored objects/details as well as any animated flow/mask; see `COLOR-RESTORATION.md`.
+
 ## UI integration
 
 Avoid floating corporate/dashboard cards as the dominant visual language. Controls should feel embedded in the illustrated world.
@@ -68,6 +103,8 @@ Avoid floating corporate/dashboard cards as the dominant visual language. Contro
 Text remains readable and accessible; diegetic UI must not sacrifice usability.
 
 Challenge content should emerge from world objects/characters where feasible instead of looking like a generic web form placed over scenery.
+
+For short dialogue spoken by a visible companion, prefer speaker-anchored illustrated speech treatment over a large detached caption panel when layout permits.
 
 ## Animation
 
@@ -95,14 +132,16 @@ Mood references discussed during ideation are directional only. Final characters
 
 Do not ask an implementation/image agent to reproduce the exact style of a named living artist, studio, anime, manga or game. Instead describe the approved visual attributes above.
 
-## Phase 1B acceptance bar
+## Phase 1B / 1B.1 acceptance bar
 
 The current demonstrated Overworld, Dunas Douradas and Challenge Stage should materially exceed Phase 1A schematic quality by showing:
 
 1. richer environmental layering/detail;
 2. organic hand-drawn-feeling silhouettes;
 3. concept-quality Maittê character art;
-4. at least one concept-quality companion;
+4. at least one concept-quality companion whose species identity is visually clear;
 5. expressive character acting;
 6. a Challenge Stage that reads as part of the adventure rather than a web form;
-7. clear stolen/restored visual richness without relying on percentage labels.
+7. clear stolen/restored visual richness without relying on percentage labels;
+8. handcrafted asymmetry/stable identity in physical puzzle objects;
+9. concrete scenery objects/details that remain restored after progress, not only a broad gradient.
