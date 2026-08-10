@@ -33,6 +33,12 @@ export type ChallengeNarration = {
   /** Non-punitive reaction copy. Presentation only. */
   success: NarrationLine;
   retry: NarrationLine;
+  /**
+   * Optional in-character reaction to WHAT the child touched, keyed by the
+   * authored option id. Discover mode only: informative, never corrective, and
+   * never a correctness signal (docs/ux/CHALLENGE-STAGE.md, FEEDBACK.md).
+   */
+  observations?: Record<string, NarrationLine>;
   /** Diegetic confirmation affordance copy. */
   confirmLabel: string;
 };
@@ -67,6 +73,7 @@ function coastLine(
   instruction: string,
   success = "Muito bem! Esta parte da praia recuperou a cor.",
   retry = "Vamos observar de novo, com calma.",
+  observations?: Record<string, string>,
 ): ChallengeNarration {
   return {
     petId: "burpee",
@@ -75,14 +82,30 @@ function coastLine(
     instruction: { captionText: instruction, spokenText: instruction },
     success: { captionText: success, spokenText: success },
     retry: { captionText: retry, spokenText: retry },
+    ...(observations
+      ? {
+          observations: Object.fromEntries(
+            Object.entries(observations).map(([optionId, text]) => [
+              optionId,
+              { captionText: text, spokenText: text },
+            ]),
+          ),
+        }
+      : {}),
     confirmLabel: "Mostrar para Burpee",
   };
 }
 
 const SCIENCE_INSTRUCTIONS: Record<string, string> = {
   "activity-sci-s1-discover": "Observe o ambiente e toque no que faz parte dele.",
-  "activity-sci-s1-practice": "Separe o que é natural do que foi construído pelas pessoas.",
-  "activity-sci-s1-challenge": "Escolha a conclusão e mostre a pista que apoia ela.",
+  /**
+   * CORRECTION: the previous line described a natural × artificial criterion,
+   * which is NOT what this Activity assesses. The authored targets are
+   * "Seres vivos" × "Não vivos", so the spoken instruction must say that.
+   */
+  "activity-sci-s1-practice":
+    "Você encontrou várias coisas aqui. Agora vamos separar o que tem vida do que não tem vida.",
+  "activity-sci-s1-challenge": "Olhe o ambiente e escolha a conclusão e a pista que apoia ela.",
   "activity-sci-s2-discover": "Olhe este ambiente brasileiro e toque no que você reconhece.",
   "activity-sci-s2-practice": "Ligue cada ambiente brasileiro ao seu nome.",
   "activity-sci-s2-challenge": "Diga qual é o ambiente e mostre a pista que apoia ela.",
@@ -102,8 +125,38 @@ const SCIENCE_INSTRUCTIONS: Record<string, string> = {
 
 function scienceNarration(): Record<string, ChallengeNarration> {
   return Object.fromEntries(
-    Object.entries(SCIENCE_INSTRUCTIONS).map(([id, text]) => [id, coastLine(text)]),
+    Object.entries(SCIENCE_INSTRUCTIONS).map(([id, text]) => [
+      id,
+      coastLine(
+        text,
+        undefined,
+        undefined,
+        SCIENCE_OBSERVATIONS[id],
+      ),
+    ]),
   );
+}
+
+/**
+ * Object-specific observation reactions (Discover only). Keyed by activity id
+ * and then by authored option id. Presentation copy: no new science claim, no
+ * evaluation, no answer.
+ */
+const SCIENCE_OBSERVATIONS: Record<string, Record<string, string>> = {
+  "activity-sci-s1-discover": {
+    "obs-planta": "Isso. A planta faz parte deste ambiente.",
+    "obs-passaro": "Boa observação! O pássaro também está neste ambiente.",
+    "obs-pedra": "Você encontrou a pedra. Ela também está aqui neste ambiente.",
+    "obs-agua": "Você encontrou a água. Ela também faz parte deste ambiente.",
+  },
+};
+
+/** Companion reaction to the object the child just touched, when configured. */
+export function getObservationLine(
+  narration: ChallengeNarration,
+  optionId: string,
+): NarrationLine | undefined {
+  return narration.observations?.[optionId];
 }
 
 const bySlot: Record<string, ChallengeNarration> = {
