@@ -2,8 +2,11 @@
  * Science Slot 1 correction guards.
  * Spec: docs/pedagogy/SCIENCE-SLICE-A-BUILD-GATE.md, docs/ux/CHALLENGE-STAGE.md
  */
-import { describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen, fireEvent } from "@testing-library/react";
+
+// vitest runs with globals:false, so RTL auto-cleanup is not registered.
+afterEach(cleanup);
 
 import { getChallengeNarration, getObservationLine } from "@/visual/world-config/narration";
 import { getItemPresentation } from "@/visual/world-config/item-presentation";
