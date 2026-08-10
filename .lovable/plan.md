@@ -1,572 +1,221 @@
-# Phase 1A — Visual Foundation Plan
+# Phase 1B — Character, Art, Motion & Audio Foundation
 
-> **RECONCILIATION.** Sections R1–R8 below supersede the corresponding parts of the
-> original plan after the merge of `NAVIGATION.md`, `TRANSITIONS.md`,
-> `COLOR-RESTORATION.md`, `RESPONSIVE.md`, `ANIMATION.md`, `ACTIVITY-SLOTS.md`,
-> `PET-COMPANIONS.md`, and the updated `OVERWORLD.md`, `MATHEMATICS-WORLD.md`,
-> `MAITTE.md`, `VISUAL-IMPLEMENTATION.md`. Where they conflict, R1–R8 win.
-> Superseded: G1, G2/G4, G3, G6, G7, G8, the ActivitySlot rows of Sections B/D/E,
-> and Section J. Everything else stands unchanged — Phase 0 preservation, the
-> evaluation pipeline, persisted facts + derived restoration, the nested-route
-> default, and "no new animation dependency".
+Experience-layer only. Phase 0 domain/evaluation/persistence and Phase 1A spatial architecture are preserved unchanged.
 
-## R1 — Revised Overworld concept (replaces G1)
+## P1 — Current-state audit
 
-One continuous illustrated magical geography in oblique storybook perspective, framed 16:10 for landscape tablet.
+**Reusable as-is (no change)**
+- `src/game/domain/*`, `src/game/evaluation/*`, `src/game/state/*`, `src/game/persistence/*`, `PuzzleTemplateHost`, `contract.ts` (template still emits only `UserResponse`).
+- Route hierarchy `/`, `/mundo/$worldId`, `/mundo/$worldId/desafio/$slotId`.
+- `RestoreGroup` / `RestorationLayer` mask-based restoration, derived from persisted facts.
+- `assetRegistry` logical-key indirection, `world-config` separation, `motion.ts` (`useReducedMotion`, `useHydrated`), CSS motion tokens in `styles.css`.
+- Folded-map navigation, Maittê region model (`heart` always restored, no encoded order).
 
-**Base da Esperança — approximately central.** It is the narrative home origin, not a seventh world and not a campsite. Concept-level ingredients only: Maittê's house, a small plaza with one tree, pets nearby. **No colored pennant, lantern, campfire or magical artifact.** At opening the Base is rendered in the same stolen-color line art as everything else.
+**Reusable with visual replacement (same API, richer art)**
+- `OverworldArt` (color/ink split kept; interiors redrawn with vegetation, terrain, depth).
+- `DunasDouradasArt` (band structure kept; redrawn as layered dunes + fg/mg/bg).
+- `SlotObjectArt` (kind + state contract kept; objects redrawn organically).
+- `MaitteFigure` (region ids kept; redrawn and re-authored into acting-state groups).
+- `ChallengeStageShell` (props kept; internal layout replaced by a staged desert scene).
 
-**Opening color anchor:** Maittê's green heart is the *only* intentionally saturated element on the map. This replaces the previous "base camp is the only colored element" statement, now forbidden by `COLOR-RESTORATION.md` and `OVERWORLD.md`.
+**Insufficient for Phase 1B (must be extended/replaced)**
+- `CompanionArt` — single static creature, no species identity, no acting states, sits as a corner sticker. Replace with a real concept pet + state prop.
+- `MaitteAvatar` — no acting state input; only progress/position.
+- `PlaceholderOrderTemplate` — web buttons + generic green `Pronto`.
+- Feedback in the challenge route — plain text string in a bubble; no character/world/audio channel.
+- No audio layer of any kind exists; no narration configuration exists.
 
-**Preferred provisional geography (from `OVERWORLD.md`, replaces the previous clockwise layout):**
-- northwest/west — Portuguese, Floresta das Letras;
-- north — History, Reino do Tempo, separated by mountain/height;
-- east/northeast — Geography, Vale dos Exploradores;
-- east/southeast — English, city region;
-- southwest — Mathematics, Deserto dos Números;
-- south/coast — Science, Oceano das Descobertas;
-- centre — Base da Esperança.
+**Architecturally off-limits**
+- Adding visual/audio/narration metadata to `src/game/domain/schemas.ts`.
+- Moving any evaluation into the visual layer or reading correctness from audio/animation.
+- Binding a pet id to a subject/skill; hardcoding the instruction sentence in a pet, template or shell.
+- Adding an animation or audio dependency (none is needed).
 
-No region is drawn as "nearest/first"; distances from the Base read as comparable so no global subject order is implied.
+## P2 — Art upgrade plan
 
-**Terrain transitions are organic, never tiled:** forest thins into fields, fields into the eastern valley, valley into roads and city outskirts, southwestern scrub into dunes, dunes into the southern coast, northern foothills into the kingdom plateau.
+### Overworld
+- **Issue:** primitive silhouettes, large empty areas, reads as a diagram.
+- **Upgrade:** per-region interiors gain vegetation clusters of varied scale, a few buildings/landmarks per region, terrain hatching and dune/wave/canopy texture, organic biome borders instead of clean polygons, foreground framing (branches, rocks, grass tufts at the frame edge), midground routes, faint background ridge line + atmospheric ink softening, and micro-details (birds, a kite, a lamp, animal tracks). Line-weight hierarchy: heavy foreground, medium midground, `INK_SOFT` background. A breathing ring of low detail is kept around each region label and hit area.
+- **Affected:** `OverworldArt.tsx` (split into `OverworldColor`, `OverworldInk`, plus per-region detail sub-components), `ink.tsx` (extra hatch/stipple/paper-grain patterns), `OverworldScene.tsx` only for an ambient-motion group.
+- **Replaceability:** same two exported layers behind the same registry keys; region ids, centroids and hits stay in `world-config`.
+- **Acceptance:** with zero progress the Overworld reads as an illustrated storybook map; labels and targets are never overlapped by new detail.
 
-**Paths:** faint dotted trails radiate from the Base to all six regions with equal weight. The Mathematics trail gains definition only through restoration, not by initial emphasis.
+### Dunas Douradas
+- **Issue:** three smooth bands plus a sun; empty midground.
+- **Upgrade:** 5–6 layered dune ridges with crest highlights and wind ripple texture; foreground stones, dry grasses and a half-buried object; midground trail with scattered pebbles and small creature tracks; background distant ruins and an atmospheric horizon haze; a subtle drifting-sand ambient group. Detail deliberately thins along the trail and around slot anchors.
+- **Affected:** `DunasDouradasArt.tsx`, `NavigationArt.tsx` (rock arch redraw), `SlotObjectArt.tsx`.
+- **Replaceability:** scene box 1600x900, route path and landmark anchors stay in `world-config`; nothing curricular enters scenery.
+- **Acceptance:** the board shows foreground/midground/background separation and at least eight non-interactive details, while slot objects remain the most legible shapes on screen.
 
-**Focal point:** the Base at the optical centre, with the northern mountain/kingdom mass and the southwestern dune ridge as balancing silhouettes.
+### Maittê
+- **Issue:** icon-like construction, one pose, single idle heart pulse.
+- **Upgrade:** redrawn concept figure with rounded confident varied-weight line work, expressive eyes/brows/mouth and roughly eight-year-old proportions, with every `MAITTE.md` identity feature preserved; authored as transform groups (`head`, `face`, `hairFront`, `hairBack`, `torso`, `armL`, `armR`, `legs`) plus swappable face parts (eyes open/closed/happy/thinking, mouth neutral/smile/open, brows).
+- **Affected:** `MaitteFigure.tsx`, `MaitteAvatar.tsx` (accepts `state`), registry key unchanged.
+- **Replaceability:** colour region ids and the `restored` prop are unchanged; no restoration order is encoded.
+- **Acceptance:** at board and stage scale her expression and pose are readable and clearly not an icon.
 
-**Maittê:** at/near the Base, ~7% of frame height, facing outward; her heart is the map's single colour accent.
+### Companion
+- **Issue:** generic creature, static, decorative.
+- **Upgrade:** one concept pet — **Burpee** (blue-merle Border Collie, blue eyes) as the Phase 1B demo configuration only, chosen for a sequencing demo; the pet id stays in `world-config` and can be switched to Pipoca, Will or Lyra with no code change. Layered groups (`body`, `head`, `ears`, `muzzle/mouth`, `tail`, `eyes`) drive the five acting states.
+- **Affected:** new `src/assets/game/characters/pets/BurpeeArt.tsx`; `CompanionArt.tsx` becomes a resolver by `petId` + `state`; registry key `character.pet.burpee`.
+- **Replaceability:** the resolver falls back to the current concept creature if a pet asset is missing.
+- **Acceptance:** the pet reads as a dog with personality, and its speaking state is obvious with sound off.
 
-**Camera framing:** fixed-aspect `viewBox` with a responsive focal point; crop/pan per `RESPONSIVE.md`. Never a card list at any width.
+### Challenge Stage
+- **Issue:** dialog + header + centred card reads as a web form over scenery.
+- **Upgrade:** full-bleed Dunas Douradas cutaway that visibly continues the board (same dune shapes, camera pushed in); companion staged left on the sand at world scale, Maittê staged right watching; the instruction caption rendered as a small sand-etched plate near the companion rather than a header; the diegetic folded map returns to the trail; a large speaker/shell replay object beside the companion; interaction on a cleared patch of sand in the centre with generous negative space.
+- **Affected:** `ChallengeStageShell.tsx`, the desert skin, `mundo.$worldId.desafio.$slotId.tsx` (composition only).
+- **Replaceability:** shell props remain `worldId/title/onClose/children/feedback` plus new presentation props; skin selection stays config-driven.
+- **Acceptance:** a reviewer cannot describe the screen as "a card with a prompt and a button".
 
-Region placement remains PROVISIONAL and adjustable during concept review if composition quality requires it.
+### Puzzle objects
+- **Issue:** four blob-buttons with numerals.
+- **Upgrade:** four carved desert stone tablets resting in shallow sand hollows, each with a hand-carved mark, varied silhouettes and a lift/settle response. Sockets in the sand show the four ordered positions left to right.
+- **Affected:** new `src/assets/game/objects/OrderStoneArt.tsx`; `PlaceholderOrderTemplate.tsx` presentation only.
+- **Replaceability:** labels still come from `item.options`; stones stay generic and encode no curriculum truth.
+- **Acceptance:** the interaction looks like moving stones in Dunas Douradas, and both drag and tap-to-place still work.
 
-## R2 — Revised Mathematics Board concept (replaces the board parts of G2/G4)
+## P3 — Character acting plan
 
-**Opening Zone: `Dunas Douradas` (PROVISIONAL name).** The Board does **not** start at the oasis.
+| Character | State | Visual pose/expression | Motion | Trigger | Reduced-motion |
+|---|---|---|---|---|---|
+| Maittê | idle-curious | weight on one leg, head slightly turned, eyes open, faint smile | breath scale on torso, blink swap, 4s loop | default in world/board | static pose, blink only |
+| Maittê | listen-think | turned toward companion, brow raised, hand near chin | one-off head tilt, then slow breath | narration playing | pose applied instantly |
+| Maittê | success | upright, arms slightly out, happy eyes, open smile | small hop + heart pulse burst | `outcome === "correct"` | pose + heart pulse |
+| Maittê | retry-thinking | gaze down to the stones, brow lightly furrowed, hand at side | slow head turn toward manipulables | incorrect/partial outcome | pose swap only |
+| Maittê | move | walking silhouette, forward lean | translate along path + subtle vertical bob | current slot changes | direct reposition, short fade |
+| Burpee | idle | seated, tail resting, ears up | breath, ear twitch, blink | stage open, not narrating | static |
+| Burpee | speak | leaning forward, muzzle open, ear forward, speech cue arc near head | 2-state mouth alternation ~180ms + small head bob | narration active | mouth open + cue shown, no bob |
+| Burpee | listen/watch | head turned toward stones, ears forward, tail low | slow gaze/head turn | child interacting | pose swap |
+| Burpee | success-reaction | standing, tail up, happy squint | tail wag + one hop | correct outcome | tail-up pose |
+| Burpee | retry/hint-reaction | head tilt, one ear down, curious eyes, nose toward stones | head tilt tween | incorrect outcome or hint | tilted pose |
+| Burpee | entrance (optional) | trots in from the dune edge | translate + fade, 500ms | stage mount | fade in only |
 
-- **Perspective:** oblique elevated storybook view; the Zone is one illustrated chunk, wider than the viewport, with controlled horizontal panning or fit-to-viewport framing.
-- **Landscape:** broad golden dunes — in stolen state: warm paper, confident ink line, hatched dune shadows, wind ripples, sparse dry brush and stone.
-- **Route:** a curved trail embedded in the scenery, entering at the near/left edge where **Maittê starts**, rising over a dune saddle and continuing toward the far side of the Zone.
-- **Activity Slots:** scenery objects along the route — carved standing stone, footprints in the sand, a wind-worn marker post, a small dry-wash crossing — never buttons or numbered circles.
-- **Orientation landmark:** one visible mid-route landmark (wind-carved rock arch is the concept proposal). It owns no curriculum and is not named after any operation.
-- **Anticipation:** a distant unnamed ruin/pyramid-like silhouette as atmosphere, plus a far hint of green/water readable as **`Oásis dos Enigmas`, the next-Zone preview only**. Not enterable in Phase 1A.
-- **Restoration:** colour travels along the route from the entry side outward as slots complete, per `COLOR-RESTORATION.md`; each completed slot restores its local stretch. Non-colour cues (clarity, small life, restored path texture) accompany every state change.
-- **Curriculum independence:** no scenery element encodes Number Sense or any skill; the Zone must accept Slices A, B and C without redesign.
+## P4 — Audio architecture plan
 
-Names, landmark and slot-object choices remain PROVISIONAL pending art review.
-
-## R3 — Revised Maittê restoration model (replaces the G3 restoration paragraphs)
-
-Character traits stand as in G3 and `MAITTE.md`: dark brown hair below the shoulders, waved tips, marked fringe, subtle light lock, pink glasses (current canonical direction), skirt, colourful socks, unbranded high-top canvas sneakers, green heart, ~8-year-old proportions, original stylised line art with light manga/anime influence.
-
-**The previously proposed order heart → shirt → socks → skirt/hair → shoes/glasses is withdrawn.** No restoration order is proposed or implied.
-
-Model:
-- the asset is authored as **independently addressable colour regions**: `heart`, `glasses`, `hairStreak`, `hair`, `shirt`, `skirt`, `socks`, `shoes`, each a separate layer/group toggled by an opacity or mask value;
-- `heart` is saturated from opening and is excluded from any progression mapping — it is the hope anchor;
-- a **configurable region→milestone mapping table** lives in the visual configuration layer (not domain, not state); changing which region restores when is a config change with no asset restructuring;
-- selectors supply derived progress only; the mapping interprets it;
-- Phase 1A demonstrates the stolen state plus **one** partial state, explicitly labelled a demonstration rather than a reward order;
-- the same layered asset serves board, map and future icon scale, and leaves room for a future accessory slot for the glasses.
-
-## R4 — Revised diegetic navigation (replaces G6)
-
-**Folded world map = the primary, and for Phase 1A the only, diegetic control.** The backpack navigation proposal is withdrawn.
-
-- **Object:** a small folded paper map resting in the scene, drawn in the world's illustrated language.
-- **Function:** return from a subject world to the Overworld. Nothing else. It is not a menu.
-- **Placement:** lower-left of the Board, resting on scenery rather than floating in a bar. PROVISIONAL position.
-- **Target:** ≥ 72 px effective touch target, larger on tablet.
-- **Interaction:** touch/hover lifts and partially unfolds a corner; press unfolds it and hands off directly into the spatial zoom-out.
-- **Accessibility:** semantic `<button>` with a programmatic label (e.g. "Voltar ao mapa do mundo"), visible keyboard focus as a warm glow, never a text link.
-- **Reduced motion:** unfold/lift dropped; the action and a short fade remain.
-
-**Backpack:** FUTURE / concept-only. Phase 1A may reserve space for it visually near Maittê but implements no behaviour — no profile, collection, clothing or settings — and never merges it with the folded map. Parent/admin access remains a separate undecided surface.
-
-## R5 — Revised ActivitySlot / visual metadata boundary (replaces the ActivitySlot rows in Sections B, D, E)
-
-**Correction to Section B:** the earlier allowance to add optional visual metadata such as `visualKind` to the domain schema is withdrawn. Per `ACTIVITY-SLOTS.md` §Presentation separation and `VISUAL-IMPLEMENTATION.md` §5, the educational/domain schema stays visually agnostic.
+Dependency flow:
 
 ```text
-src/game/domain/schemas.ts   ActivitySlot: id, worldId, segment/zone id, order,
-                             anchor {x,y} (neutral spatial), restorationWeight,
-                             activity sequence.            <- UNCHANGED, no art
-src/visual/world-config/     worldVisuals[worldId] -> { zones, sceneLayers, routePath }
-                             slotVisuals[slotId]   -> { objectKind, offset, scale, states }
-                             landmarks[landmarkId] -> { assetKey, anchor }
-                             characterRegions      -> Maittê region -> milestone mapping
-                             stageSkins[worldId]   -> Challenge Stage skin
-src/visual/assetRegistry.ts  logical asset key -> imported asset module
+world-config/narration.ts (presentation config, keyed by activityId/slotId)
+        |  { captionText, spokenText, audioKey?, locale, voiceProfileKey? }
+        v
+useNarration()  --->  audio/narrationService.ts
+        |                  |- audioRegistry (logical key -> file URL)  [preferred]
+        |                  |- speechSynthesis fallback                 [MVP]
+        v
+ChallengeStageShell: caption plate + replay object + companion `speaking` flag
 ```
 
-Rules:
-- visual config is keyed by **stable slot / zone / world ids** and consumes the existing neutral `anchor`;
-- domain never imports `src/visual/**`; the visual layer never imports evaluation or persistence;
-- a missing `slotVisuals` entry falls back to a default scenery object rather than crashing;
-- re-skinning or moving a slot visually requires no change under `src/game/**`;
-- enforced by extending the existing `no-restricted-imports` lint rules;
-- **Asset plan change:** the `visualKind` column in Section E is re-read as a key of `slotVisuals`, not a domain field. All other asset rows unchanged.
+- **Ownership:** narration content lives in the visual/presentation config layer (`src/visual/world-config/narration.ts`), never in `src/game/domain` schemas, and never inside the pet, template or shell.
+- **Service:** a single module-level controller with `speak(request)`, `stop()` and `state` (`idle | speaking | blocked | unsupported`). Only one narration at a time; `speak` always cancels the previous one, so repeated replay taps cannot stack.
+- **Asset registry:** `audioRegistry` maps logical keys (`vo.slot-1.instruction`, `sfx.select`, `sfx.place`, `sfx.success`, `sfx.retry`, `sfx.restore`) to files. A missing key or load error falls through to speech synthesis; if both are unavailable the state becomes `unsupported`.
+- **Fallback:** feature-detect `window.speechSynthesis`; when unsupported the caption stays and the replay control carries a "sem áudio neste aparelho" accessible label.
+- **Autoplay:** narration is requested on stage mount, which follows the child's slot tap. If it throws or emits no `start` within roughly 600ms the state becomes `blocked`, the replay object pulses visibly and the caption gains a hint; one tap plays it.
+- **Cleanup:** stage unmount and route change call `stop()`; the companion speaking state clears with it.
+- **SFX:** short one-shots at low gain, ducked or skipped while narration is speaking. No SFX ever determines correctness.
+- **Accessibility:** caption always rendered; large replay target (at least 64px); `aria-label="Ouvir instrução novamente"`; `role="status"` for narration state changes; no microphone.
 
-## R6 — Revised Challenge Stage visual architecture (replaces G7)
+## P5 — Current challenge transformation
 
-**One common functional shell, world-specific skins.** The parchment-and-rope frame is withdrawn as a universal treatment.
+1. The child taps the carved stone on the Dunas Douradas trail; the stone lifts slightly and a soft place-sound plays.
+2. The camera pushes into that stretch of dune — the stage keeps the same dune silhouettes, so it reads as continuing rather than navigating away.
+3. Burpee trots in from the left dune edge and sits in the sand facing the child; Maittê stands to the right and turns into `listen-think`.
+4. Burpee enters `speak`: mouth alternates, head bobs, a small speech cue arc appears near his head, and the narration says "Vamos colocar do menor para o maior."
+5. Simultaneously a short caption appears on a sand-etched plate under him with the same sentence. If audio was blocked the plate stays and the shell-shaped replay object beside Burpee pulses.
+6. Four carved stone tablets sit in a row of shallow sand sockets in the cleared centre. Ambient sand drift pauses. Tapping a stone lifts it with a soft click; tapping another swaps them with a settle and a small sand puff. Dragging works identically.
+7. Burpee switches to `listen/watch`, nose toward the stones.
+8. **Success:** the stones settle in sequence with a warm short chime, Burpee's tail wags with a hop, Maittê hops and her heart pulses, colour blooms outward from the stone group, then the camera pulls back to the board where the local bloom persists and Maittê walks to the next slot.
+9. **Retry:** a soft low tone, the stones nudge gently back into their sockets (nothing resets), Burpee tilts his head with one ear down, Maittê moves to `retry-thinking` looking at the stones, the caption plate shows the supportive line from the content pack, and the replay object brightens. No red, no X, no progress lost.
 
-- `stage/ChallengeStageShell` owns only what every world shares: emergence from the selected slot anchor, board-context preservation, focus management and order, instruction region, large touch interaction region, reserved support/audio affordance, feedback states, return choreography.
-- Appearance comes from a **skin resolved by world id** in `stageSkins`: frame asset, edge treatment, backdrop treatment, palette tokens, ambient detail. Future Forest / Ocean / Kingdom / Valley / City skins are config entries with no shell change.
-- **Mathematics Phase 1A skin (PROVISIONAL concept):** a sun-bleached canvas panel stretched between two weathered desert posts, sand drifting at its base, occupying roughly the centre 72% of the viewport; dune horizon and route stay visible around it.
-- **Backdrop rule:** the Board is dimmed and slightly softened, never covered by an opaque neutral scrim. Per `ANIMATION.md` §Attention protection, peripheral ambient motion is reduced while a challenge is focused.
-- **Emergence/return:** transform-origin at the slot anchor; on success the frame recedes into the object, the object restores colour, colour flows along its route stretch, then Maittê moves. State never waits on animation.
-- **Companion:** a `CompanionSlot` at the frame edge takes a **pet id from configuration**. Per `PET-COMPANIONS.md` no pet is assigned to Mathematics or any skill; Phase 1A validates the entrance shell with one configurable concept pet. Dialogue, audio and all four production assets stay out of scope.
-- On narrower viewports the frame may take more of the viewport but keeps visible world context and large targets.
+## P6 — `Pronto` decision
 
-## R7 — Updated GAP / ASSUMPTION register
+**DIEGETIC CONFIRMATION.**
 
-Resolved by the merged Specs and removed: the six absent UX/design specs, ACTIVITY-SLOTS, PET-COMPANIONS, the navigation object, the Maittê restoration order, restoration granularity, the "Deserto dos Números" display name, companion selection, and the visual-metadata boundary.
+Auto-evaluation is unsafe for this mechanic: the ordering interaction has no unambiguous completed state — the four stones always occupy a complete permutation, including the initial shuffled one, so "all placed" is already true before the child has done anything. Evaluating on every swap would record touch slips and intermediate arrangements as attempt evidence, corrupting the Phase 0 evidence trail, and would fire a retry reaction while the child is still mid-thought. Debouncing only hides the same problem.
 
-Remaining, none blocking Build:
+Phase 1B therefore keeps an explicit confirmation, but as a world object rather than a form control: a carved sand seal / hand-print stone beside the row, tablet-sized, with an accessible label ("Mostrar para o Burpee"), which Burpee looks toward. It stays inert until the child has moved at least one stone, which removes the accidental first-tap submission. This decision is scoped to the ordering mechanic and is not proposed as a universal rule.
 
-[ASSUMPTION] — Overworld region placement and Base composition
-Specs: `OVERWORLD.md` (preferred provisional geography)
-Description: R1 follows the preferred arrangement; exact positions and Base ingredients are concept-level.
-Handling: build to R1; adjust after preview review.
-Must resolve before Build? NO
+## P7 — Motion plan
 
-[ASSUMPTION] — `Dunas Douradas` art, landmark, route length and slot count
-Specs: `MATHEMATICS-WORLD.md` (PROVISIONAL)
-Description: rock arch, distant ruin silhouette, slot object set and route length are proposals.
-Handling: keep in `worldVisuals`/`slotVisuals`; review from the preview.
-Must resolve before Build? NO
-
-[ASSUMPTION] — Mathematics Challenge Stage skin
-Specs: `VISUAL-IMPLEMENTATION.md` §10
-Description: the canvas-and-posts desert frame is a concept.
-Handling: skin is config-resolved and replaceable.
-Must resolve before Build? NO
-
-[ASSUMPTION] — Animation timings and easing
-Specs: `ANIMATION.md`, `TRANSITIONS.md` (PROVISIONAL)
-Description: Section F durations are test values.
-Handling: centralise as motion tokens; tune on tablet preview.
-Must resolve before Build? NO
-
-[ASSUMPTION] — No new animation dependency
-Specs: `ANIMATION.md` §Implementation
-Description: CSS transforms/keyframes + WAAPI assumed sufficient.
-Handling: if insufficient during Build, stop and raise a dependency proposal.
-Must resolve before Build? NO
-
-[GAP] — Mathematics minion, numeric breakpoints, spoken instruction/audio
-Specs: `MATHEMATICS-WORLD.md`, `RESPONSIVE.md`, `PET-COMPANIONS.md`; no AUDIO spec
-Description: all three are outside Phase 1A scope; only a reserved position for a future support/audio control is included in the shell.
-Handling: leave unresolved; do not implement.
-Must resolve before Build? NO
-
-[GAP] — Stale spec references in Phase 0 code comments
-Specs: `docs/ux/BOARDS.md`, `docs/design/RESTORATION-OF-COLOR.md` (never existed)
-Handling: correct comments during Build.
-Must resolve before Build? NO
-
-[CONFLICT] — SEO head metadata vs. no visible page heading
-Specs: `VISUAL-IMPLEMENTATION.md` §3 vs. platform SEO requirements
-Handling: keep per-route `head()` meta; render one visually-hidden H1 per route.
-Must resolve before Build? NO
-
-## R8 — Build readiness statement
-
-Every item previously marked "must resolve before Build" is now resolved by the merged Specs and by R1–R6. The remaining entries are PROVISIONAL concept details reviewable from the interactive preview against the twelve acceptance criteria, and none block starting work.
-
-`PHASE 1A READY FOR BUILD`
-
----
-
-## Section A — Reading confirmation
-
-### Specifications read
-- `AGENTS.md`
-- `docs/README.md`
-- `docs/WORKFLOW.md`
-- `docs/design/VISUAL-IMPLEMENTATION.md` (primary spec)
-- `docs/design/ART-DIRECTION.md`
-- `docs/product/PRODUCT-VISION.md`, `docs/product/DESIGN-PRINCIPLES.md`, `docs/product/MVP-SCOPE.md`
-- `docs/narrative/UNIVERSE.md`, `docs/narrative/MAITTE.md`, `docs/narrative/VILLAIN.md`
-- `docs/worlds/OVERWORLD.md`, `docs/worlds/MATHEMATICS-WORLD.md` (exists; authoritative)
-- `docs/ux/WORLD-BOARD.md`, `docs/ux/CHALLENGE-STAGE.md`
-- `docs/technical/ARCHITECTURE.md`, `STATE.md`, `CONFIG-SCHEMAS.md`, `PERSISTENCE.md`
-- `docs/adr/ADR-009-PUZZLE-RESPONSE-EVALUATION-BOUNDARY.md`
-- Additionally consulted: `docs/gameplay/PROGRESSION.md`, `docs/gameplay/PUZZLE-SYSTEM.md`, `docs/pedagogy/*`
-
-### Absent specifications (registered as GAP, see Section J)
-`docs/ux/NAVIGATION.md`, `docs/ux/TRANSITIONS.md`, `docs/ux/FEEDBACK.md`, `docs/design/COLOR-RESTORATION.md`, `docs/design/RESPONSIVE.md`, `docs/design/ANIMATION.md`, `docs/design/AUDIO.md`, `docs/gameplay/ACTIVITY-SLOTS.md`, `docs/gameplay/SUPPORT-LEVELS.md`, `docs/gameplay/XP.md`, `docs/narrative/STORY.md`, `docs/narrative/PET-COMPANIONS.md`, `docs/narrative/LACKEYS.md`, `docs/product/GAME-LOOP.md`, `docs/worlds/{PORTUGUESE,SCIENCE,HISTORY,GEOGRAPHY,ENGLISH}-WORLD.md`, `docs/pedagogy/CURRICULUM-SOURCES.md`.
-
-`docs/worlds/MATHEMATICS-WORLD.md` is NOT absent. Its unresolved biome/landmark/minion/name details are PROVISIONAL.
-
-### Phase 0 implementation read
-- Routes: `src/routes/index.tsx`, `mundo.$worldId.tsx`, `mundo.$worldId.index.tsx`, `mundo.$worldId.desafio.$slotId.tsx`, `__root.tsx`
-- State: `GameStateProvider.tsx`, `reducer.ts`, `selectors.ts`, `types.ts`
-- Restoration: `src/game/restoration/RestorationLayer.tsx` (mask + opacity techniques already spiked)
-- Persistence: `adapter.ts`, `local-storage.ts` (schemaVersion 1)
-- Stage/templates/registries: `PuzzleTemplateHost.tsx`, `templates/contract.ts`, `PlaceholderOrderTemplate.tsx`, `registries/index.ts`
-- Domain/evaluation: `domain/schemas.ts`, `domain/responses.ts`, `evaluation/*`
-- Content: `content/placeholder-fixture.ts` (world "Mundo de Demonstração Técnica", segments "Trecho A/B", 3+ slots with `anchor {x,y}` already present)
-- Stack: TanStack Start/Router, React 19, Tailwind v4 (`src/styles.css`), no animation library installed.
-
-Observed stale doc references inside code comments (`docs/ux/BOARDS.md`, `docs/design/RESTORATION-OF-COLOR.md`) point at files that do not exist — registered as GAP.
-
----
-
-## Section B — Preservation of Phase 0
-
-| Area | What exists | Why preserved | Phase 1A may change | Forbidden violation |
-|---|---|---|---|---|
-| `src/game/domain/` | Zod schemas for Subject/Skill/Pack/Activity/Slot/World; `responses.ts` union | Contract layer for all content | Add optional, purely visual metadata on slot/world (e.g. `anchor`, `visualKind`) via schema extension, reviewed | Adding skill/answer/art coupling; putting asset URLs in domain |
-| `src/game/state/` | Facts-only store, reducer, selectors | Single source of progression truth | Add new *derived* selectors (e.g. per-slot restoration, avatar tier) | Persisting restoration %, storing visual state, second progress source |
-| `src/game/evaluation/` | Evaluator registry, orchestrator, AttemptResult→Evidence | ADR-009 boundary | Nothing | Any evaluation inside a visual component |
-| `stage/PuzzleTemplateHost` | Resolves template, forwards UserResponse | Seam between stage and template | Wrap it in a new illustrated shell; pass presentation props only | Making the shell evaluate or inspect answers |
-| `templates/` | `PlaceholderOrderTemplate`, contract, tap+drag | Touch-integrity rule | Restyle within the shell | Template importing state/selectors/assets registry |
-| `registries/` | Template + evaluator registration | Pluggability | Add a parallel, separate **visual asset registry** (not merged into this one) | Registering art in the template registry |
-| `persistence/` | Adapter + localStorage, schemaVersion 1 | Save compatibility | Nothing (no schema bump expected) | Writing visual prefs into the save without a version bump |
-| `restoration/RestorationLayer` | Derived 0..1 prop, mask/opacity techniques | Proven derived-restoration mechanism | Generalize: direction, feather, per-region masks, reduced-motion | Reading state inside it; local decorative CSS disconnected from selectors |
-| UserResponse boundary | Template → UserResponse → Evaluator | ADR-009 DECIDED | Nothing | Correctness in UI |
-| Activity / ActivitySlot | Activity location-agnostic; slot owns placement | DECIDED | Use existing `slot.anchor` for scenery placement | Adding `slotId` to Activity |
-| Route/spatial continuity | Board layout with `<Outlet />` overlay | **Spatial continuity is DECIDED**; the nested-route technique is the current default and PROVISIONAL | Keep as-is for Phase 1A | Replacing the overlay with a full page navigation that unmounts the board |
-
-No alternative to the nested-route technique is proposed for Phase 1A. It already satisfies continuity, state and orchestration.
-
----
-
-## Section C — Removal / Replacement of Phase 0 scaffolding
-
-| Phase 0 pattern | Current location | Why non-canonical | Removal method | Adventure-language replacement | Risk |
+| Motion | Purpose | Technique | Priority | Reduced-motion | Risk |
 |---|---|---|---|---|---|
-| `<header>` + `<h1>Aventuras da Maittê</h1>` page heading | `routes/index.tsx` | Web-app heading, not a world | Delete from player path; title stays in `head()` meta only | Title appears as illustrated map cartouche/banner inside the parchment, or not at all | Loss of SEO H1 → keep one visually-integrated H1 styled as map lettering |
-| Subtitle "Fase 0 — esqueleto técnico…" | `routes/index.tsx` | Technical terminology visible to child | Delete | None (or diegetic first-visit hint) | None |
-| Section heading "Regiões" | `routes/index.tsx` | Dashboard section language | Delete | Regions readable as places; `aria-label` carries the semantics | Screen-reader nav → nav landmark with hidden label |
-| World as big gradient card + "Cor restaurada: N%" | `routes/index.tsx` | Card grid ≠ geography | Replace component | `OverworldMap` region hit areas over illustration; progress shown by restored color | Hit-area accuracy on illustration |
-| "Mundo de Demonstração Técnica" | `content/placeholder-fixture.ts` | Placeholder name in player path | Introduce a *presentation-level* display name for the Mathematics region; fixture stays technical or is renamed in a reviewed content module | "Deserto dos Números" (PROVISIONAL) | Must not become a curriculum decision |
-| "← Mapa do mundo" text link | `mundo.$worldId.tsx` | Corporate nav | Delete | Diegetic navigation object (Section G6) | Discoverability → must be tested |
-| Board `<h1>` + "Cor restaurada: N%" | `mundo.$worldId.tsx` | Dashboard | Delete/replace | Region name as small diegetic sign; progress via color | Accessibility → visually-hidden H1 |
-| "Trecho A"/"Trecho B" section labels + gray containers | `mundo.$worldId.tsx` | Dashboard sections | Replace with single continuous scene | Segments become route stretches in one illustration | Segment semantics must survive in state only |
-| Rectangular slot buttons "Desafio"/"Concluído" | `mundo.$worldId.tsx` | Level buttons | Replace with `ActivitySlotMarker` | Scenery objects (see G4) | Touch target size must stay ≥ 64px |
-| Dashed "Bloqueado" box | `mundo.$worldId.tsx` | Disabled-UI language | Replace | Stolen-color scenery + faded path; label via `aria-disabled` + hidden text | Must not rely on color alone |
-| Full-screen neutral scrim + white card + `<h1>Desafio</h1>` + "Voltar ao tabuleiro" button | `mundo.$worldId.desafio.$slotId.tsx` | Generic modal | Replace shell only | `ChallengeStageShell` growing from the slot, biome visible around | Focus trap and return path must be preserved |
+| Maittê idle (breath/blink) | character life | CSS keyframes on SVG group + timed face part swap | enrichment | static pose | low |
+| Maittê listen/think | shows attention to narration | CSS transition on head group transform | essential | instant pose | low |
+| Maittê success | success channel | CSS hop keyframe + heart pulse | essential | pose + pulse | low |
+| Maittê move between slots | spatial causality | CSS transform transition (already present) | essential | instant reposition | low |
+| Companion entrance | stage becomes an event | CSS translate + opacity, 500ms | enrichment | fade only | low |
+| Companion speak | identifies the speaker | React state from narration + 2-state mouth swap on interval | essential | open mouth + cue, no bob | interval cleanup on stop |
+| Companion success/retry | non-punitive feedback | CSS keyframes on tail/head groups | essential | pose swap | low |
+| Stone select/place | touch acknowledgement | CSS transform transition + sand puff opacity | essential | opacity/outline only | must not gate response emit |
+| Restoration bloom | cause and effect | existing mask radius transition | essential | immediate final mask | already proven |
+| Ambient sand drift | living world | CSS `drift-slow` on a low-opacity group, paused in stage | enrichment | not rendered | keep off the puzzle area |
 
----
+No animation dependency is added. No state change listens to an animation-end event; every visual state is derived from React state that is already committed.
 
-## Section D — Component plan
+## P8 — Asset plan
 
-| Component | Purpose | Governing spec | Replaces | State connection | Status |
-|---|---|---|---|---|---|
-| `world/OverworldScene` | Root of the illustrated map, camera/viewBox owner | OVERWORLD, VISUAL-IMPLEMENTATION §4 | index page body | reads region restoration selectors | Functional |
-| `world/MapLayer` | Generic ordered layer wrapper (z, parallax factor) | VISUAL-IMPL §5 | — | none | Functional |
-| `world/RegionHitArea` | Accessible SVG path/polygon destination | §4.1, §12 | world card link | slot/world availability | Functional |
-| `world/RegionRestoration` | Per-region stolen↔restored visual | §4.4 | percentage text | `selectRegionRestoration` | Functional |
-| `world/BaseDaEsperanca` | Origin landmark | UNIVERSE | — | none | Concept asset |
-| `world/DiegeticNav` | Map/backpack-style navigation object | §6 | text links | route only | Functional (concept art) |
-| `world/SpatialZoomTransition` | Overworld→Mathematics camera move | §4.5 | none | none | Functional |
-| `character/Maitte` | Character with scale + restoration tiers | MAITTE | — | `selectAvatarRestoration` | Concept asset |
-| `board/MathBoardScene` | Continuous illustrated route scene | WORLD-BOARD, §8 | segment sections | slot states | Functional |
-| `board/RoutePath` | Curved illustrated path w/ restored/stolen stretches | WORLD-BOARD | gray containers | segment restoration | Functional |
-| `board/ActivitySlotMarker` | Scenery object + 3 states | §8 | slot buttons | `selectSlotState`, `selectCurrentSlot` | Functional |
-| `board/Landmark` | Orientation scenery, curriculum-free | §8, MATH-WORLD | — | optional restoration | Concept asset |
-| `board/MaitteOnBoard` | Position binding + move animation | WORLD-BOARD | — | `selectCurrentSlot` | Functional |
-| `stage/ChallengeStageShell` | Illustrated frame around `PuzzleTemplateHost` | CHALLENGE-STAGE, §9 | white card modal | none (presentation) | Visual shell |
-| `stage/CompanionEntrance` | One concept companion appearing at stage | UNIVERSE §Companions | — | none; pet id passed as prop | Concept asset |
-| `stage/StageFeedback` | Success/retry visual response | CHALLENGE-STAGE | inline text | receives AttemptResult from route | Visual shell |
-| `visual/assetRegistry` | Maps logical ids → asset modules | §10 | — | none | Future-ready |
-| `visual/useReducedMotion`, `visual/useMapCamera` | Motion + framing utilities | §12, §11 | — | none | Functional |
-| `RestorationLayer` (modified) | Direction/feather/region options | STATE | — | prop only | Functional |
+| Asset | Type | Format |
+|---|---|---|
+| Overworld ink/colour redraw + region detail parts | functional concept asset | inline SVG components |
+| Extra ink patterns (stipple, paper grain, soft haze) | functional concept asset | inline SVG defs |
+| Dunas Douradas layered scene redraw | functional concept asset | inline SVG components |
+| Rock arch, ruins, dry plants, stones | functional concept asset | inline SVG components |
+| Maittê figure with acting groups and face parts | functional concept asset | inline SVG component |
+| Burpee concept pet with acting states | functional concept asset | inline SVG component |
+| Order stone tablets, sand sockets, confirmation seal | functional concept asset | inline SVG components |
+| Replay speaker/shell object | functional concept asset | inline SVG component |
+| Caption plate / sand-etched panel | functional concept asset | inline SVG + HTML text |
+| Instruction narration for the placeholder challenge | replaceable placeholder | browser speech synthesis, audio key reserved |
+| SFX: select, place, success, retry, restore | replaceable placeholder | short audio files or generated tones |
+| Final pet voices, music, production SFX, remaining three pets, other five worlds | future production replacement | out of Phase 1B |
 
-No component introduces new gameplay behavior.
+## P9 — Acceptance matrix
 
----
-
-## Section E — Asset plan
-
-All assets live under `src/assets/game/**` and are referenced through `src/visual/assetRegistry.ts`. Never inside `domain/`, `state/`, `content/`, `evaluation/`, `persistence/`.
-
-| Asset | Purpose | Format | Tablet scaling | States | State integration | Replaceability | Approval? |
-|---|---|---|---|---|---|---|---|
-| Overworld base (sky/parchment/atmosphere) | Backdrop | Raster (WebP) or CSS gradient+grain | 2048px wide, `object-fit: cover` in fixed viewBox | single | none | registry key `overworld.base` | Yes |
-| Overworld terrain + 6 region shapes | Geography | Hybrid: raster painting + SVG region outlines/hit paths | SVG scales; raster @1x/@2x | line-art / colored pair per region | per-region restoration selector | one file per region | Yes |
-| Mathematics region art | Destination identity | Layered raster (line, color, detail) | @2x max 1600px | stolen / partial / restored | `selectRegionRestoration` | swap folder | Yes |
-| Maittê | Protagonist | SVG (preferred) or layered PNG | vector; board ~180px, map ~90px | stolen (green heart only), partial, restored; idle + move | `selectAvatarRestoration` | single module | Yes |
-| Board scene (Number Desert) | Board backdrop | Layered raster + SVG path overlay | 2400px wide, horizontal camera | per-segment restoration | `selectSegmentRestoration` | folder swap | Yes |
-| Route path | Journey line | SVG path | vector | traversed / current / untraveled | slot states | data-driven path string | Yes |
-| Activity Slot markers (3-4 object kinds) | Slot presence | SVG sprites | vector | locked / available / completed | `selectSlotState` | registry map by `visualKind` | Yes |
-| Landmark (≥1) | Orientation | Layered raster or SVG | @2x | stolen / restored | segment restoration | registry key | Yes |
-| Diegetic nav object | Navigation | SVG | vector, ≥72px target | rest / hover / active | none | registry key | Yes |
-| Restoration masks | Reveal geometry | SVG mask paths / CSS gradients | vector | derived | progress prop | per-region mask file | Yes |
-| Challenge Stage shell frame | Focus frame | SVG 9-slice-like frame + CSS | vector | idle / success / retry | none | registry key | Yes |
-| Companion (1 pet, concept) | Guide presence | SVG or PNG | ~200px | idle / entrance | none | registry key, pet id prop | Yes |
-
-Asset generation approach for Build: original illustrated concept assets produced for this project; no imitation of any existing artist/studio/character.
-
----
-
-## Section F — Transition plan
-
-No new animation dependency is proposed. Rationale: every transition below is a transform/opacity/mask animation on a small number of layers, expressible with CSS transitions, CSS keyframes and (where sequencing is needed) the Web Animations API, which is available in all target browsers and already supported by the current stack. Framer Motion/GSAP would add ~30-120KB gzipped and a second animation paradigm without solving anything listed here. If, during Build, the zoom + crossfade sequencing proves unmaintainable in raw WAAPI, adding `motion` will be raised as a **PROPOSAL requiring approval**, not applied unilaterally.
-
-| # | Transition | Intended experience | Implementation | New dep | Normal motion | Reduced motion | Fallback | Risk |
-|---|---|---|---|---|---|---|---|---|
-| 1 | App opening / Overworld reveal | Book/world waking up | CSS keyframes: slow atmospheric fade + 1.02→1.0 scale, staggered layer opacity | No | 900ms | Instant render, no scale | Static map | Low |
-| 2 | Overworld → Mathematics zoom | Traveling into the region | "Fake camera": animate `transform: scale()+translate()` on the map container with focal origin at region centroid; crossfade to board scene at ~70% | No | 700-900ms ease-in-out | 150ms crossfade only | Crossfade only | GPU cost on large rasters → mitigate with `will-change`, downscaled zoom-out texture |
-| 3 | Zoom landing → Board | Continuity of place | Board mounts pre-scaled at 1.06 and settles to 1.0 while zoom overlay fades | No | 300ms | Immediate | Immediate | Timing mismatch → single shared transition controller |
-| 4 | Board → Challenge Stage | Slot object opens into the challenge | Slot anchor drives transform-origin; frame scales up from marker; board behind gets slight blur+dim (never opaque neutral scrim) | No | 450ms | Fade 120ms, no scale | Fade | Blur perf on tablet → fallback to dim+desaturate only |
-| 5 | Challenge Stage → Board | Returning to the world | Reverse of #4, then restoration + move sequence | No | 400ms | Fade | Fade | Focus restoration to slot marker |
-| 6 | Color restoration | Color flows back | `RestorationLayer` mask position/opacity transition on the completed stretch | No | 800ms flow | Snap to final derived value | Opacity crossfade | Mask support → opacity technique fallback (already spiked) |
-| 7 | Maittê movement | She walks/hops on | CSS transform along precomputed path points, 2-3 keyframe hops | No | 600ms | Instant reposition | Instant reposition | Path/anchor mismatch |
-| 8 | Companion entrance | Pet appears from scenery | Translate + slight squash, opacity | No | 400ms | Fade in | Fade | None |
-| 9 | Return to Overworld | Camera pulls out | Inverse of #2 | No | 700ms | Crossfade | Crossfade | Same as #2 |
-
-All transitions read `prefers-reduced-motion` through one shared hook; state changes are never gated on animation completion.
-
----
-
-## Section G — Visual Concept Gate
-
-This section is a proposal for human visual approval. Nothing here is DECIDED by this plan.
-
-### G1. Overworld composition
-A single landscape parchment-map illustration in an oblique, slightly elevated storybook perspective, framed at 16:10 for landscape tablet.
-
-- **Base da Esperança** sits at lower-center-left: a small hillside camp with a warm lantern and a green pennant — the only fully colored element at zero progress. It is the compositional anchor and the visual "home" the paths radiate from.
-- **Six destinations**, arranged clockwise around the base so no ordering is implied:
-  - Portuguese — dense storybook forest, upper-left;
-  - Science — coastal/ocean bay with tidepools, left;
-  - Mathematics — **desert with dunes and ruins, right-center** (nearest the base, shortest path, since it is the playable world);
-  - Geography — layered valley and river canyon, lower-right;
-  - History — walled kingdom on a plateau, upper-right;
-  - English — small harbor town / city rooftops, upper-center.
-- **Terrain transitions** are illustrated, not abutted: forest thins into scrub, scrub into dune, dunes into canyon.
-- **Paths** are dotted trails from the base to each region; the Mathematics trail is the most defined.
-- **Focal point:** the base, with the Mathematics dune ridge as strong secondary silhouette.
-- **Maittê** stands at the base facing the desert trail, ~7% of frame height.
-- **Camera framing:** fixed SVG `viewBox` with responsive focal point; never a card list.
-
-### G2. Mathematics region (PROVISIONAL — "Deserto dos Números")
-- **Silhouette:** three overlapping dune curves with a rock arch and half-buried ruin fragments; readable at map scale as a distinct shape.
-- **Terrain:** wind-rippled sand, scattered stones, dry brush, one oasis pocket.
-- **Line-art treatment:** confident varying-weight ink outline, cross-hatch on dune shadow sides so depth survives desaturation.
-- **Stolen color:** warm-neutral paper tone, ink lines, hatch texture; NOT flat gray.
-- **Restored palette (PROVISIONAL):** sand amber, terracotta rock, teal oasis, dusk violet sky.
-- **Neighbors:** dunes fade into Geography's canyon rim to the south and dry scrub toward the base.
-- No landmark encodes a math skill.
-
-### G3. Maittê concept (per MAITTE.md)
-- **Proportions:** ~5.5 heads, eight-year-old; not chibi, not adult.
-- **Line:** clean tapered ink outline, minimal interior lines, light anime influence in eye and expression shapes; original design.
-- **Hair:** dark brown, slightly below shoulders, marked fringe, soft wave at the ends, one subtle light/bleached lock framing the face.
-- **Glasses:** pink frames (current canonical direction).
-- **Clothing:** skirt, simple tee with a **green heart**, colorful striped socks, high-top canvas sneakers with no protected branding.
-- **Stolen state:** everything desaturated to ink + paper except the green heart, which stays saturated and gently pulses.
-- **Partial restoration:** color returns in reviewable stages — heart → shirt → socks → skirt/hair → sneakers/glasses — driven by `selectAvatarRestoration` tiers.
-- **Asset states needed:** idle, move (2-3 frames or transform-based), map scale, board scale, plus the restoration tiers as separately toggleable color layers.
-
-### G4. Mathematics Board concept
-- **Perspective:** oblique elevated storybook view, wider than the viewport, horizontal camera pan; not top-down, not side-scroller.
-- **Route:** one curving trail from an oasis at the left, over a dune saddle, past the rock arch, toward a distant ruin at the right edge (visible but unreachable — anticipation).
-- **Scenery:** overlapping dunes, brush clumps, stone piles, distant haze for depth.
-- **Slots as objects (proposal):** carved standing stone, oasis lantern, footprint pair in the sand, small bridge over a dry wash, arch doorway. Assigned per slot via a visual metadata field, not hardcoded to any skill.
-- **Completed:** object upright, colored, small life around it (a bird, water shimmer), path behind it fully colored.
-- **Current/available:** Maittê stands beside it; the green heart pulse echoes on the object; a soft light and slight environmental motion (blowing sand); no button chrome.
-- **Locked/future:** stolen-color, half-buried, path ahead drawn as faint dotted ink; a small "stolen-color" mark (drained crayon glyph) so the state is not color-only.
-- **Landmark:** the rock arch, mid-route — orientation only, no curriculum meaning.
-- **Local restoration:** each completed slot restores its surrounding stretch of the route.
-
-### G5. Color restoration concept
-- **Stolen:** ink lines + warm paper + hatch texture + full value range. Depth comes from line weight, hatching and atmospheric value, so the scene is attractive with zero color. Only Maittê's green heart is colored.
-- **Partially restored:** color returns as a *flow along the route* from the base outward — completed stretches fully colored, a feathered boundary, the rest still ink. Restored areas also gain small living details (a flower, water shimmer) so the difference is not hue-only.
-- **Restored:** full palette, all detail layers on, ambient motion.
-- **What remains constant:** composition, line work, silhouettes, hit areas — restoration only toggles color/detail layers and mask geometry.
-- **Progress without percentages:** the reviewer reads "how far the color has travelled along the trail". A numeric value remains available to assistive tech only.
-
-### G6. Diegetic navigation concept — PROPOSAL
-**Preferred object: Maittê's canvas backpack with a folded map tucked in the side pocket.**
-- **Why it fits:** she is a traveler on a journey; a backpack is the natural carrier of the map and, later, the recovered coloring tools (a direct hook for the villain's stolen-tools narrative).
-- **What it does:** tapping the folded map returns to the Overworld from any world; tapping the backpack body opens a small diegetic pouch with secondary/parent access (out of scope to implement fully in Phase 1A).
-- **Where:** bottom-left corner, resting on the scene, ~96px, always visible during play, never a bar.
-- **Interaction:** touch/hover → the map corner lifts and the strap sways; press → map unfolds briefly into the zoom-out transition.
-- **Accessibility:** `<button aria-label="Voltar ao mapa do mundo">`, visible focus ring drawn as a warm glow, ≥72px touch target, reduced motion removes the sway.
-- Alternatives considered and rejected for Phase 1A: standalone compass (weaker narrative tie), book (reserved for the page-turn narrative metaphor).
-
-### G7. Challenge Stage concept
-- The selected slot object **grows** into the stage: its transform-origin is the slot anchor, so the frame appears to unfold from that place in the sand.
-- The board stays visible around the frame — dimmed and slightly blurred, never covered by a neutral scrim; the dune horizon remains recognizable.
-- **Frame:** an illustrated stretched-canvas/parchment panel with rope corners, occupying the center ~72% of the viewport, leaving biome visible on all sides.
-- **Interaction area:** large central zone with tablet-scale targets, instruction line at the top, support/audio affordance reserved at the top-right of the frame.
-- **Companion:** one pet sits at the lower-left edge, partly outside the frame, watching; it never overlaps interactive targets.
-- **Return:** success → frame flash + companion reaction → frame recedes into the slot object → the object restores color → color flows along its route stretch → Maittê reacts and hops to the next slot.
-
-### G8. Concept approval register
-
-| Concept | DECIDED constraints | Proposed solution | Still PROVISIONAL | Approve before Build? |
-|---|---|---|---|---|
-| Overworld composition | One coherent geography; six regions; origin; no cards | G1 layout | region placement, terrain art | Yes |
-| Base da Esperança | Shared origin exists | Lower-center-left camp, only colored element at 0% | visual design, name display | Yes |
-| Mathematics region | Physical destination; no curriculum in scenery | G2 desert | biome, palette, name "Deserto dos Números" | Yes |
-| Maittê | MAITTE.md traits | G3 concept | exact face/style, restoration tier order | Yes |
-| Route & slot language | Slots in scenery; 3 states | G4 objects | object set, route length, slot count | Yes |
-| Restoration treatment | Derived from facts; not color-only | G5 flow-along-route | feather size, granularity | Yes |
-| Diegetic navigation | No corporate header | G6 backpack + map | final object | Yes |
-| Challenge Stage | Spatial continuity | G7 frame from slot | frame art, dim/blur amount | Yes |
-| Companion shell | No skill binding | One pet, concept | which pet, behavior | Yes |
-| Landmark | Scenery only | Rock arch | final landmark | Yes |
-
----
-
-## Section H — Visual Acceptance Matrix
-
-Against the 12 criteria in `docs/design/VISUAL-IMPLEMENTATION.md` §13.
-
-| # | Criterion | Intended experience | Components | Assets | State | Transition | Tablet | Reduced motion | Risk | Fallback | Human acceptance test |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | Opening shows illustrated world, not dashboard | Map fills the screen | OverworldScene, MapLayer | Overworld base+terrain | region restoration | #1 | Fixed viewBox, landscape-first | No scale-in | Asset weight | CSS/SVG-only map | Open `/`: reviewer sees one continuous illustrated geography; no card, no "Regiões", no page title bar |
-| 2 | Mathematics identifiable as a place | Desert reads as a region | RegionHitArea, Math region art | Math region | availability | — | Region ≥120px | n/a | Silhouette legibility | Diegetic carved sign | Reviewer points at the desert without reading a label |
-| 3 | Stolen color visible in the illustration | Ink world with green heart | RegionRestoration, RestorationLayer | line/color pairs | `selectRegionRestoration` | #6 | same | static | Gray-UI look | Paper texture + hatching | With empty save, map is ink-on-paper yet attractive; heart is the only color |
-| 4 | Entering Mathematics feels spatial | Camera flies in | SpatialZoomTransition | zoom textures | none | #2, #3 | GPU transform | crossfade | Jank | crossfade | Tap the desert: camera zooms into it; no white page flash |
-| 5 | Board reads as a route | One scene with a trail | MathBoardScene, RoutePath | board scene | segment restoration | #3 | horizontal pan | static | Pan discoverability | Fit-to-width framing | Board shows a continuous desert route; no "Trecho A/B", no gray containers |
-| 6 | Maittê visibly present | Real character | Maitte, MaitteOnBoard | Maittê asset | `selectCurrentSlot` | #7 | ~180px board | instant move | Art quality | concept SVG | Reviewer recognizes an 8-year-old with glasses, skirt, sneakers, green heart |
-| 7 | Progress derives from Phase 0 state and changes the world | Color travels | RestorationLayer, RoutePath | masks | selectors | #6 | same | snap | Mask support | opacity crossfade | Complete a challenge, reload: restored stretch persists with no percentage read |
-| 8 | No conventional header in play | World-only chrome | DiegeticNav | backpack | none | — | corner ≥72px | no sway | Discoverability | subtle first-visit nudge | No header/nav bar anywhere in play; return happens via the backpack map |
-| 9 | No Phase 0 technical language | Child-safe copy | all | — | — | — | — | — | Leaks in fixtures | copy audit | Search the rendered page: no "Fase 0", "Trecho", "Bloqueado", "Demonstração Técnica" |
-| 10 | Phase 0 boundaries intact | Same pipeline | unchanged domain/eval | — | — | — | — | — | Refactor drift | revert visuals | Evaluator unit tests still pass; lint boundary rules unchanged and passing |
-| 11 | No invented curriculum | Placeholder puzzle only | PuzzleTemplateHost | — | — | — | — | — | Content creep | keep fixture | Only the placeholder ordering activity exists; no addition/subtraction/geometry items |
-| 12 | Assets isolated & replaceable | Registry indirection | assetRegistry | all | none | — | — | — | Import leakage | lint rule | Swapping one registry entry changes the art with no change under `src/game/**` |
-
----
-
-## Section I — Phase 1A / Concept / Out-of-scope boundary
-
-| Feature | Phase 1A Functional | Concept / Visual prototype | Out of scope |
+| # | Criterion | Status | Post-build human test |
 |---|---|---|---|
-| Overworld visual foundation | ✔ | art is concept-quality | — |
-| Mathematics entry (zoom) | ✔ | — | — |
-| Mathematics Board shell | ✔ (states, positions, restoration) | scenery art | final route length |
-| Maittê | ✔ (position, restoration tiers) | character art | customization |
-| Restoration | ✔ (derived, persisted-fact driven) | mask granularity | weighting rules |
-| Challenge Stage shell | ✔ (transition, focus, return) | frame art | real challenge content |
-| Companion shell | — | ✔ one pet entrance | assignment, dialogue system |
-| Other five worlds | — | ✔ visible geography only | functional worlds, routes |
-| Real Number Sense challenges | — | — | ✖ |
-| Addition / subtraction / geometry | — | — | ✖ |
-| XP economy | — | — | ✖ |
-| Backend / accounts | — | — | ✖ |
-| Avatar customization | — | — | ✖ |
-| Final production art | — | — | ✖ |
-| Final audio / microphone | — | — | ✖ |
-| Final animation system | — | — | ✖ |
+| 1 | Maittê concept art with idle/listen-think/success/move | PASSABLE BY PLAN | Open board and stage, trigger success and retry, confirm four distinct poses |
+| 2 | One companion with idle/speaking/reaction states | PASSABLE BY PLAN | Watch Burpee through narration, success and retry |
+| 3 | Essential instruction spoken and replayable | PASSABLE BY PLAN | Open the challenge, hear it, tap replay twice — no overlap |
+| 4 | Instruction from configuration, not pet JSX | PASSABLE BY PLAN | Edit the narration config text; screen and speech both change |
+| 5 | Autoplay/failure fallback | PASSABLE BY PLAN | Block autoplay in the browser; caption stays and replay pulses |
+| 6 | Completable with audio muted | PASSABLE BY PLAN | Mute the device and solve the challenge using caption plus visuals |
+| 7 | No generic form presentation | PASSABLE BY PLAN | Visual review of the stage screenshot |
+| 8 | Auto-eval or diegetic confirmation | PASSABLE BY PLAN | Confirm the sand seal, not a green button, submits |
+| 9 | Richer Overworld and Dunas Douradas | NEEDS DECISION | Side-by-side screenshot review against Phase 1A; owner judges "materially richer" |
+| 10 | Motion follows ANIMATION.md priority/attention rules | PASSABLE BY PLAN | Confirm ambient motion pauses during the challenge |
+| 11 | Reduced motion preserves comprehension | PASSABLE BY PLAN | Enable prefers-reduced-motion and complete the loop |
+| 12 | Non-punitive success/retry | PASSABLE BY PLAN | Answer wrong; confirm no red/X/buzzer and no progress loss |
+| 13 | Companion assignment configurable | PASSABLE BY PLAN | Change `petId` in config; a different pet appears |
+| 14 | No microphone | PASSABLE BY PLAN | No permission prompt; no getUserMedia in the bundle |
+| 15 | Phase 0 boundaries intact | PASSABLE BY PLAN | Diff shows no change under domain, evaluation or persistence |
+| 16 | Assets independently replaceable | PASSABLE BY PLAN | Swap a registry key to a stub; the app degrades rather than crashes |
+| 17 | Tests/lint pass | PASSABLE BY PLAN | Run the existing suite and lint |
 
----
+Criterion 9 is subjective by definition and requires the owner's visual review; nothing blocks building toward it.
 
-## Section J — GAP / CONFLICT / ASSUMPTION register
+## P10 — GAP / CONFLICT / ASSUMPTION
 
-[GAP] — Absent UX/design specs (NAVIGATION, TRANSITIONS, FEEDBACK, COLOR-RESTORATION, RESPONSIVE, ANIMATION)
-Specs involved: `docs/ux/`, `docs/design/`
-Description: Six specs referenced by the reading list and by code comments do not exist.
-Phase 1A consequence: navigation object, transition timing, restoration granularity, responsive rules and motion rules have no binding source.
-Proposed handling: this plan's Sections F/G are proposals; approved answers should be written into those files before or during Build.
-Must resolve before Build? YES (at least NAVIGATION, TRANSITIONS, COLOR-RESTORATION)
+| Item | Type | Must resolve before Build? |
+|---|---|---|
+| Burpee chosen as the Phase 1B demo companion for the ordering mechanic; configuration only, no subject binding | ASSUMPTION | NO |
+| No approved recorded voice asset exists, so browser speech synthesis is the Phase 1B narration source with an audio key reserved for later files | ASSUMPTION | NO |
+| SFX will be short synthesized tones or placeholder files, not a licensed library | ASSUMPTION | NO |
+| Confirmation affordance wording "Mostrar para o Burpee" is provisional copy | ASSUMPTION | NO |
+| CHALLENGE-STAGE.md allows overlay or full-bleed staging; the plan assumes full-bleed continuation of the dune | ASSUMPTION | NO |
+| Portuguese (pt-BR) is the only narration locale in Phase 1B | ASSUMPTION | NO |
+| No global mute/volume control is built (AUDIO.md marks it optional) | GAP | NO |
 
-[GAP] — Stale spec references in Phase 0 code
-Specs involved: `docs/ux/BOARDS.md`, `docs/design/RESTORATION-OF-COLOR.md`
-Description: code comments cite files that do not exist (real names: WORLD-BOARD.md, COLOR-RESTORATION.md).
-Phase 1A consequence: cosmetic, but misleading for future agents.
-Proposed handling: correct the comments during Build.
-Must resolve before Build? NO
+## P11 — Build scope
 
-[GAP] — Other five subject worlds have no specs
-Specs involved: `docs/worlds/*`
-Description: Portuguese/Science/History/Geography/English worlds have no approved biome.
-Phase 1A consequence: their Overworld appearance is concept-level only.
-Proposed handling: render as non-interactive geography; mark PROVISIONAL.
-Must resolve before Build? NO
+Four coherent increments:
 
-[ASSUMPTION] — Mathematics biome, landmark, route length, slot count, minion
-Specs involved: `docs/worlds/MATHEMATICS-WORLD.md` (PROVISIONAL items)
-Description: desert direction and the specific objects in G2/G4 are proposals.
-Phase 1A consequence: board art depends on them.
-Proposed handling: approve or amend in the Visual Concept Gate; no minion is implemented in Phase 1A.
-Must resolve before Build? YES (visual approval only)
+1. **Character system** — redraw Maittê with acting groups; add the Burpee concept pet with five states; extend `MaitteAvatar` and `CompanionArt` to take a `state` prop; add character motion CSS with reduced-motion fallbacks.
+2. **Audio and narration** — narration presentation config, narration service resolving audio registry then speech synthesis, `useNarration` hook, replay/blocked/cancel/cleanup behaviour, SFX helper.
+3. **Challenge Stage transformation** — full-bleed desert stage, staged companion and Maittê, caption plate, diegetic replay object, carved stone tablets with sockets, diegetic confirmation seal, character and world success/retry feedback, ambient-motion suppression. `PuzzleTemplateHost` and the evaluation path untouched.
+4. **World art density** — Dunas Douradas layered redraw plus ambient sand, then Overworld enrichment, then a full pass on screenshots, reduced motion, muted audio, keyboard, lint and tests.
 
-[ASSUMPTION] — Display name "Deserto dos Números" in the child-facing UI
-Specs involved: MATHEMATICS-WORLD (PROVISIONAL name)
-Description: the current fixture name is a technical placeholder that must not be shown.
-Phase 1A consequence: a presentation display name is required.
-Proposed handling: use the provisional name behind a replaceable presentation mapping.
-Must resolve before Build? YES
+Nothing in this sequence touches curriculum, mastery, XP or Number Sense content, so the build stops cleanly at the Phase 1B review gate.
 
-[ASSUMPTION] — Companion selection for the concept entrance
-Specs involved: `docs/narrative/UNIVERSE.md`; PET-COMPANIONS.md absent
-Description: which pet appears in the Challenge Stage concept.
-Phase 1A consequence: one asset needed.
-Proposed handling: pet passed as a prop/config value; no skill binding.
-Must resolve before Build? NO
+## P12 — Build readiness
 
-[ASSUMPTION] — Restoration granularity
-Specs involved: STATE.md, COLOR-RESTORATION.md (absent)
-Description: whether restoration flows per slot, per segment or per region.
-Phase 1A consequence: mask geometry design.
-Proposed handling: implement per-slot stretch on the board, per-region on the map, both derived; revisit after review.
-Must resolve before Build? NO
-
-[ASSUMPTION] — Maittê restoration tier order
-Specs involved: MAITTE.md
-Description: the order heart→shirt→socks→skirt/hair→shoes is proposed, not decided.
-Phase 1A consequence: avatar layer structure.
-Proposed handling: data-driven tier list, easily reordered.
-Must resolve before Build? NO
-
-[ASSUMPTION] — Diegetic navigation object
-Specs involved: OVERWORLD §Navigation; NAVIGATION.md absent
-Description: backpack + folded map proposed.
-Phase 1A consequence: primary navigation affordance.
-Proposed handling: approve in Concept Gate G6.
-Must resolve before Build? YES
-
-[ASSUMPTION] — Animation timing and easing
-Specs involved: ANIMATION.md (absent)
-Description: durations in Section F are proposals.
-Phase 1A consequence: perceived feel.
-Proposed handling: centralize as tokens; tune after preview review.
-Must resolve before Build? NO
-
-[ASSUMPTION] — No new animation dependency
-Specs involved: product-owner correction 1.4
-Description: CSS + WAAPI assumed sufficient.
-Phase 1A consequence: sequencing code written by hand.
-Proposed handling: if insufficient during Build, raise a dependency PROPOSAL and stop.
-Must resolve before Build? NO
-
-[CONFLICT] — SEO/head metadata vs. no visible page headings
-Specs involved: VISUAL-IMPLEMENTATION §3, platform SEO requirements
-Description: routes need titles/descriptions and a semantic H1 while the child-facing surface must not show a web heading.
-Phase 1A consequence: heading strategy.
-Proposed handling: keep `head()` meta; render one visually-hidden or map-lettering H1 per route.
-Must resolve before Build? NO
-
----
-
-## Section K — Technical risk register
-
-| Risk | Area | Impact | Likelihood | Mitigation | Graceful fallback | Codex/Claude Code needed? |
-|---|---|---|---|---|---|---|
-| Layered Overworld raster weight / paint cost | Performance | High | Medium | WebP, ≤2048px, few layers, `content-visibility`, composite only transform/opacity | Fewer layers, single flattened base | Possibly, for asset pipeline |
-| Restoration mask support / cost | Restoration | High | Medium | Keep both mask and opacity techniques already spiked; feature-detect | Opacity crossfade | No |
-| Spatial zoom jank on tablet | Transition | High | Medium | GPU transforms only, pre-scaled low-res zoom texture, no layout animation | Crossfade | Possibly |
-| Responsive map framing collapsing the composition | Layout | High | Low | Fixed aspect viewBox + focal-point crop + controlled pan; never card list | Fit-to-width with pan | No |
-| Touch hit areas over illustration drift from art | Interaction | High | Medium | SVG paths in the same coordinate space as the art; slot anchors from domain `anchor` | Invisible rounded rect fallback ≥72px | No |
-| Asset replacement breaking layout | Assets | Medium | Medium | Registry + fixed logical dimensions per asset slot | Placeholder silhouette | No |
-| Challenge Stage continuity lost (blur cost, focus loss) | Stage | High | Medium | Dim+desaturate instead of blur if slow; explicit focus management and restore | Static dim | No |
-| Character asset scaling across map/board/icon | Character | Medium | Medium | SVG with layered groups; single source, CSS scale | Two raster sizes | No |
-| Reduced motion breaking sequencing | Motion | Medium | Low | State never depends on animation completion | Instant final state | No |
-| Tablet GPU/memory limits with many layers | Performance | High | Medium | Layer budget (≤8 composited layers per scene), measure on device | Reduce parallax/detail layers | Possibly |
-| New animation dependency creep | Dependencies | Medium | Low | Dependency requires explicit approval | Stay on CSS/WAAPI | No |
-| Phase 0 boundary erosion during visual refactor | Architecture | High | Low | Extend existing `no-restricted-imports` lint rules to forbid `@/assets` and visual imports inside `src/game/{domain,state,evaluation,persistence}` | Revert visual layer | No |
-
----
-
-## Build gate
-
-Build Mode must not begin until: (1) Section G is visually approved; (2) the YES items in Section J are resolved; (3) Section B preservation is accepted; (4) Section H is accepted as the acceptance protocol.
+`PHASE 1B READY FOR BUILD`
