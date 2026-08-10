@@ -27,16 +27,36 @@ Completing Slice A alone validates the technical loop, but does **not** complete
 
 The detailed sequence belongs in `docs/pedagogy/MATHEMATICS-GRADE-2.md` and the world/container rules belong in `docs/worlds/MATHEMATICS-WORLD.md`.
 
+## Current curricular implementation priority
+
+**DECIDED:** Mathematics remains the first implemented subject historically and its specifications remain valid, but **current curriculum expansion is paused while the next active content delivery moves to Science**.
+
+This is a sequencing override, not a deletion of Mathematics scope.
+
+The next active content target is:
+
+- **Science Slice A — Ambientes, Animais & Adaptações**.
+
+Science Slice A may be planned and built before Mathematics Slice B/C are resumed.
+
+The Science source audit and pedagogical sequence live in:
+
+- `docs/pedagogy/SCIENCE-SOURCE-MAP.md`;
+- `docs/pedagogy/SCIENCE-GRADE-2.md`;
+- `docs/worlds/SCIENCE-WORLD.md`.
+
 ## Included in the MVP
 
 - web application;
 - tablet-oriented responsive experience;
 - shared origin/overworld capable of presenting multiple subject-world destinations;
-- Mathematics world as the first playable subject-world;
-- sequential local progression inside Mathematics where required;
-- Slice A Number Sense with reusable challenge templates;
-- Slice B addition/subtraction/problem-solving path;
-- Slice C plane-geometry path;
+- Mathematics world as the first implemented/playable subject-world foundation;
+- Science World as the next active playable subject-world for the approved Science slice;
+- sequential local progression inside a subject-world where required;
+- Mathematics Slice A Number Sense architecture/content path preserved for later continuation;
+- Mathematics Slice B addition/subtraction/problem-solving path preserved for later continuation;
+- Mathematics Slice C plane-geometry path preserved for later continuation;
+- **Science Slice A — environments, animals and adaptations — as the current active curricular delivery**;
 - challenge-stage framework;
 - reusable/parametrizable challenge templates;
 - contextual instructions with pet companions;
@@ -70,6 +90,25 @@ The source material includes:
 
 Spatial solids remain documented supporting/follow-up content and are not required for today's useful MVP unless explicitly promoted.
 
+## Current Science content represented in the supplied source material
+
+The photographed Grade 2 Science sequence supports, among other source-mapped concepts:
+
+- observation/comparison/grouping of animal characteristics;
+- animal feeding and body characteristics;
+- changes through life, life cycles and metamorphosis;
+- relationships/interdependence among living beings;
+- natural environments and what composes them;
+- six Brazilian environments represented by the school material;
+- terrestrial and aquatic environments;
+- animals associated with environments;
+- adaptation and camouflage;
+- plants as food/shelter/oxygen relationships;
+- pollination and seed dispersal;
+- actions that protect or damage nature.
+
+The complete source/audit boundary is defined in `docs/pedagogy/SCIENCE-SOURCE-MAP.md`; the Claude-produced review packet is secondary evidence and does not supersede the school source.
+
 ## Explicitly not required for MVP
 
 - native iOS/Android application;
@@ -84,7 +123,8 @@ Spatial solids remain documented supporting/follow-up content and are not requir
 - complex administrative platform;
 - complete long-term curriculum editor;
 - backend account model unless a concrete need is approved;
-- spatial-solid activities for the current useful MVP, unless their status is explicitly changed.
+- spatial-solid activities for the current useful Mathematics MVP, unless their status is explicitly changed;
+- all Science slices beyond the currently authorized Slice A unless explicitly promoted.
 
 The exclusion of final audio production does **not** remove the requirement for functional spoken essential instructions. MVP narration may use replaceable concept audio or system/browser speech synthesis fallback as defined in `docs/design/AUDIO.md`.
 
@@ -94,13 +134,17 @@ The exclusion of final audio production does **not** remove the requirement for 
 
 **PROVISIONAL:** richer movement animation is desirable, but not a release blocker beyond the minimum acting/comprehension states defined for Phase 1B.
 
-**PROVISIONAL:** the exact number of Mathematics stages/challenges will be derived from the pedagogical sequence and not fixed in advance.
+**PROVISIONAL:** the exact number of Mathematics or Science stages/challenges will be derived from the pedagogical sequence and not fixed in advance.
 
 **PROVISIONAL:** Deserto dos Números / Number Desert is the working visual direction/name for the Mathematics World. Exact landmarks, route length and minion remain to be proposed and reviewed.
 
+**PROVISIONAL:** the exact first Science Zone name, route length, slot count and production art are unresolved; `Oceano das Descobertas` remains the Science subject-world container defined in `docs/worlds/SCIENCE-WORLD.md`.
+
 ## Acceptance boundary
 
-The MVP is successful when a child can open the experience on a tablet-sized screen, enter the Mathematics path, understand what to do without adult interpretation for every step, complete multiple curriculum-aligned challenges across the approved useful Mathematics slices, receive meaningful feedback, observe progress/color restoration, and return to continue the journey.
+The MVP is successful when a child can open the experience on a tablet-sized screen, enter a current playable subject path, understand what to do without adult interpretation for every step, complete multiple curriculum-aligned challenges, receive meaningful feedback, observe progress/color restoration, and return to continue the journey.
+
+For the **current active curriculum delivery**, this must be demonstrable through **Science Slice A** while preserving the Mathematics foundation for later continuation.
 
 **For essential challenge instructions, understanding without adult interpretation must not depend on independent reading alone.**
 
