@@ -310,6 +310,11 @@ h2,
   }
 
   /* --- puzzle object response --------------------------------------- */
+  /* Observation acknowledgement: a small, non-evaluative "I saw that". */
+  .scene-observed {
+    animation: scene-observed 520ms var(--ease-settle) 1;
+  }
+
   .stone-lift {
     animation: stone-lift 260ms var(--ease-settle) both;
   }
@@ -492,6 +497,18 @@ h2,
   to {
     transform: translate(220px, -14px);
     opacity: 0;
+  }
+}
+
+@keyframes scene-observed {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1.05);
   }
 }
 

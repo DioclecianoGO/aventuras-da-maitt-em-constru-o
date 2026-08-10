@@ -11,6 +11,7 @@ import type { Activity, ActivitySlot, ContentPack, PackItem } from "@/game/domai
 import type { AttemptResult, UserResponse } from "@/game/domain/responses";
 import { resolveAttempt } from "@/game/evaluation/orchestrator";
 import { getTemplate } from "@/game/registries";
+import type { TemplatePresentation } from "@/game/templates/contract";
 
 export function PuzzleTemplateHost({
   activity,
@@ -20,6 +21,8 @@ export function PuzzleTemplateHost({
   onAttempt,
   disabled,
   confirmLabel,
+  presentation,
+  onObserve,
 }: {
   activity: Activity;
   slot: ActivitySlot;
@@ -29,6 +32,10 @@ export function PuzzleTemplateHost({
   disabled?: boolean;
   /** Presentation copy passed through from narration config. Never content. */
   confirmLabel?: string;
+  /** Illustrated presentation supplied by the visual configuration layer. */
+  presentation?: TemplatePresentation;
+  /** Presentation-only "the child is pointing at this" signal. */
+  onObserve?(optionIds: string[]): void;
 }) {
   const [supportUsed, setSupportUsed] = React.useState(false);
 
@@ -80,6 +87,8 @@ export function PuzzleTemplateHost({
       item={itemView}
       onRespond={handleRespond}
       onSupportUsed={() => setSupportUsed(true)}
+      {...(presentation === undefined ? {} : { presentation })}
+      {...(onObserve === undefined ? {} : { onObserve })}
       {...(confirmLabel === undefined ? {} : { confirmLabel })}
       {...(disabled === undefined ? {} : { disabled })}
     />

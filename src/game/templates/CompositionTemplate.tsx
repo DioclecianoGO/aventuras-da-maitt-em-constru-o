@@ -6,6 +6,10 @@
  * `UserResponse { kind: "composition" }`. Part ids are opaque authored strings:
  * this component does not know what a "conclusion" or an "evidence" is, and it
  * never judges whether the chosen pair holds together.
+ *
+ * When the presentation configuration supplies a scene, it is rendered above
+ * the choices as VISIBLE EVIDENCE so the child can reason from what is on
+ * screen instead of remembering a previous screen. The scene is scenery only.
  */
 import * as React from "react";
 
@@ -16,6 +20,7 @@ export function CompositionTemplate({
   onRespond,
   disabled,
   confirmLabel,
+  presentation,
 }: PuzzleTemplateProps) {
   const [chosen, setChosen] = React.useState<Record<string, string | undefined>>({});
 
@@ -37,11 +42,31 @@ export function CompositionTemplate({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={`flex flex-col gap-4 ${presentation?.scene ? "pb-24" : ""}`}>
       <p className="sr-only">{item.prompt}</p>
 
+      {presentation?.scene ? (
+        <div
+          className="relative mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] border-2 border-[var(--ink)] shadow-[0_6px_0_var(--ink-soft)]"
+          style={{ aspectRatio: `${presentation.scene.width} / ${presentation.scene.height}` }}
+        >
+          <svg
+            viewBox={`0 0 ${presentation.scene.width} ${presentation.scene.height}`}
+            className="absolute inset-0 h-full w-full"
+            role="img"
+            aria-label="O ambiente observado"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            {presentation.scene.render()}
+          </svg>
+        </div>
+      ) : null}
+
       {item.parts.map((part) => (
-        <fieldset key={part.id} className="rounded-3xl border-2 border-[var(--ink)] bg-[var(--paper)]/80 p-3">
+        <fieldset
+          key={part.id}
+          className="rounded-3xl border-2 border-[var(--ink)] bg-[var(--paper)]/80 p-3"
+        >
           <legend className="px-2 text-sm font-semibold tracking-wide text-ink uppercase">
             {part.label}
           </legend>
