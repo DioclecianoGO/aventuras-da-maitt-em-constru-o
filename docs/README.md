@@ -42,6 +42,7 @@ docs/
 │   ├── ART-DIRECTION.md
 │   ├── VISUAL-IMPLEMENTATION.md
 │   ├── PHASE-1B-CHARACTER-ART-AUDIO.md
+│   ├── PHASE-1B-1-VISUAL-POLISH.md
 │   ├── CHARACTER-ART.md
 │   ├── COLOR-RESTORATION.md
 │   ├── ANIMATION.md

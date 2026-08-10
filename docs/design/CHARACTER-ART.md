@@ -103,6 +103,27 @@ The pets must remain recognizably distinct:
 
 The art direction should emphasize their personalities without turning them into caricatures that alter species identity.
 
+### Species readability is a visual acceptance requirement
+
+**DECIDED:** a named pet is not considered correctly represented merely because a component, filename or caption identifies it. Species identity must be readable from the artwork itself at the scale where the pet appears.
+
+For Burpee, the concept must communicate a Border Collie-type dog through multiple cues together:
+
+- canine head/body anatomy;
+- athletic collie-like proportions;
+- elongated canine muzzle and dog nose placement;
+- collie ruff/chest fur;
+- semi-prick or folded-tip canine ears rather than feline triangular ears;
+- feathered canine tail posture/attachment;
+- blue-merle patch/value structure;
+- blue eyes where the current color state allows.
+
+Blue-merle identity should remain readable in stolen-color mode through patch/value/pattern design rather than depending only on saturation.
+
+At Challenge Stage scale, Burpee must not plausibly read as a cat, fox or generic small animal.
+
+The same principle applies when the other pets receive production-ready concept assets: silhouette and species traits remain primary before personality embellishment.
+
 ## Scale system
 
 Character assets must remain recognizable at:
@@ -127,6 +148,14 @@ Examples:
 
 Character staging should support comprehension instead of adding motion everywhere.
 
+## Speaker anchoring
+
+When a companion is the current speaker, short spoken/caption lines should visually read as originating from that companion.
+
+A hand-drawn speech bubble or equivalent illustrated speaker shape may be anchored near the pet with a tail/leader toward the speaker. This is preferred for short instructions/retry lines when it does not obstruct the puzzle.
+
+The speaker treatment must remain an accessibility caption too; visual anchoring supplements rather than replaces readable text and replay controls.
+
 ## Motion economy
 
 Avoid requiring skeletal animation. Phase 1B may use:
@@ -148,7 +177,7 @@ The pet id can be selected by challenge/presentation configuration. The characte
 
 The instruction sentence itself must not live inside the character asset/component.
 
-## Acceptance criteria — Phase 1B
+## Acceptance criteria — Phase 1B / 1B.1
 
 1. Maittê no longer reads as a schematic/simple icon in the reviewed flow.
 2. Maittê exposes the required five acting states.
@@ -158,3 +187,5 @@ The instruction sentence itself must not live inside the character asset/compone
 6. Maittê's heart and restoration regions remain independently controllable.
 7. Character art works at board and challenge scales.
 8. Swapping character art does not require changes to evaluator/domain logic.
+9. The demonstrated Burpee artwork reads as a Border Collie-type dog without requiring his text label.
+10. Short Burpee instruction/retry presentation can be visually anchored to him rather than detached from the speaker.

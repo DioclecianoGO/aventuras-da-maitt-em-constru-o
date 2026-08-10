@@ -25,7 +25,7 @@ Challenge Stage is the focused interaction state entered from a Board Activity S
 
 The preferred presentation is:
 
-`companion/context → spoken instruction → short visible caption → visual focus on manipulables`
+`companion/context -> spoken instruction -> short visible caption -> visual focus on manipulables`
 
 Text should be short and readable, but narration/visual guidance must carry enough meaning for the child to begin without adult interpretation.
 
@@ -48,6 +48,28 @@ Do not hardcode a specific pet to Mathematics or to a skill.
 
 The companion must not overlap primary touch targets.
 
+## Speaker-anchored caption treatment
+
+For a **short line spoken by a visible companion**, the preferred visual treatment is a hand-drawn speech bubble or equivalent illustrated speaker shape anchored near that companion.
+
+The bubble should:
+
+- use a tail/leader that visually points to the current speaker;
+- contain the same short caption that is spoken;
+- remain readable when audio is muted/unavailable;
+- stay clear of manipulables and Maittê;
+- responsively reposition on landscape tablet;
+- keep replay visually associated with the speaker/instruction.
+
+The large detached caption-panel treatment is still allowed for:
+
+- longer narration;
+- narration without a visible speaker;
+- accessibility/layout fallback;
+- future context where a speech bubble would obscure the task.
+
+For the current short Burpee ordering instruction/retry line, the speaker-anchored treatment is the preferred default after Phase 1B.1 review.
+
 ## Interaction area
 
 The Challenge Stage should contain functional zones without becoming a corporate card/form:
@@ -60,6 +82,14 @@ The Challenge Stage should contain functional zones without becoming a corporate
 
 These zones may be visually integrated into world-specific scenery rather than boxed separately.
 
+## Puzzle-object physical identity
+
+When manipulables are presented as physical world objects, each movable object should maintain a stable visual identity while it moves.
+
+A stone/tablet should not change silhouette simply because its current list position changed.
+
+Visual variants should be selected by stable presentation identity such as option/item id, never by correct-answer semantics. Variation must not leak the answer.
+
 ## Completion action
 
 Do not default every Puzzle Template to a generic `Pronto` submit button.
@@ -70,6 +100,8 @@ Do not default every Puzzle Template to a generic `Pronto` submit button.
 
 The confirmation treatment should match the world/challenge skin rather than look like a generic web-form CTA.
 
+For the current ordering demonstration, diegetic confirmation remains appropriate because every intermediate permutation is technically complete and must not become accidental evidence.
+
 ## Feedback
 
 Feedback follows `docs/ux/FEEDBACK.md`.
@@ -77,6 +109,8 @@ Feedback follows `docs/ux/FEEDBACK.md`.
 Success should use world/object + character + optional audio response before/with restoration.
 
 Retry should be soft, curious and supportive. No punitive red X, harsh buzzer, XP loss or backward movement.
+
+When retry text is spoken by the configured companion, prefer the same speaker-anchored caption language used for the initial short instruction.
 
 ## Child UX constraints
 
@@ -94,7 +128,7 @@ Spoken instruction/audio support is MVP direction and follows `docs/design/AUDIO
 
 Phase 1B must demonstrate one complete narrated placeholder challenge loop.
 
-Final music/voice production is not required.
+Final music/voice production is not required. Synthesized speech may remain a technical fallback behind replaceable audio keys.
 
 ## Microphone
 
@@ -108,7 +142,7 @@ It does not determine correctness or mastery.
 
 Instruction/companion presentation remains configurable and replaceable without changing evaluator logic.
 
-## Phase 1B acceptance
+## Phase 1B / 1B.1 acceptance
 
 1. Companion/context visibly introduces the current placeholder challenge.
 2. Essential instruction can be heard and replayed.
@@ -119,3 +153,5 @@ Instruction/companion presentation remains configurable and replaceable without 
 7. Success/retry character feedback is visible.
 8. World/Board context remains perceptually connected.
 9. No microphone permission is requested.
+10. The current short Burpee instruction/retry caption visually originates from Burpee rather than defaulting to a detached top panel.
+11. Current ordering stones retain their own physical visual identity when reordered and do not use visual variation to reveal the answer.
