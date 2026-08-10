@@ -1,7 +1,3 @@
- * When the presentation configuration supplies a scene, it is rendered above
- * the choices as VISIBLE EVIDENCE so the child can reason from what is on
- * screen instead of remembering a previous screen. The scene is scenery only.
- */
 /**
  * Generic multi-part interaction (e.g. conclusion + supporting observation).
  * Spec: ADR-009 (template emits raw response), ADR-010 (generic composition).
@@ -10,6 +6,10 @@
  * `UserResponse { kind: "composition" }`. Part ids are opaque authored strings:
  * this component does not know what a "conclusion" or an "evidence" is, and it
  * never judges whether the chosen pair holds together.
+ *
+ * When the presentation configuration supplies a scene, it is rendered above
+ * the choices as VISIBLE EVIDENCE so the child can reason from what is on
+ * screen instead of remembering a previous screen. The scene is scenery only.
  */
 import * as React from "react";
 
