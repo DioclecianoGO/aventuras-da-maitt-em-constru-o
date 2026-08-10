@@ -294,6 +294,11 @@ h2,
     animation: sand-drift 12s linear infinite;
   }
 
+  /* Distant birds gliding across the sky. Ambient only. */
+  .bird-glide {
+    animation: bird-glide 22s linear infinite;
+  }
+
   .stage-focused .sand-drift,
   .stage-focused .drift-slow {
     animation: none;
