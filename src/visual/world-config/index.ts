@@ -70,10 +70,10 @@ export const overworldRegions: RegionVisual[] = [
     id: "region-science",
     displayName: "Oceano das Descobertas",
     worldId: SCIENCE_WORLD_ID,
-    centroid: { x: 900, y: 848 },
+    centroid: { x: 900, y: 828 },
     bloomRadius: 320,
-    hit: "620,758 1180,738 1230,928 660,948",
-    label: { x: 900, y: 936 },
+    hit: "620,738 1180,718 1230,908 660,928",
+    label: { x: 900, y: 914 },
   },
 ];
 
