@@ -8,13 +8,13 @@
  */
 import * as React from "react";
 
-import type { AttemptOutcome } from "@/game/domain/responses";
+import type { Outcome } from "@/game/domain/responses";
 
 /** PROVISIONAL choreography: perceivable success without breaking flow. */
 export const SUCCESS_REACTION_MS = 1600;
 
 export function useSuccessReturn(
-  outcome: AttemptOutcome | null,
+  outcome: Outcome | null,
   onReturn: () => void,
   delayMs: number = SUCCESS_REACTION_MS,
 ): { frozen: boolean } {
