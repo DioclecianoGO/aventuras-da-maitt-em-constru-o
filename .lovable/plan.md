@@ -1,95 +1,253 @@
-# Phase 1B.1 — Visual Polish & Restoration Semantics (corrective plan)
+# Science Slice A — Ambientes, Animais & Adaptações
 
-Scope: only the six corrections in `docs/design/PHASE-1B-1-VISUAL-POLISH.md`. No curriculum, no Slice A, no new subjects, no backend/auth, no ASR, no XP, no Overworld geography or route redesign, no architecture replacement.
+Plano de implementação. Nenhum código foi escrito. Matemática permanece intacta e pausada.
 
-## 0. Preserved without change
+---
 
-Narration service + replay, TTS fallback behind the audio-key seam, SFX, drag + tap-to-place, `Mostrar para Burpee` diegetic confirmation, Maittê/Burpee acting states, non-punitive retry, `Template -> UserResponse -> Evaluator` boundary (ADR-009), persistence adapter, derived-from-facts restoration, routes, board route path, Overworld geography.
+## S1 — Auditoria de reuso da implementação atual
 
-No file under `src/game/domain`, `src/game/evaluation`, `src/game/persistence` or `src/game/state/reducer.ts` is edited by this increment.
+| Capacidade existente | Reusar como está | Estender | Nova capacidade reutilizável | Notas |
+|---|---|---|---|---|
+| Rota de mundo (`/mundo/$worldId`) | — | Sim | — | Hoje só aceita `world-placeholder`; precisa de registro de mundos por id |
+| World Board / `WorldBoardScene` | — | Sim | — | Cena é genérica; precisa aceitar asset/rota/landmarks do mundo Ciências via visual-config |
+| Activity Slot (schema + anchors) | Sim | — | — | `sequence.discover/practice/challenge` já existe e nunca foi exercitada |
+| Challenge Stage (rota overlay) | — | Sim | — | Hoje resolve só `challenge[0]` e `items[0]`; precisa percorrer modo + itens |
+| `PuzzleTemplateHost` | Sim | — | — | Contrato neutro já adequado |
+| Narração/replay (`useNarration`, narration config) | Sim | — | — | Só acrescentar entradas por slot |
+| Companheiro (arte do pet, SpeechBubble) | Sim | — | — | `petId` já é configuração |
+| Persistência local + fatos | Sim | — | — | Nenhum store novo de Ciências |
+| Success return (`useSuccessReturn`) | Sim | — | — | Comportamento já corrigido em 1B.1a |
+| Restauração (`restoration-units`, `RestoredUnit`) | — | Sim | — | Novo catálogo de unidades costeiras; mesma mecânica derivada |
+| Templates | `placeholder-order` fica só para Matemática | — | Sim (4 genéricos) | ver S7 |
+| Evaluators (`selection`, `ordering`) | Sim | — | Sim (`placement`, evidência em 2 etapas) | ver S8 |
+| Conteúdo (`placeholder-fixture`) | — | — | Sim | Registro de conteúdo por mundo; fixture de Matemática preservado |
 
-## 1. Burpee reads unmistakably as a blue-merle Border Collie
+Ciências **não** é aplicação nova: reusa domínio, avaliação, evidência, estado e persistência existentes.
 
-**Files:** `src/assets/game/characters/pets/BurpeeArt.tsx` (redraw), `src/assets/game/characters/CompanionArt.tsx` (viewBox/scale pass only if the new silhouette requires it).
+---
 
-Change: redraw the body from a compact, seated, feline-ish mass into collie anatomy — deeper narrow chest, visible foreleg/hind-leg separation with a hock, longer wedge muzzle with the dog nose at the tip and a defined stop, semi-prick ears with folded tips set wide, pronounced white ruff/chest bib plus rear-leg feathering, low-set feathered tail with a canine sweep. Merle becomes a designed patch structure (irregular torn-edge patches, small speckle marks, value banding) so it reads without saturation; blue eyes remain as an identity detail where the color state allows.
+## S2 — Arquitetura de aprendizagem da Slice A
 
-Reused: the existing `POSES` record keyed by `CompanionActingState`, the transform-group structure, the `pet-breathe` / `pet-hop` / `pet-tail-wag` / `pet-blink` classes and the ink/paper tokens. The five acting states keep their names and semantics; only the path data behind them changes.
+| Etapa | Skill | Modo | Propósito | Evidência esperada |
+|---|---|---|---|---|
+| A. Descobrir ambientes | `SCI-ENV-COMP-01` (+`SCI-OBS-CHAR-01`) | discover | Observar que um ambiente tem muitos elementos; distinguir vivos/não vivos | Seleção guiada + escolha da observação que sustenta a classificação (não conta como autônoma) |
+| B. Ambientes brasileiros | `SCI-ENV-BRAZIL-01` | practice | Diferenciar os seis ambientes por características observáveis | Acerto com variação de imagem/representação |
+| C. Animal ↔ ambiente | `SCI-ENV-HABITAT-01` (+`SCI-OBS-CHAR-01`) | practice | Relacionar ser vivo ao lugar onde vive, com observação de apoio | Conclusão + evidência (duas etapas) |
+| D. Terrestre × aquático | `SCI-ENV-LANDWATER-01` | practice | Classificar por critério explícito e separar habitat de identidade do animal | Classificação + caso conceitual (vive na água ≠ é peixe) |
+| E. Adaptação | `SCI-ENV-ADAPT-01` | practice | Ligar característica → função → ambiente | Característica escolhida + função escolhida (duas etapas) |
+| F. Camuflagem | `SCI-ENV-CAMOUFLAGE-01` | challenge | Localizar o organismo camuflado **e** escolher por que isso dificulta a detecção | Localização + escolha conceitual; só a segunda etapa vale como evidência da skill |
+| G. Desafio integrado | `SCI-ENV-BRAZIL-01` + `SCI-ENV-ADAPT-01` (+ HABITAT) | challenge | Combinar duas dimensões sem virar leitura | Ambiente provável → organismo/característica compatível → por que ajuda |
 
-## 2. Speaker-anchored speech bubble for short companion lines
+Regra pedagógica de toda a fatia: nunca "foto do animal → rótulo memorizado → correto". Sempre observação → relação → evidência.
 
-**New file:** `src/visual/stage/SpeechBubble.tsx` — hand-drawn illustrated bubble (wobbly contour, ink line, paper fill) with a tail whose direction is a prop, plus the replay affordance attached to it.
+---
 
-**Edited:** `src/visual/stage/ChallengeStageShell.tsx`, `src/routes/mundo.$worldId.desafio.$slotId.tsx` (props wiring only).
+## S3 — Primeiro Board de Ciências (PROVISIONAL)
 
-Change: the shell gains a caption-placement decision. Short companion-attributed lines (instruction, retry, success) render in the bubble anchored above Burpee with the tail pointing at his head; the detached `CaptionPlateArt` panel stays in the codebase and is used for long copy, narration with no visible speaker and as the layout/accessibility fallback. The same sentence never renders in both at once.
+- **Mundo:** Oceano das Descobertas (contêiner de matéria, não currículo aquático).
+- **Nome da primeira zona (PROVISIONAL):** *Praia das Conchas* — lado costeiro/entrada, conforme direção provisória já registrada.
+- **Composição:** litoral oblíquo em estilo livro ilustrado, poças de maré, rochas, conchas, vegetação costeira, instrumentos de expedição; mar raso visível; *Observatório Abissal* ao longe como antecipação (não entrável).
+- **Rota:** trilha ilustrada contínua da areia seca até a linha d'água.
+- **Slots (PROVISIONAL): 6** — o menor conjunto que demonstra Discover, prática guiada, prática variada, raciocínio/evidência e desafio integrado. Sem slots de enchimento.
+- **Maittê:** presente fisicamente na rota, na posição derivada dos fatos.
+- **Landmark da zona (PROVISIONAL):** mesa/barraca de pesquisa da expedição na entrada.
+- **Manifestações visuais dos slots:** janela de observação, mesa de mapas, caderno de campo, kit de lupa, aglomerado de conchas/rochas, luneta.
+- Ambientes terrestres (Caatinga, Cerrado…) aparecem **através de dispositivos de expedição** (fotos de campo, painel recuperado, projeção), nunca submersos.
+- Sem dashboard e sem grade de cards.
 
-Narration integration: no change to `narrationService` / `useNarration`. The bubble receives the same `caption`, `narrationStatus` and `onReplay` that the plate receives today, so text and audio stay synchronized and `blocked` / `unsupported` still surfaces the replay shell and the "sem som" hint. `role="status"` moves with the text so assistive tech announces exactly once.
+---
 
-Layout: the bubble sits in the lower-left staging column above the pet, clamped so it never overlaps the manipulables or Maittê; on narrow/short viewports it repositions to a band under the header while keeping a tail pointing toward the pet.
+## S4 — Plano de Activity Slots
 
-## 3. Handcrafted, stable-identity puzzle stones
+| Slot | Modo | Skill(s) | Fonte | Família | Interação | Narração | Evidência | Manifestação visual | Restauração |
+|---|---|---|---|---|---|---|---|---|---|
+| sci-1 | discover | ENV-COMP-01, OBS-CHAR-01 | pp.94–98 | CH-SCI-SCENE + EVIDENCE | Tocar elementos vivos/não vivos na cena; depois escolher a observação que apoia | "O que existe neste lugar? Toque no que está vivo." + replay | conclusão + evidência (discover, não autônoma) | Janela de observação | Detalhe de poça de maré ganha cor |
+| sci-2 | practice | ENV-BRAZIL-01 | pp.99–104 | CH-SCI-MATCH | Relacionar foto de campo ↔ ambiente brasileiro por característica observável | "Que ambiente esta foto mostra?" | acerto com representação variada | Mesa de mapas | Marcador de pesquisa pintado |
+| sci-3 | practice | ENV-HABITAT-01, OBS-CHAR-01 | pp.99–106 | CH-SCI-MATCH + EVIDENCE | Colocar o animal no ambiente provável e escolher a observação que sustenta | "Onde este animal provavelmente vive? Como você sabe?" | conclusão + evidência | Quadro de espécimes/fotos | Grupo de conchas colorido |
+| sci-4 | practice | ENV-LANDWATER-01 | pp.105–107 | CH-SCI-SORT + CH-SCI-CASE | Classificar exemplos em terrestre/aquático; caso: "vive na água" não permite concluir "é peixe" | "Este vive na água — o que dá para concluir?" | classificação + decisão conceitual | Poça de maré / kit de lupa | Vida da poça de maré aparece |
+| sci-5 | challenge | ENV-ADAPT-01 | pp.106–108 | CH-SCI-EVIDENCE (2 etapas) | Escolher a característica e depois o que ela ajuda o animal a fazer naquele ambiente | "Que parte do corpo ajuda? Ajuda a fazer o quê?" | característica + função | Caderno de campo | Instrumento de observação recupera pintura |
+| sci-6 | challenge | ENV-CAMOUFLAGE-01 + BRAZIL/ADAPT | p.108 + síntese p.118 | CH-SCI-SCENE + EVIDENCE (integrado) | Localizar o organismo camuflado; identificar o ambiente provável; escolher por que a característica ajuda | "Achou? Agora: por que é difícil de ver?" | localização + conclusão + evidência | Luneta/estação de observação | Coral/planta costeira e marco da rota ganham cor |
 
-**Files:** `src/assets/game/objects/DesertPuzzleArt.tsx`, `src/game/templates/PlaceholderOrderTemplate.tsx`.
+Nenhum slot é correspondência de uma única etapa, exceto sci-2, que existe para introduzir o vocabulário visual mínimo com variação de representação.
 
-Current defect: `OrderStoneArt variant={index}` and `SandSocketArt index={index}` key the art off the current position, so a stone morphs when reordered.
+---
 
-Change:
-- expand `TABLET_SHAPES` into a richer set of asymmetric silhouettes with chipped corners, and add per-variant detail overlays (cracks, pecked marks, chip notches) plus a small settling tilt;
-- `OrderStoneArt` takes explicit `variant` and `tilt` props, both purely decorative;
-- the template derives a **stable presentation key from the option id** (a small deterministic hash of `option.id`, memoized from `item.options`) and passes that variant, never `index`. Sockets stay keyed by position, since a socket is a place in the sand, not the object being moved.
+## S5 — Matriz de rastreabilidade de fonte
 
-Fairness guard: variants come from an id hash uncorrelated with the authored answer order; every stone keeps the same bounding box, label font size and button hit area; no variant differentiates by color or mass. A unit test asserts that the variant for a given option id is identical across two different `order` arrays.
+| Cluster | Skill | Fonte no livro | Status | Relação com o pacote Claude | Adaptação de produto |
+|---|---|---|---|---|---|
+| Composição do ambiente | ENV-COMP-01 | pp.94–98 | SOURCE-CONFIRMED / OMISSION-RESTORED | Sub-representado no pacote | Restaurado como Discover próprio antes de classificar |
+| Observação/comparação de características | OBS-CHAR-01 | pp.68–69, 77–79, 94–98 | SOURCE-CONFIRMED / OMISSION-RESTORED | Sub-representado | Skill de apoio nas etapas de evidência |
+| Seis ambientes brasileiros | ENV-BRAZIL-01 | pp.99–104 | SOURCE-CONFIRMED | C1 equivalente | Imagem + fala; sem descrições longas; mais de um identificador por ambiente |
+| Animal ↔ ambiente | ENV-HABITAT-01 | pp.99–106 | SOURCE-CONFIRMED | C2 equivalente | Acrescenta etapa de evidência |
+| Terrestre × aquático + caso do boto | ENV-LANDWATER-01 | pp.105–107 | SOURCE-CONFIRMED / ADAPTATION | C3 | Vira verificação de concepção errônea, não taxonomia |
+| Adaptação | ENV-ADAPT-01 | pp.106–108 | SOURCE-CONFIRMED | C4 | Raciocínio em duas etapas obrigatório |
+| Camuflagem | ENV-CAMOUFLAGE-01 | p.108 | SOURCE-CONFIRMED | C5 | Busca visual sozinha não é evidência |
+| Síntese integrada | BRAZIL + ADAPT | p.118 (mapa conceitual), p.119 (metas) | SOURCE-CONFIRMED | Sem equivalente direto | Desafio integrado curto, não leitura |
 
-Preserved: drag, tap-select / tap-place, deliberate confirmation, one `UserResponse` per confirmation.
+Página 117 permanece `SOURCE-GAP` e não é citada por nenhum pack. Nenhum item de Build depende de material `SECONDARY-ONLY`.
 
-## 4. Concrete restoration units (not only a gradient)
+---
 
-**New file:** `src/visual/world-config/restoration-units.ts` — presentation-only catalog of `RestorableUnit { id, sceneKey, assetKey, anchor, requires: { slotId } | { regionMilestone } }` for Dunas Douradas and for the Mathematics Overworld region.
+## S6 — Plano de Content Packs
 
-**New file:** `src/visual/RestoredUnit.tsx` — renders one unit in `stolen | restored` state (color plus a non-color cue: added detail, clarity, small life), with the existing mask flow still animating the transition.
+Um pack por cluster; os itens finais são autorados no Build e validados item a item contra a fonte fotografada.
 
-**Edited:** `src/visual/scenes/WorldBoardScene.tsx`, `src/visual/scenes/OverworldScene.tsx`, `src/assets/game/board/DunasDouradasArt.tsx`, `src/assets/game/overworld/OverworldArt.tsx` — adding the unit artwork: a plant cluster, a rock group, a route marker and an arch/ruin detail on the board; a specific landmark/detail cluster inside the Mathematics region on the map.
+1. **pack-sci-env-comp** — ENV-COMP-01. Exemplos: cenas apoiadas na fonte com elementos vivos e não vivos. Representações: cena ilustrada + cartas de observação. Distratores: elementos plausíveis do mesmo cenário, nunca ambíguos entre vivo/não vivo. Regras: conjunto aceito de elementos vivos + uma evidência correta. Templates: `scene-investigate`, `evidence-two-stage`. Narração: instrução + "como você sabe?". Dica: destacar a região da cena sem revelar itens.
+2. **pack-sci-env-brazil** — ENV-BRAZIL-01. Seis ambientes nomeados na fonte, cada um com pelo menos duas características observáveis (nunca um único objeto estereotipado). Distratores: ambientes vizinhos com vegetação parecida. Template: `pair-match`. Dica: destacar a característica relevante.
+3. **pack-sci-env-habitat** — ENV-HABITAT-01 + OBS-CHAR-01. Animais confirmados pela fonte para cada ambiente. Regras: par correto e evidência correta avaliados separadamente. Templates: `pair-match`, `evidence-two-stage`.
+4. **pack-sci-landwater** — ENV-LANDWATER-01. Inclui obrigatoriamente um caso contrastante (animal aquático que não é peixe). Distratores nunca introduzem afirmações biológicas fora da fonte de 2º ano. Templates: `sort-into-groups`, `evidence-two-stage`.
+5. **pack-sci-adapt** — ENV-ADAPT-01. Trios característica → função → ambiente apoiados na fonte. Distratores: funções plausíveis mas não sustentadas pela característica. Template: `evidence-two-stage`.
+6. **pack-sci-camouflage** — ENV-CAMOUFLAGE-01. Cena com organismo camuflado + pergunta conceitual. A localização nunca é o único critério de acerto. Templates: `scene-investigate` + `evidence-two-stage`.
 
-Derivation: units resolve from props the scenes already receive — completed slot ids and derived world/region progress from `src/game/state/selectors.ts`. No new persisted field, no unit color state stored anywhere, no second source of truth. Reload replays the same selector output and therefore restores the same units. `RestoreGroup` keeps its role as transition choreography over the base scene.
+Regras comuns: nenhum ativo visual codifica a resposta por tamanho, brilho, posição ou saliência; toda instrução essencial é falada, com legenda e replay.
 
-Result: completing `slot-1` leaves at least one identifiable Dunas Douradas object/cluster permanently colored near that route stretch, and lights at least one specific detail inside the Mathematics region on the Overworld.
+---
 
-## 5. Coloring-book richness (composition, not notebook chrome)
+## S7 — Plano de templates
 
-**Files:** `src/assets/game/board/DunasDouradasArt.tsx`, `src/assets/game/overworld/OverworldArt.tsx`, `src/assets/game/ink.tsx` (extra texture/value defs if needed).
+| Necessidade | Template existente | Reuso/estender/novo | Contrato genérico proposto | Skills servidas |
+|---|---|---|---|---|
+| Classificar em grupos por critério autorado | — | **Novo reutilizável** `sort-into-groups` | recebe itens + grupos rotulados; emite `placement` (item → grupo); nunca conhece o critério | LANDWATER e futuras OBS-GROUP/ANIMAL-* |
+| Relacionar dois conjuntos | — | **Novo reutilizável** `pair-match` | conjuntos esquerdo/direito embaralhados; emite `placement` de pares; posições randomizadas, sem proximidade reveladora | BRAZIL, HABITAT, ADAPT, futuras REL-* |
+| Conclusão + evidência | — | **Novo reutilizável** `evidence-two-stage` | etapa 1 escolhe a conclusão, etapa 2 escolhe a observação; emite uma resposta estruturada única | ADAPT, HABITAT, CAMOUFLAGE, COMP |
+| Investigar cena ilustrada | — | **Novo reutilizável** `scene-investigate` | regiões de acerto autoradas por dados; emite `selection` de regionIds; alvos grandes | COMP, CAMOUFLAGE, OBS-CHAR |
+| Caso / concepção errônea | — | Configuração de conteúdo sobre `evidence-two-stage` | nenhuma UI nova | LANDWATER |
+| Ordenação | `placeholder-order` | Reuso apenas para Matemática | — | — |
 
-Change: replace remaining primitive / near-symmetric constructions with varied contours and line weight, add foreground framing elements, more enclosed colorable shapes, denser small discoveries (grass tufts, pebbles, tracks, distant birds) and value/texture depth that survives stolen-color mode. Negative space around slot objects and the challenge interaction area is preserved. No spiral binding, page frame or dashboard chrome.
+Rejeitado explicitamente: `PuzzleAmazonia`, `PuzzleCamuflagemDaOnca`, `PuzzlePantanal` e qualquer tela JSX de currículo. Todo template novo serve pelo menos duas skills e não importa currículo, respostas nem avaliadores.
 
-## 6. Voice seam
+---
 
-Untouched: `audioRegistry`, `narrationService`, `narration.ts` keys. The bubble consumes the same keys, so recorded voices can later replace synthesis without touching stage layout, pet, template, evaluator or domain.
+## S8 — Semântica de avaliação científica
 
-## Technical risks
+Pipeline preservado: Template → `UserResponse` → `ResponseEvaluator` → `EvaluationResult` → `AttemptResult` → `Evidence`.
 
-- **Bubble overlap on landscape tablet** — the stage is dense (pet, Maittê, stones, seal). Mitigation: fixed staging column, clamped width, responsive reposition, Playwright screenshots at tablet and desktop sizes.
-- **Duplicate announcements** — bubble and plate must never render the same line simultaneously; enforced by a single placement decision inside the shell.
-- **SVG cost** — more scenery paths on tablet. Mitigation: static paths, no per-frame JS, ambient animation still gated by `prefers-reduced-motion` and `useHydrated`.
-- **Hash collisions in stone variants** — with four options collisions are possible but harmless; mitigated by combining a shape index with an independent detail/tilt index.
-- **Test drift** — evaluator/persistence tests are untouched, but E2E selectors may need updating if the caption node moves.
+- **Raciocínio completo:** conclusão correta + evidência correta → `outcome: "correct"`.
+- **Conclusão correta, evidência errada:** `outcome: "partially-correct"`, `perTargetOutcome: { conclusion: true, evidence: false }`, `diagnosticCode: "evidence-mismatch"`. Não equivale a sucesso conceitual pleno e não completa o slot em modo challenge.
+- **Conclusão incorreta:** `outcome: "incorrect"`; permanece no Challenge Stage para nova tentativa.
+- **Sucesso assistido:** `assisted: true` no `AttemptResult`, já propagado ao `EvidenceRecord` e contabilizado à parte por `selectSkillEvidence`.
 
-## Verification / acceptance criteria
+Nenhum limiar de maestria é definido aqui. O template nunca decide correção científica.
 
-1. Burpee at stage scale, label hidden, reads as a Border Collie-type dog (screenshot review).
-2. Instruction, retry and success short lines appear in a bubble whose tail points at Burpee; the detached plate is not showing the same line.
-3. Replay remains visible and operable; with audio blocked, caption plus replay recovery still works.
-4. The four stones have visibly different silhouettes/details with equal bounding box and hit area.
-5. Dragging a stone to another position does not change its silhouette (unit test plus before/after screenshots).
-6. Completing the slot leaves a specific board object restored; the Mathematics region shows a specific restored detail.
-7. After a full reload, the same units are still restored.
-8. Typecheck, lint, Vitest and the reduced-motion path all pass.
+**GAP / PROPOSAL de schema:** `answerRulesSchema` cobre hoje apenas `selection` e `ordering`. A Slice A exige `placement` (pares/grupos) e `evidence` (conclusão + evidência, com resultado por etapa). `EvidenceRecord` também não registra o resultado da etapa de evidência. Proposta: acrescentar as duas variantes, os dois evaluators correspondentes e um campo opcional `reasoningOutcome` em `EvidenceRecord`. Sem isso a distinção "conclusão certa, evidência errada" não é representável. Requer aprovação antes do Build.
 
-## Explicitly out of this increment
+---
 
-Real Number Sense curriculum and Slice A; other subjects; production assets for the other three pets; recorded voices and the final music/SFX library; Overworld geography or Dunas route changes; backend, auth, microphone/ASR, XP economy; the final illustration pass for all six worlds.
+## S9 — Áudio e companheiro
 
-## GAP register
+- **Pet de demonstração proposto: Pipoca.** Motivo: um companheiro curioso e observador combina com expedição/observação e evita consolidar "Burpee = tudo". A escolha é configuração (`petId` na narration config), não regra de matéria; qualquer pet é trocável sem tocar em currículo.
+- Fluxo: instrução falada ao abrir, legenda visível e botão de replay, usando a arquitetura de narração existente. Sem TTS remoto, sem microfone, sem ASR, sem motor de áudio específico de Ciências.
+- Dica: dirige a atenção ("olhe de novo para as patas deste animal") sem revelar a resposta; usar dica marca `assisted`.
+- Retentativa: mensagem que reorienta para a evidência relevante, nunca "Errado".
+- Sucesso: reação breve e limitada, seguida do retorno automático já implementado.
+- Frases a configurar por slot: instrução, pergunta de evidência, primeiro erro, erro repetido, dica, sucesso e rótulo de confirmação. Gravação final de voz não é pré-requisito.
 
-- `GAP-1B1-A` — the object catalog of restorable units (which specific plant/rock/marker, and how many per completed slot) is not enumerated in the Specs. The plan proposes one unit per completed slot on the board and one per region milestone on the Overworld as PROVISIONAL visual configuration, pending confirmation.
-- `GAP-1B1-B` — whether the success line should also use the anchored bubble is implied but not stated as DECIDED; the plan assumes yes for companion-attributed short lines.
-- `GAP-1B1-C` — no Spec defines retry/support escalation copy beyond the single retry line, so no new support tier is added.
+---
+
+## S10 — Integração com o mundo
+
+1. Overworld: a região `region-science` (Oceano das Descobertas) recebe `worldId` e passa a ser destino real, com o mesmo zoom/transição da Matemática.
+2. Entrada: chegada espacial à Praia das Conchas, com Maittê na rota.
+3. Board → Challenge: overlay existente, preservando continuidade espacial.
+4. Sucesso: fato de conclusão comprometido → reação curta → retorno automático ao mesmo Board → restauração visível → Maittê na próxima posição.
+5. Restauração: novas unidades concretas costeiras derivadas de fatos existentes; sem novo store e sem regra "1 atividade = 1 objeto".
+6. Retorno ao Overworld pelo mapa dobrado existente.
+7. Reload: reconstrói tudo a partir dos fatos persistidos, incluindo posição e restauração.
+
+---
+
+## S11 — Plano de assets
+
+- **Conceito/técnico agora:** cena costeira do Board, objetos de slot, marcadores de rota, unidades de restauração — qualidade de conceito, substituíveis.
+- **Assets de interação reutilizáveis:** cartas de foto de campo, cartas de observação/evidência, rótulos de ambiente, cenas de investigação com regiões de acerto autoradas por dados.
+- **Substituição futura por produção:** ilustração final do litoral, imagens finais dos seis ambientes, arte final dos animais, criatura narrativa de Ciências.
+
+Sem polimento artístico extenso em JSX/SVG à mão; a arte final não bloqueia a validação pedagógica.
+
+---
+
+## S12 — Estratégia de teste
+
+- Validação Zod de todos os packs e do mundo de Ciências no carregamento, incluindo checagem de que nenhum pack cita a p.117.
+- Testes de evaluator: placement, sort e evidência em duas etapas, incluindo "conclusão certa + evidência errada".
+- Testes de template: emitem apenas `UserResponse` e não importam avaliador nem currículo.
+- Arrastar e alternativa confiável por toque em todos os templates novos.
+- Fluxo de evidência em duas etapas, sem pular a etapa 2.
+- Tentativa incorreta permanece no Challenge Stage.
+- Retorno automático após sucesso, sem reset do arranjo local.
+- Persistência/reload reconstrói progresso e restauração.
+- Restauração derivada de fatos.
+- Replay de narração e legenda sempre presentes.
+- Layout em tablet paisagem com alvos de toque grandes.
+- Movimento reduzido respeitado.
+
+---
+
+## S13 — Registro GAP / CONFLICT / ASSUMPTION
+
+**[GAP] — answerRules e evidência não cobrem Ciências**
+Descrição: o schema só tem `selection` e `ordering`; faltam `placement` e `evidence`; `EvidenceRecord` não registra a etapa de evidência.
+Fonte/Spec: `src/game/domain/schemas.ts`, `src/game/domain/responses.ts`, SCIENCE-GRADE-2 §6.
+Consequência: impossível distinguir conclusão correta com evidência errada.
+Tratamento proposto: acrescentar variantes, evaluators e campo opcional conforme S8.
+Resolver antes do Build? **SIM**
+
+**[GAP] — Registro de conteúdo por mundo inexistente**
+Descrição: as rotas importam `placeholder-fixture` diretamente e rejeitam qualquer `worldId` diferente.
+Consequência: Ciências não pode coexistir com Matemática.
+Tratamento: registro de mundos/packs/atividades por id, preservando o fixture de Matemática.
+Resolver antes do Build? **SIM**
+
+**[GAP] — Sequência discover/practice/challenge nunca executada**
+Descrição: o Challenge Stage resolve apenas `challenge[0]` e `items[0]`.
+Consequência: os modos de aprendizagem da Slice A não rodam.
+Tratamento: orquestração por modo e por item dentro do slot.
+Resolver antes do Build? **SIM**
+
+**[GAP] — Política de maestria**
+Descrição: nenhum limiar aprovado; a sugestão de "dois dias" do pacote Claude não é política do motor.
+Tratamento: continuar emitindo evidência bruta, sem rótulo de maestria.
+Resolver antes do Build? **NÃO**
+
+**[ASSUMPTION] — 6 slots e nome "Praia das Conchas"**
+Fonte/Spec: SCIENCE-WORLD §5 marca a primeira zona como PROVISIONAL.
+Tratamento: manter PROVISIONAL, ajustável na revisão visual.
+Resolver antes do Build? **NÃO**
+
+**[ASSUMPTION] — Pipoca como pet de demonstração**
+Tratamento: configuração; trocável sem mudar currículo. Nenhum pet fica preso a Ciências.
+Resolver antes do Build? **NÃO**
+
+**[GAP] — Exemplos finais de animais/ambientes**
+Descrição: os itens exatos exigem validação contra as fotos das pp.94–108 no momento da autoria.
+Tratamento: autorar no Build com revisão de fonte item a item; nenhum fato biológico inventado.
+Resolver antes do Build? **NÃO** (mas bloqueia o envio de cada item)
+
+**[CONFLICT] — Nenhum identificado** entre as specs lidas.
+
+---
+
+## S14 — Sequência de Build
+
+1. **Costura de conteúdo:** registro de mundos/packs por id; Matemática preservada; validação Zod; Ciências entrável pelo Overworld.
+2. **Extensões de avaliação:** answerRules `placement` e `evidence`, evaluators correspondentes, semântica de `partially-correct` e testes puros.
+3. **Templates reutilizáveis:** `sort-into-groups`, `pair-match`, `evidence-two-stage`, `scene-investigate`, com arrastar + toque.
+4. **Orquestração por modo:** discover → practice → challenge dentro do slot, com assistência registrada.
+5. **Board Praia das Conchas:** cena de conceito, rota, 6 slots, manifestações visuais e unidades de restauração costeiras.
+6. **Narração e companheiro:** falas por slot, replay, dicas e reações.
+7. **Endurecimento:** testes de reload/restauração/tablet/movimento reduzido e revisão da rastreabilidade de fonte.
+
+O Build é interrompível após o passo 7. Nenhuma fatia B/C/D de Ciências e nenhum conteúdo de Matemática entram neste Build.
+
+---
+
+## S15 — Prontidão
+
+`SCIENCE SLICE A NOT READY FOR BUILD`
+
+Bloqueadores:
+
+1. Aprovação da extensão de schema para `placement` / `evidence` e do campo opcional de resultado de raciocínio (S8).
+2. Aprovação do registro de conteúdo por mundo e da orquestração por modo dentro do slot (S13).
+3. Confirmação do escopo provisório do primeiro Board: nome da zona e contagem de 6 slots (S3).
