@@ -28,7 +28,8 @@ import { selectAvatarRestoration } from "@/game/state/selectors";
 import { playSfx } from "@/audio/sfx";
 import { useNarration } from "@/audio/useNarration";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
-import { getChallengeNarration } from "@/visual/world-config/narration";
+import { getChallengeNarration, getObservationLine } from "@/visual/world-config/narration";
+import { getItemPresentation } from "@/visual/world-config/item-presentation";
 import { ChallengeStageShell } from "@/visual/stage/ChallengeStageShell";
 import { getSlotVisual } from "@/visual/world-config";
 import { useSuccessReturn } from "@/game/stage/useSuccessReturn";
@@ -66,6 +67,12 @@ function ChallengeStage() {
    * either advances deliberately or returns to the board.
    */
   const [pinnedActivityId, setPinnedActivityId] = React.useState<string | null>(null);
+  /**
+   * What the child is currently pointing at. Presentation only: it drives the
+   * companion's in-character reaction and never affects evaluation, evidence
+   * or progression.
+   */
+  const [observedOptionId, setObservedOptionId] = React.useState<string | null>(null);
 
   const world = requireWorld(worldId);
   const slot = getSlot(worldId, slotId);
@@ -80,9 +87,12 @@ function ChallengeStage() {
   // Narration copy is configuration, resolved by placement. Nothing spoken here
   // is authored by the template, the pet component or the domain layer.
   const narrationConfig = getChallengeNarration(slotId, activityId);
+  const observationLine = observedOptionId
+    ? getObservationLine(narrationConfig, observedOptionId)
+    : undefined;
   const line =
     lastAttempt === null
-      ? narrationConfig.instruction
+      ? (observationLine ?? narrationConfig.instruction)
       : lastAttempt.outcome === "correct"
         ? narrationConfig.success
         : narrationConfig.retry;
@@ -115,6 +125,7 @@ function ChallengeStage() {
     // Stay in the stage and continue the sequence with the next activity.
     setPinnedActivityId(null);
     setLastAttempt(null);
+    setObservedOptionId(null);
   }, [close, slotComplete]);
 
   /**
@@ -127,6 +138,7 @@ function ChallengeStage() {
   const handleAttempt = React.useCallback(
     (attempt: AttemptResult) => {
       setLastAttempt(attempt);
+      setObservedOptionId(null);
       setPinnedActivityId(attempt.activityId);
       playSfx(attempt.outcome === "correct" ? "success" : "retry");
       dispatch({
@@ -207,6 +219,10 @@ function ChallengeStage() {
         item={item}
         confirmLabel={narrationConfig.confirmLabel}
         disabled={frozen}
+        {...(getItemPresentation(item.id)
+          ? { presentation: getItemPresentation(item.id)! }
+          : {})}
+        onObserve={(optionIds) => setObservedOptionId(optionIds[0] ?? null)}
         onAttempt={handleAttempt}
       />
     </ChallengeStageShell>
