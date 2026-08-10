@@ -199,7 +199,7 @@ export function ChallengeStageShell({
             >
               <CompanionArt
                 animated={hydrated}
-                state={speaking ? "speaking" : companionState}
+                state={speaking ? "speak" : companionState}
                 {...(petId ? { petId } : {})}
               />
             </svg>
