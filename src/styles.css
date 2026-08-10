@@ -500,6 +500,18 @@ h2,
   }
 }
 
+@keyframes scene-observed {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
 @keyframes stone-lift {
   from {
     transform: translateY(0);
