@@ -30,6 +30,7 @@ docs/
 │   ├── NAVIGATION.md
 │   ├── WORLD-BOARD.md
 │   ├── CHALLENGE-STAGE.md
+│   ├── PHASE-1B-1A-SUCCESS-RETURN-HOTFIX.md
 │   ├── FEEDBACK.md
 │   └── TRANSITIONS.md
 ├── gameplay/
@@ -41,6 +42,7 @@ docs/
 ├── design/
 │   ├── ART-DIRECTION.md
 │   ├── VISUAL-IMPLEMENTATION.md
+│   ├── ASSET-PRODUCTION-PIPELINE.md
 │   ├── PHASE-1B-CHARACTER-ART-AUDIO.md
 │   ├── PHASE-1B-1-VISUAL-POLISH.md
 │   ├── CHARACTER-ART.md
