@@ -14,9 +14,16 @@ export type SlotObjectKind =
   | "carved-stone"
   | "footprints"
   | "weathered-marker"
-  | "dry-wash";
+  | "dry-wash"
+  /* Coastal expedition stations (PROVISIONAL concept manifestations). */
+  | "observation-point"
+  | "field-stand"
+  | "map-table"
+  | "specimen-panel"
+  | "tide-pool"
+  | "lookout-scope";
 
-export type StageSkinId = "desert" | "default";
+export type StageSkinId = "desert" | "coast" | "default";
 
 /** An Overworld destination. Only one is enterable in Phase 1A. */
 export type RegionVisual = {
