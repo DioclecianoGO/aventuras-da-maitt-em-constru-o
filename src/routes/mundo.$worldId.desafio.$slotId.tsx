@@ -30,6 +30,14 @@ import type { CompanionActingState, MaitteActingState } from "@/visual/character
 import { getChallengeNarration } from "@/visual/world-config/narration";
 import { ChallengeStageShell } from "@/visual/stage/ChallengeStageShell";
 
+/**
+ * Bounded success reaction before the stage closes. PROVISIONAL choreography
+ * (docs/ux/PHASE-1B-1A-SUCCESS-RETURN-HOTFIX.md): long enough to perceive the
+ * success, short enough to preserve flow. It never waits for narration, SFX or
+ * animation, because audio may be blocked or unavailable.
+ */
+export const SUCCESS_REACTION_MS = 1600;
+
 export const Route = createFileRoute("/mundo/$worldId/desafio/$slotId")({
   loader: ({ params }) => {
     if (params.worldId !== PLACEHOLDER_WORLD_ID || !findSlot(params.slotId)) throw notFound();
@@ -89,6 +97,19 @@ function ChallengeStage() {
   const close = React.useCallback(() => {
     void navigate({ to: "/mundo/$worldId", params: { worldId } });
   }, [navigate, worldId]);
+
+  const solved = lastAttempt?.outcome === "correct";
+
+  /**
+   * Automatic success return. The completion facts are already committed by
+   * handleAttempt (synchronously, before this effect runs), so the Board can
+   * derive its restored state the moment it reappears.
+   */
+  React.useEffect(() => {
+    if (!solved) return;
+    const timer = window.setTimeout(close, SUCCESS_REACTION_MS);
+    return () => window.clearTimeout(timer);
+  }, [solved, close]);
 
   const handleAttempt = React.useCallback(
     (attempt: AttemptResult) => {
@@ -164,6 +185,7 @@ function ChallengeStage() {
         pack={placeholderPack}
         item={item}
         confirmLabel={narrationConfig.confirmLabel}
+        disabled={solved}
         onAttempt={handleAttempt}
       />
     </ChallengeStageShell>
