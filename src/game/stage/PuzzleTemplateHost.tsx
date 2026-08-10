@@ -38,11 +38,25 @@ export function PuzzleTemplateHost({
 
   const definition = getTemplate(activity.templateId);
 
+  /**
+   * Phase 1B.1a: the template item view is memoized on the AUTHORED item
+   * identity. Previously a fresh wrapper object was allocated on every render,
+   * so any orchestration re-render (attempt state, narration, restoration)
+   * looked like a brand-new authored item and reset the template's local
+   * response state — wiping the child's solved arrangement.
+   */
+  const itemView = React.useMemo(
+    () => ({ id: item.id, prompt: item.prompt, options: item.options }),
+    [item.id, item.prompt, item.options],
+  );
+
   const handleRespond = React.useCallback(
     (response: UserResponse) => {
+      // Presentation guard only: a frozen stage must not emit a second attempt.
+      if (disabled) return;
       onAttempt(resolveAttempt({ activity, slot, pack, item, response, supportUsed }));
     },
-    [activity, slot, pack, item, supportUsed, onAttempt],
+    [activity, slot, pack, item, supportUsed, onAttempt, disabled],
   );
 
   if (!definition) {
@@ -57,7 +71,7 @@ export function PuzzleTemplateHost({
 
   return (
     <Template
-      item={{ prompt: item.prompt, options: item.options }}
+      item={itemView}
       onRespond={handleRespond}
       onSupportUsed={() => setSupportUsed(true)}
       {...(confirmLabel === undefined ? {} : { confirmLabel })}

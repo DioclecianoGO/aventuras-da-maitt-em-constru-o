@@ -51,19 +51,26 @@ export function PlaceholderOrderTemplate({
    */
   const stoneIdentities = React.useMemo(
     () => buildStoneIdentities(item.options.map((option) => option.id)),
-    [item],
+    [item.options],
   );
 
+  /**
+   * Phase 1B.1a: reset ONLY when the authored item actually changes. Keying
+   * this on the item object reference made every parent re-render (including
+   * the one caused by a correct attempt) reset the solved arrangement.
+   */
+  const itemId = item.id;
   React.useEffect(() => {
     setOrder(item.options.map((option) => option.id));
     setSelectedId(null);
     setTouched(false);
-  }, [item]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemId]);
 
   const labelOf = (id: string) => item.options.find((option) => option.id === id)?.label ?? id;
 
   function move(sourceId: string, targetId: string) {
-    if (sourceId === targetId) return;
+    if (disabled || sourceId === targetId) return;
     setOrder((current) => {
       const next = [...current];
       const from = next.indexOf(sourceId);
@@ -121,6 +128,7 @@ export function PlaceholderOrderTemplate({
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
                   event.preventDefault();
+                  if (disabled) return;
                   if (dragIdRef.current) move(dragIdRef.current, id);
                   dragIdRef.current = null;
                   setSelectedId(null);
@@ -133,11 +141,7 @@ export function PlaceholderOrderTemplate({
                   disabled && "opacity-60",
                 )}
               >
-                <svg
-                  viewBox="-60 -86 120 116"
-                  className="h-24 w-20 sm:h-28 sm:w-24"
-                  aria-hidden
-                >
+                <svg viewBox="-60 -86 120 116" className="h-24 w-20 sm:h-28 sm:w-24" aria-hidden>
                   <g transform="translate(0 18)">
                     <SandSocketArt index={index} />
                   </g>
@@ -146,13 +150,13 @@ export function PlaceholderOrderTemplate({
                       settling === id ? "stone-settle" : isSelected ? "stone-lift" : undefined
                     }
                   >
-                  <OrderStoneArt
-                    label={labelOf(id)}
-                    shape={getStoneIdentity(stoneIdentities, id).shape}
-                    detail={getStoneIdentity(stoneIdentities, id).detail}
-                    tilt={getStoneIdentity(stoneIdentities, id).tilt}
-                    selected={isSelected}
-                  />
+                    <OrderStoneArt
+                      label={labelOf(id)}
+                      shape={getStoneIdentity(stoneIdentities, id).shape}
+                      detail={getStoneIdentity(stoneIdentities, id).detail}
+                      tilt={getStoneIdentity(stoneIdentities, id).tilt}
+                      selected={isSelected}
+                    />
                   </g>
                 </svg>
               </button>
@@ -166,7 +170,10 @@ export function PlaceholderOrderTemplate({
         type="button"
         disabled={disabled || !touched}
         aria-label={confirmLabel}
-        onClick={() => onRespond({ kind: "ordering", orderedIds: order })}
+        onClick={() => {
+          if (disabled || !touched) return;
+          onRespond({ kind: "ordering", orderedIds: order });
+        }}
         className={cn(
           "flex items-center gap-3 rounded-full px-3 py-2 text-ink transition-transform duration-200",
           "focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)]",

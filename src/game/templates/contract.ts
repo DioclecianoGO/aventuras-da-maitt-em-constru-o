@@ -10,6 +10,12 @@
 import type { ResponseKind, UserResponse } from "@/game/domain/responses";
 
 export type TemplateItemView = {
+  /**
+   * Stable authored item identity. Templates key their local reset logic from
+   * this id, never from the object reference: an orchestration re-render must
+   * not look like a new authored item (docs/ux/PHASE-1B-1A-SUCCESS-RETURN-HOTFIX.md).
+   */
+  id: string;
   prompt: string;
   options: { id: string; label: string }[];
 };

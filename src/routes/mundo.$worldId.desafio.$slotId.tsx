@@ -29,6 +29,7 @@ import { useNarration } from "@/audio/useNarration";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
 import { getChallengeNarration } from "@/visual/world-config/narration";
 import { ChallengeStageShell } from "@/visual/stage/ChallengeStageShell";
+import { useSuccessReturn } from "@/game/stage/useSuccessReturn";
 
 export const Route = createFileRoute("/mundo/$worldId/desafio/$slotId")({
   loader: ({ params }) => {
@@ -89,6 +90,13 @@ function ChallengeStage() {
   const close = React.useCallback(() => {
     void navigate({ to: "/mundo/$worldId", params: { worldId } });
   }, [navigate, worldId]);
+
+  /**
+   * Automatic success return. Completion facts are already committed by
+   * handleAttempt before this runs, so the Board derives its restored state
+   * the moment it reappears. `frozen` locks the template during the reaction.
+   */
+  const { frozen } = useSuccessReturn(lastAttempt?.outcome ?? null, close);
 
   const handleAttempt = React.useCallback(
     (attempt: AttemptResult) => {
@@ -164,6 +172,7 @@ function ChallengeStage() {
         pack={placeholderPack}
         item={item}
         confirmLabel={narrationConfig.confirmLabel}
+        disabled={frozen}
         onAttempt={handleAttempt}
       />
     </ChallengeStageShell>
