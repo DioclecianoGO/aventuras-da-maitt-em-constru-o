@@ -6,6 +6,9 @@
  */
 import { describe, expect, it } from "vitest";
 
+// Registers the approved evaluators/templates; the route does this via imports.
+import "@/game/registries";
+
 import {
   findActivity,
   findSlot,
