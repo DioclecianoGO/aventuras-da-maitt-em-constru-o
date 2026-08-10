@@ -171,8 +171,17 @@ export const characterVisual: CharacterVisualConfig = {
 /**
  * Companion shown in the Challenge Stage shell. Configuration-driven: no pet
  * is bound to Mathematics or to any skill (docs/narrative/PET-COMPANIONS.md).
+ *
+ * Changing `petId` to "pipoca", "will" or "lyra" changes the rendered
+ * companion with NO change to educational, evaluation or domain code. Pet ids
+ * without a finished asset degrade to the neutral concept creature.
  */
-export const companionVisual = {
-  petId: "pipoca" as const,
-  displayName: "Pipoca",
+export type CompanionVisualConfig = {
+  petId: string;
+  displayName: string;
+};
+
+export const companionVisual: CompanionVisualConfig = {
+  petId: "burpee",
+  displayName: "Burpee",
 };
