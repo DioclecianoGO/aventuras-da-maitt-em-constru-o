@@ -167,9 +167,11 @@ export function SceneInvestigateTemplate({
 
       {multi ? (
         <p className="text-center text-sm text-ink-soft" role="status">
-          {remaining > 0
-            ? "Toque em mais uma coisa que faz parte deste ambiente."
-            : "Você já observou várias coisas. Pode mostrar."}
+          {selected.length === 0
+            ? "Toque em duas coisas que fazem parte deste ambiente."
+            : remaining > 0
+              ? "Toque em mais uma coisa que faz parte deste ambiente."
+              : "Você já observou várias coisas. Pode mostrar."}
         </p>
       ) : null}
 
