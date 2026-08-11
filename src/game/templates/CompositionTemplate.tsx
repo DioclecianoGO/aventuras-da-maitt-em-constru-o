@@ -68,7 +68,10 @@ export function CompositionTemplate({
           className="rounded-3xl border-2 border-[var(--ink)] bg-[var(--paper)]/80 p-3"
         >
           <legend className="px-2 text-sm font-semibold tracking-wide text-ink uppercase">
-            {part.label}
+            <span className="inline-flex items-center gap-2">
+              {part.label}
+              <SpeakerButton text={part.label} className="h-10 w-10 text-base" />
+            </span>
           </legend>
           <ul className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             {item.options
@@ -77,11 +80,18 @@ export function CompositionTemplate({
                 const selected = chosen[part.id] === option.id;
                 return (
                   <li key={option.id} className="sm:flex-1">
+                    <div className="flex items-center gap-2">
                     <button
                       type="button"
                       disabled={disabled}
                       aria-pressed={selected}
-                      onClick={() => setChosen((prev) => ({ ...prev, [part.id]: option.id }))}
+                      onClick={() => {
+                        // Deliberate selection speaks the sentence the child
+                        // can already see. It never submits the answer; the
+                        // final confirmation stays separate.
+                        setChosen((prev) => ({ ...prev, [part.id]: option.id }));
+                        speakLabel(option.label);
+                      }}
                       className={`min-h-14 w-full rounded-2xl border-2 border-[var(--ink)] px-4 py-3 text-left text-base font-medium text-ink transition-transform duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] motion-reduce:transition-none ${
                         selected
                           ? "bg-[var(--hope)]/25 shadow-[0_5px_0_var(--ink-soft)]"
@@ -93,6 +103,8 @@ export function CompositionTemplate({
                       </span>
                       {option.label}
                     </button>
+                    <SpeakerButton text={option.label} />
+                    </div>
                   </li>
                 );
               })}
