@@ -14,6 +14,8 @@
 import * as React from "react";
 
 import type { PuzzleTemplateProps } from "@/game/templates/contract";
+import { speakLabel } from "@/audio/labelSpeech";
+import { SpeakerButton } from "@/visual/stage/SpeakerButton";
 
 export function CompositionTemplate({
   item,
