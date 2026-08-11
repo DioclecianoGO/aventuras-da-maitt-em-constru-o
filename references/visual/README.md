@@ -14,6 +14,8 @@ The library supports the Visual Production Pipeline for **Aventuras da Maittê**
 4. `04-witch-hat-atmosphere/` — magical storybook atmosphere, scenic richness and fantasy composition only.
 5. `05-demon-slayer-expression/` — character expressiveness, pose and motion energy only.
 6. `06-bobbie-goods-coloring-warmth/` — cozy coloring-book warmth, rounded forms, enclosed colorable regions and observational detail only.
+7. `07-burpee-identity/` — Burpee identity/anatomy reference for a recognizable blue-merle Border Collie companion.
+8. `08-visual-production-slice-01-output/` — Claude Design review outputs and later approved visual baseline artifacts.
 
 ## Binding synthesis rule
 
@@ -27,6 +29,7 @@ Use references by role:
 - Bobbie Goods → cozy coloring-book warmth / rounded detail language.
 - Current game screenshots → functional requirements.
 - Maittê references → protagonist identity.
+- Burpee references → companion identity/anatomy.
 
 The final visual identity must be **original to Aventuras da Maittê** and subordinate to repository Specs.
 
@@ -41,6 +44,7 @@ Use clear filenames, for example:
 - `expression-thinking-01.jpg`
 - `coloring-detail-density-01.png`
 - `maitte-front-reference-01.jpg`
+- `burpee-standing-01.jpg`
 
 Avoid filenames such as `IMG_1234.jpg` when possible.
 
