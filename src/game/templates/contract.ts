@@ -59,6 +59,16 @@ export type TemplateItemView = {
   targets: { id: string; label: string }[];
   /** Authored parts of a multi-part response. Ids carry no domain meaning. */
   parts: { id: string; label: string }[];
+  /**
+   * GENERIC interaction constraints for selection-style templates, derived
+   * from authored content by the orchestration layer. Structural only: it says
+   * how many DISTINCT choices the interaction collects, never which ones are
+   * right (docs/ux/EMERGENT-READER-SUPPORT.md).
+   */
+  selection?: {
+    minDistinct: number;
+    maxSelections?: number | undefined;
+  } | undefined;
 };
 
 export type PuzzleTemplateProps = {
