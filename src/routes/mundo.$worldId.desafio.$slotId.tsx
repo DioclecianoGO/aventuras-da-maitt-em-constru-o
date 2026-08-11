@@ -73,6 +73,8 @@ function ChallengeStage() {
    * or progression.
    */
   const [observedOptionId, setObservedOptionId] = React.useState<string | null>(null);
+  /** How many distinct observations the child has made so far. */
+  const [observedCount, setObservedCount] = React.useState(0);
 
   const world = requireWorld(worldId);
   const slot = getSlot(worldId, slotId);
@@ -87,9 +89,25 @@ function ChallengeStage() {
   // Narration copy is configuration, resolved by placement. Nothing spoken here
   // is authored by the template, the pet component or the domain layer.
   const narrationConfig = getChallengeNarration(slotId, activityId);
-  const observationLine = observedOptionId
+  const baseObservationLine = observedOptionId
     ? getObservationLine(narrationConfig, observedOptionId)
     : undefined;
+  /**
+   * While the authored interaction still expects more distinct observations,
+   * the companion acknowledges the object AND invites another one. This is
+   * Discover guidance, not a hint about correctness.
+   */
+  const minDistinct =
+    item?.answerRules.kind === "selection" ? (item.answerRules.constraints?.minDistinct ?? 1) : 1;
+  const invite = observedCount > 0 && observedCount < minDistinct;
+  const observationLine =
+    baseObservationLine && invite
+      ? {
+          ...baseObservationLine,
+          captionText: `${baseObservationLine.captionText} Consegue achar outra coisa?`,
+          spokenText: `${baseObservationLine.spokenText} Consegue achar outra coisa?`,
+        }
+      : baseObservationLine;
   const line =
     lastAttempt === null
       ? (observationLine ?? narrationConfig.instruction)
@@ -126,6 +144,7 @@ function ChallengeStage() {
     setPinnedActivityId(null);
     setLastAttempt(null);
     setObservedOptionId(null);
+    setObservedCount(0);
   }, [close, slotComplete]);
 
   /**
@@ -139,6 +158,7 @@ function ChallengeStage() {
     (attempt: AttemptResult) => {
       setLastAttempt(attempt);
       setObservedOptionId(null);
+      setObservedCount(0);
       setPinnedActivityId(attempt.activityId);
       playSfx(attempt.outcome === "correct" ? "success" : "retry");
       dispatch({
@@ -220,7 +240,10 @@ function ChallengeStage() {
         confirmLabel={narrationConfig.confirmLabel}
         disabled={frozen}
         {...(getItemPresentation(item.id) ? { presentation: getItemPresentation(item.id)! } : {})}
-        onObserve={(optionIds) => setObservedOptionId(optionIds[0] ?? null)}
+        onObserve={(optionIds) => {
+          setObservedOptionId(optionIds[0] ?? null);
+          setObservedCount(new Set(optionIds).size);
+        }}
         onAttempt={handleAttempt}
       />
     </ChallengeStageShell>
