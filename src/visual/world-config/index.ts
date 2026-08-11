@@ -73,7 +73,7 @@ export const overworldRegions: RegionVisual[] = [
     centroid: { x: 800, y: 790 },
     bloomRadius: 310,
     hit: "560,660 1060,660 1060,940 580,940",
-    label: { x: 813, y: 992 },
+    label: { x: 813, y: 900 },
   },
 ];
 
