@@ -79,7 +79,7 @@ const packs: ContentPack[] = [
     items: [
       {
         id: "item-sci-s1-d1",
-        prompt: "Observe o ambiente e toque em algo que faz parte dele.",
+        prompt: "Observe o ambiente e toque em pelo menos duas coisas que fazem parte dele.",
         representation: "pictorial",
         source: src([94, 95, 96], "um ambiente natural tem muitos elementos"),
         options: [
@@ -90,18 +90,21 @@ const packs: ContentPack[] = [
         ],
         answerRules: {
           kind: "selection",
-          acceptedSets: [
-            { id: "planta", optionIds: ["obs-planta"] },
-            { id: "passaro", optionIds: ["obs-passaro"] },
-            { id: "pedra", optionIds: ["obs-pedra"] },
-            { id: "agua", optionIds: ["obs-agua"] },
-          ],
+          /**
+           * Discover guidance, not a mastery threshold
+           * (docs/pedagogy/SCIENCE-SLICE-A-LITERACY-SUPPORT.md, Stage 1):
+           * any two DISTINCT authored elements of this environment count.
+           */
+          constraints: {
+            allowedOptionIds: ["obs-planta", "obs-passaro", "obs-pedra", "obs-agua"],
+            minDistinct: 2,
+          },
         },
       },
     ],
     feedback: {
-      firstError: "Olhe outra vez: o que você consegue ver neste lugar?",
-      repeatedError: "Vamos observar juntos e tocar em uma coisa que está no ambiente.",
+      firstError: "Olhe outra vez: o que mais você consegue ver neste lugar?",
+      repeatedError: "Vamos observar juntos e tocar em duas coisas que estão no ambiente.",
       hints: ["Tudo o que você vê aqui faz parte do ambiente."],
     },
   }),
