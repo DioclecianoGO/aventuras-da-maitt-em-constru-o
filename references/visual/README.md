@@ -15,7 +15,10 @@ The library supports the Visual Production Pipeline for **Aventuras da Maittê**
 5. `05-demon-slayer-expression/` — character expressiveness, pose and motion energy only.
 6. `06-bobbie-goods-coloring-warmth/` — cozy coloring-book warmth, rounded forms, enclosed colorable regions and observational detail only.
 7. `07-burpee-identity/` — Burpee identity/anatomy reference for a recognizable blue-merle Border Collie companion.
-8. `08-visual-production-slice-01-output/` — Claude Design review outputs and later approved visual baseline artifacts.
+8. `08-pipoca-identity/` — Pipoca identity/anatomy reference for a recognizable white Maltese companion.
+9. `09-will-identity/` — Will identity/marking reference for a recognizable orange mixed-breed cat companion.
+10. `10-lyra-identity/` — Lyra identity/marking reference for a recognizable tricolor mixed-breed cat companion.
+11. `11-visual-production-slice-01-output/` — Claude Design review outputs and later approved visual baseline artifacts.
 
 ## Binding synthesis rule
 
@@ -29,9 +32,17 @@ Use references by role:
 - Bobbie Goods → cozy coloring-book warmth / rounded detail language.
 - Current game screenshots → functional requirements.
 - Maittê references → protagonist identity.
-- Burpee references → companion identity/anatomy.
+- Burpee, Pipoca, Will and Lyra references → individual companion identity/anatomy/markings.
 
 The final visual identity must be **original to Aventuras da Maittê** and subordinate to repository Specs.
+
+## Companion identity rule
+
+The four pets are individual characters, not interchangeable generic mascot animals.
+
+Identity folders preserve real-world appearance while canonical personality/acting direction remains governed by the project Specs.
+
+Do not infer permanent subject/Skill assignments from the folder structure or from which pet appears in a given visual slice.
 
 ## Upload guidance
 
@@ -45,6 +56,9 @@ Use clear filenames, for example:
 - `coloring-detail-density-01.png`
 - `maitte-front-reference-01.jpg`
 - `burpee-standing-01.jpg`
+- `pipoca-front-01.jpg`
+- `will-face-01.jpg`
+- `lyra-face-markings-01.jpg`
 
 Avoid filenames such as `IMG_1234.jpg` when possible.
 
@@ -61,5 +75,7 @@ Priority surfaces:
 3. Slot 1 — Discover / environment observation
 4. Slot 1 — Practice / living × non-living
 5. Slot 1 — Challenge / conclusion + evidence
+
+Burpee remains the current demo companion for this slice, but references for Pipoca, Will and Lyra are retained now so the production character language can later remain consistent across the whole companion cast.
 
 The current code-drawn SVG art remains functional scaffolding and is not the final quality target.

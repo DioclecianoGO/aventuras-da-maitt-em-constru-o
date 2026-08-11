@@ -18,6 +18,8 @@ Expected review artifacts may include:
 - audio-affordance study;
 - handoff notes for Claude Code.
 
+Will, Lyra and Pipoca identity references are available in their own folders for future companion production work, but this first Science visual slice does not require production-ready sheets for all four pets.
+
 Do not treat generated work as approved merely because it is stored here. Use filename/status markers such as:
 
 - `DRAFT-...`
