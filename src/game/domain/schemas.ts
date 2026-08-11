@@ -87,7 +87,26 @@ export const answerRulesSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("selection"),
     /** Each entry is one fully valid answer set. */
-    acceptedSets: z.array(z.object({ id: z.string(), optionIds: z.array(z.string()) })),
+    acceptedSets: z
+      .array(z.object({ id: z.string(), optionIds: z.array(z.string()) }))
+      .default([]),
+    /**
+     * GENERIC constrained multi-selection (docs/ux/EMERGENT-READER-SUPPORT.md,
+     * "Multi-observation Discover interactions").
+     *
+     * When present, evaluation succeeds if the authored structural constraints
+     * are satisfied instead of matching one exact accepted set. The constraint
+     * carries NO subject meaning: it only says which authored option ids are
+     * admissible and how many DISTINCT ones the interaction requires. Content
+     * that only declares `acceptedSets` keeps the previous exact semantics.
+     */
+    constraints: z
+      .object({
+        allowedOptionIds: z.array(z.string()).min(1),
+        minDistinct: z.number().int().positive().default(1),
+        maxSelections: z.number().int().positive().optional(),
+      })
+      .optional(),
   }),
   z.object({
     kind: z.literal("ordering"),

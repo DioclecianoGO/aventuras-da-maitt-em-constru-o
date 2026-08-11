@@ -87,3 +87,48 @@ describe("selection evaluator", () => {
     expect(result.outcome).toBe("incorrect");
   });
 });
+
+/** Generic constrained multi-selection: structure only, no subject meaning. */
+const multiItem: PackItem = {
+  ...selectionItem,
+  id: "item-3",
+  options: [
+    { id: "x", label: "X" },
+    { id: "y", label: "Y" },
+    { id: "z", label: "Z" },
+  ],
+  answerRules: {
+    kind: "selection",
+    acceptedSets: [],
+    constraints: { allowedOptionIds: ["x", "y", "z"], minDistinct: 2 },
+  },
+};
+
+describe("constrained multi-selection", () => {
+  it("accepts any two distinct admissible options", () => {
+    expect(
+      evaluateResponse({ kind: "selection", optionIds: ["z", "x"] }, multiItem, multiItem.answerRules)
+        .outcome,
+    ).toBe("correct");
+  });
+
+  it("rejects fewer distinct selections than required", () => {
+    const result = evaluateResponse(
+      { kind: "selection", optionIds: ["x", "x"] },
+      multiItem,
+      multiItem.answerRules,
+    );
+    expect(result.outcome).toBe("incorrect");
+    expect(result.diagnosticCode).toBe("selection-below-minimum");
+  });
+
+  it("rejects an option outside the authored set", () => {
+    const result = evaluateResponse(
+      { kind: "selection", optionIds: ["x", "w"] },
+      multiItem,
+      multiItem.answerRules,
+    );
+    expect(result.outcome).toBe("incorrect");
+    expect(result.diagnosticCode).toBe("selection-not-allowed");
+  });
+});

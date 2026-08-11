@@ -59,8 +59,19 @@ export function PuzzleTemplateHost({
       options: item.options,
       targets: item.targets,
       parts: item.parts,
+      /**
+       * Structural interaction constraint only (how many distinct choices the
+       * template must collect). No accepted answer ever crosses this seam.
+       */
+      selection:
+        item.answerRules.kind === "selection" && item.answerRules.constraints
+          ? {
+              minDistinct: item.answerRules.constraints.minDistinct,
+              maxSelections: item.answerRules.constraints.maxSelections,
+            }
+          : undefined,
     }),
-    [item.id, item.prompt, item.options, item.targets, item.parts],
+    [item.id, item.prompt, item.options, item.targets, item.parts, item.answerRules],
   );
 
   const handleRespond = React.useCallback(

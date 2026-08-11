@@ -15,6 +15,7 @@
 import * as React from "react";
 
 import type { PuzzleTemplateProps } from "@/game/templates/contract";
+import { speakLabel } from "@/audio/labelSpeech";
 
 export function SceneInvestigateTemplate({
   item,
@@ -24,10 +25,18 @@ export function SceneInvestigateTemplate({
   confirmLabel,
   presentation,
 }: PuzzleTemplateProps) {
-  const [selected, setSelected] = React.useState<string | null>(null);
+  /**
+   * Multiple observations are supported whenever the authored content asks for
+   * them. With no authored constraint the template stays single-selection, so
+   * existing scene activities behave exactly as before.
+   */
+  const minDistinct = Math.max(1, item.selection?.minDistinct ?? 1);
+  const maxSelections = item.selection?.maxSelections;
+  const multi = minDistinct > 1 || (maxSelections !== undefined && maxSelections > 1);
+  const [selected, setSelected] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    setSelected(null);
+    setSelected([]);
   }, [item.id]);
 
   const scene = presentation?.scene;
@@ -35,16 +44,43 @@ export function SceneInvestigateTemplate({
 
   const pick = (optionId: string) => {
     if (disabled) return;
-    const next = selected === optionId ? null : optionId;
+    const already = selected.includes(optionId);
+    let next: string[];
+    if (!multi) {
+      next = already ? [] : [optionId];
+    } else if (already) {
+      // Touching the same object again is not a new distinct observation; it
+      // simply un-observes it.
+      next = selected.filter((id) => id !== optionId);
+    } else if (maxSelections !== undefined && selected.length >= maxSelections) {
+      next = selected;
+    } else {
+      next = [...selected, optionId];
+    }
     setSelected(next);
-    // Presentation-only signal so the companion can react to WHAT was touched.
-    if (next) onObserve?.([next]);
+
+    if (!already && next.includes(optionId)) {
+      const label =
+        item.options.find((entry) => entry.id === optionId)?.label ??
+        hotspots.find((entry) => entry.optionId === optionId)?.label;
+      // Accessibility read-aloud of the visible object name. Not a hint and
+      // never a submission (docs/ux/EMERGENT-READER-SUPPORT.md).
+      if (label) speakLabel(label);
+      // Presentation-only signal so the companion can react to WHAT was
+      // touched. The most recent observation is FIRST, followed by the earlier
+      // ones, so a consumer can react to the new object and still know how
+      // many distinct observations exist.
+      onObserve?.([optionId, ...selected.filter((id) => id !== optionId)]);
+    }
   };
 
   const confirm = () => {
-    if (disabled || !selected) return;
-    onRespond({ kind: "selection", optionIds: [selected] });
+    if (disabled || selected.length < minDistinct) return;
+    onRespond({ kind: "selection", optionIds: selected });
   };
+
+  const canConfirm = selected.length >= minDistinct;
+  const remaining = Math.max(0, minDistinct - selected.length);
 
   return (
     <div className="flex flex-col gap-4">
@@ -65,7 +101,7 @@ export function SceneInvestigateTemplate({
           </svg>
 
           {hotspots.map((hotspot) => {
-            const isSelected = selected === hotspot.optionId;
+            const isSelected = selected.includes(hotspot.optionId);
             const option = item.options.find((entry) => entry.id === hotspot.optionId);
             return (
               <button
@@ -102,7 +138,7 @@ export function SceneInvestigateTemplate({
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="O que você observou">
           {item.options.map((option) => {
-            const isSelected = selected === option.id;
+            const isSelected = selected.includes(option.id);
             return (
               <li key={option.id}>
                 <button
@@ -129,11 +165,21 @@ export function SceneInvestigateTemplate({
         </ul>
       )}
 
+      {multi ? (
+        <p className="text-center text-sm text-ink-soft" role="status">
+          {selected.length === 0
+            ? "Toque em duas coisas que fazem parte deste ambiente."
+            : remaining > 0
+              ? "Toque em mais uma coisa que faz parte deste ambiente."
+              : "Você já observou várias coisas. Pode mostrar."}
+        </p>
+      ) : null}
+
       <div className="flex justify-center">
         <button
           type="button"
           onClick={confirm}
-          disabled={disabled || !selected}
+          disabled={disabled || !canConfirm}
           className="min-h-14 rounded-full border-2 border-[var(--ink)] bg-[var(--hope)]/30 px-7 py-3 text-base font-semibold text-ink transition-transform duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] disabled:opacity-50 motion-reduce:transition-none"
         >
           {confirmLabel ?? "Mostrar"}

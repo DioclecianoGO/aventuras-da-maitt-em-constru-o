@@ -13,6 +13,8 @@
 import * as React from "react";
 
 import type { PuzzleTemplateProps } from "@/game/templates/contract";
+import { speakLabel } from "@/audio/labelSpeech";
+import { SpeakerButton } from "@/visual/stage/SpeakerButton";
 
 type Placed = Record<string, string | undefined>;
 
@@ -79,7 +81,12 @@ export function PlacementTemplate({
                 type="button"
                 draggable={!disabled}
                 onDragStart={(event) => event.dataTransfer.setData("text/plain", option.id)}
-                onClick={() => setSelectedId(selected ? null : option.id)}
+                onClick={() => {
+                  // Pattern A: selecting a card also speaks its visible label.
+                  // It does not place it and it does not submit.
+                  setSelectedId(selected ? null : option.id);
+                  if (!selected) speakLabel(option.label);
+                }}
                 disabled={disabled}
                 aria-pressed={selected}
                 className={`flex min-h-20 min-w-32 flex-col items-center gap-1 rounded-2xl border-2 border-[var(--ink)] px-4 py-3 text-base font-semibold text-ink transition-transform duration-200 motion-reduce:transition-none ${
@@ -118,22 +125,33 @@ export function PlacementTemplate({
               }}
               className="rounded-3xl border-2 border-dashed border-[var(--ink-soft)] bg-[var(--paper)]/70 p-3"
             >
-              <button
-                type="button"
-                onClick={() => selectedId && place(selectedId, target.id)}
-                disabled={disabled || !selectedId}
-                className="flex min-h-12 w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm font-semibold tracking-wide text-ink uppercase focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] disabled:cursor-default"
-                aria-label={`Colocar aqui: ${target.label}`}
-              >
-                {presentation?.targetArt?.[target.id]?.()}
-                <span>{target.label}</span>
-              </button>
+              {/*
+                Pattern B: tapping a destination already PLACES the selected
+                card, so the category read-aloud lives in an attached speaker
+                control. Hearing "Seres vivos" must never move an object.
+              */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => selectedId && place(selectedId, target.id)}
+                  disabled={disabled || !selectedId}
+                  className="flex min-h-12 w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm font-semibold tracking-wide text-ink uppercase focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] disabled:cursor-default"
+                  aria-label={`Colocar aqui: ${target.label}`}
+                >
+                  {presentation?.targetArt?.[target.id]?.()}
+                  <span>{target.label}</span>
+                </button>
+                <SpeakerButton text={target.label} />
+              </div>
               <ul className="mt-2 flex min-h-14 flex-wrap gap-2">
                 {contents.map((option) => (
                   <li key={option.id}>
                     <button
                       type="button"
-                      onClick={() => unplace(option.id)}
+                      onClick={() => {
+                        speakLabel(option.label);
+                        unplace(option.id);
+                      }}
                       disabled={disabled}
                       className="flex min-h-12 items-center gap-2 rounded-2xl border-2 border-[var(--ink)] bg-[var(--paper-deep)] px-3 py-2 text-base font-semibold text-ink disabled:opacity-70"
                       aria-label={`Tirar ${option.label} de ${target.label}`}

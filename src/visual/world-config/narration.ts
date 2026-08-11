@@ -97,7 +97,8 @@ function coastLine(
 }
 
 const SCIENCE_INSTRUCTIONS: Record<string, string> = {
-  "activity-sci-s1-discover": "Observe o ambiente e toque no que faz parte dele.",
+  "activity-sci-s1-discover":
+    "Observe o ambiente e toque em pelo menos duas coisas que fazem parte dele.",
   /**
    * CORRECTION: the previous line described a natural × artificial criterion,
    * which is NOT what this Activity assesses. The authored targets are
