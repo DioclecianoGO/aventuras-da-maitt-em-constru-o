@@ -95,11 +95,11 @@ describe("template response contract stays generic", () => {
     fireEvent.click(screen.getByRole("button", { name: "a água" }));
     expect(onObserve).toHaveBeenCalledWith(["obs-agua"]);
     // One observation is not enough yet.
-    expect(screen.getByRole("button", { name: "Mostrar" })).toBeDisabled();
+    expect((screen.getByRole("button", { name: "Mostrar" }) as HTMLButtonElement).disabled).toBe(true);
     // Touching the SAME object again is not a second distinct observation.
     fireEvent.click(screen.getByRole("button", { name: "a água" }));
     fireEvent.click(screen.getByRole("button", { name: "a água" }));
-    expect(screen.getByRole("button", { name: "Mostrar" })).toBeDisabled();
+    expect((screen.getByRole("button", { name: "Mostrar" }) as HTMLButtonElement).disabled).toBe(true);
 
     fireEvent.click(screen.getByRole("button", { name: "uma pedra" }));
     fireEvent.click(screen.getByRole("button", { name: "Mostrar" }));
