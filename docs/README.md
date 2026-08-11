@@ -31,6 +31,7 @@ docs/
 │   ├── WORLD-BOARD.md
 │   ├── CHALLENGE-STAGE.md
 │   ├── PHASE-1B-1A-SUCCESS-RETURN-HOTFIX.md
+│   ├── EMERGENT-READER-SUPPORT.md
 │   ├── FEEDBACK.md
 │   └── TRANSITIONS.md
 ├── gameplay/
@@ -57,6 +58,7 @@ docs/
 │   ├── SCIENCE-GRADE-2.md
 │   ├── SCIENCE-SOURCE-MAP.md
 │   ├── SCIENCE-SLICE-A-BUILD-GATE.md
+│   ├── SCIENCE-SLICE-A-LITERACY-SUPPORT.md
 │   └── CURRICULUM-SOURCES.md
 ├── technical/
 │   ├── ARCHITECTURE.md
