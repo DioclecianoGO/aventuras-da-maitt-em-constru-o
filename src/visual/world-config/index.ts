@@ -17,7 +17,7 @@ import type {
   WorldVisual,
 } from "@/visual/world-config/types";
 
-export const OVERWORLD_SCENE = { width: 1536, height: 1024 } as const;
+export const OVERWORLD_SCENE = { width: 1600, height: 1000 } as const;
 
 /**
  * Preferred provisional geography (docs/worlds/OVERWORLD.md):
@@ -28,59 +28,59 @@ export const overworldRegions: RegionVisual[] = [
   {
     id: "region-portuguese",
     displayName: "Floresta das Letras",
-    centroid: { x: 300, y: 250 },
-    bloomRadius: 300,
-    hit: "80,60 520,60 560,330 470,470 140,470 70,300",
-    label: { x: 335, y: 100 },
+    centroid: { x: 320, y: 300 },
+    bloomRadius: 320,
+    hit: "120,150 520,140 600,330 470,470 200,470 90,320",
+    label: { x: 320, y: 468 },
   },
   {
     id: "region-history",
     displayName: "Reino do Tempo",
-    centroid: { x: 790, y: 200 },
-    bloomRadius: 290,
-    hit: "600,50 1020,50 1050,300 900,380 660,370 580,240",
-    label: { x: 778, y: 92 },
+    centroid: { x: 830, y: 190 },
+    bloomRadius: 300,
+    hit: "640,120 1040,110 1110,290 940,380 700,370 600,250",
+    label: { x: 840, y: 392 },
   },
   {
     id: "region-geography",
     displayName: "Vale dos Exploradores",
-    centroid: { x: 1240, y: 250 },
+    centroid: { x: 1290, y: 330 },
     bloomRadius: 300,
-    hit: "1060,50 1480,50 1480,400 1300,470 1100,420 1050,240",
-    label: { x: 1235, y: 96 },
+    hit: "1120,180 1520,200 1560,410 1380,490 1180,440 1110,300",
+    label: { x: 1310, y: 500 },
   },
   {
     id: "region-english",
     displayName: "Cidade das Vozes",
-    centroid: { x: 1270, y: 730 },
-    bloomRadius: 300,
-    hit: "1080,540 1490,540 1490,940 1250,960 1080,860",
-    label: { x: 1272, y: 544 },
+    centroid: { x: 1330, y: 660 },
+    bloomRadius: 290,
+    hit: "1170,540 1540,520 1570,760 1380,830 1200,780 1130,650",
+    label: { x: 1350, y: 840 },
   },
   {
     id: "region-mathematics",
     displayName: "Deserto dos Números",
     worldId: PLACEHOLDER_WORLD_ID,
-    centroid: { x: 280, y: 720 },
-    bloomRadius: 310,
-    hit: "70,520 500,520 520,760 440,940 130,940 60,760",
-    label: { x: 292, y: 524 },
+    centroid: { x: 330, y: 720 },
+    bloomRadius: 340,
+    hit: "110,560 520,540 590,730 480,890 200,900 70,740",
+    label: { x: 330, y: 906 },
   },
   {
     id: "region-science",
     displayName: "Oceano das Descobertas",
     worldId: SCIENCE_WORLD_ID,
-    centroid: { x: 800, y: 790 },
-    bloomRadius: 310,
-    hit: "560,660 1060,660 1060,940 580,940",
-    label: { x: 813, y: 900 },
+    centroid: { x: 900, y: 828 },
+    bloomRadius: 320,
+    hit: "620,738 1180,718 1230,908 660,928",
+    label: { x: 900, y: 914 },
   },
 ];
 
 export const baseVisual = {
   id: "base-da-esperanca",
   displayName: "Base da Esperança",
-  centroid: { x: 790, y: 470 },
+  centroid: { x: 812, y: 545 },
 } as const;
 
 /** Board / zone configuration, keyed by stable world id. */

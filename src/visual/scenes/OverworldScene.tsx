@@ -7,8 +7,21 @@
  */
 import { Link } from "@tanstack/react-router";
 
-import overworldMap from "@/assets/overworld-map.png.asset.json";
+import { InkDefs } from "@/assets/game/ink";
+import {
+  BaseDaEsperancaArt,
+  OverworldColor,
+  OverworldInk,
+} from "@/assets/game/overworld/OverworldArt";
+import { RestoreGroup } from "@/visual/RestoreGroup";
+import { RestoredUnit } from "@/visual/RestoredUnit";
+import { MaitteAvatar } from "@/visual/character/MaitteAvatar";
+import { useHydrated } from "@/visual/motion";
 import { OVERWORLD_SCENE, baseVisual, overworldRegions } from "@/visual/world-config";
+import {
+  getOverworldRestorationUnits,
+  isUnitRestored,
+} from "@/visual/world-config/restoration-units";
 
 export type OverworldSceneProps = {
   /** Derived 0..1 restoration per region id. Missing = 0. */
@@ -27,21 +40,12 @@ const pct = (value: number, total: number) => `${(value / total) * 100}%`;
  */
 const bloomEase = (progress: number) => (progress <= 0 ? 0 : 0.45 + 0.55 * progress);
 
-/** Presentation-only tint per region; no domain meaning. */
-const regionTint: Record<string, string> = {
-  "region-portuguese": "140 55% 55%",
-  "region-history": "265 45% 60%",
-  "region-geography": "30 70% 58%",
-  "region-english": "205 60% 58%",
-  "region-mathematics": "42 80% 58%",
-  "region-science": "195 65% 52%",
-};
-
 export function OverworldScene({
   regionProgress,
   avatarProgress,
   focusRegionId = null,
 }: OverworldSceneProps) {
+  const hydrated = useHydrated();
   const focus = overworldRegions.find((region) => region.id === focusRegionId) ?? null;
 
   const zoom = focus
@@ -68,68 +72,108 @@ export function OverworldScene({
           opacity: focus ? 0.2 : 1,
         }}
       >
-        {/* Base line-art map: the stolen-colour world as a drawn page. */}
-        <img
-          src={overworldMap.url}
-          alt="Mapa ilustrado do mundo sem cor: Floresta das Letras, Reino do Tempo, Vale dos Exploradores, Cidade das Vozes, Deserto dos Números, Oceano das Descobertas e a Base da Esperança ao centro"
-          className="world-reveal absolute inset-0 h-full w-full object-contain"
-          draggable={false}
-        />
+        <svg
+          viewBox={`0 0 ${OVERWORLD_SCENE.width} ${OVERWORLD_SCENE.height}`}
+          className="world-reveal h-full w-full"
+          preserveAspectRatio="xMidYMid meet"
+          role="img"
+          aria-label="Mapa do mundo sem cor, com seis regiões e a Base da Esperança ao centro"
+        >
+          <InkDefs prefix="ow" />
+          <rect x="0" y="0" width={OVERWORLD_SCENE.width} height={OVERWORLD_SCENE.height} fill="var(--paper)" />
 
-        {/* Colour returns region by region, driven by derived restoration. */}
-        {overworldRegions.map((region) => {
-          const progress = bloomEase(regionProgress[region.id] ?? 0);
-          if (progress <= 0) return null;
-          const radiusX = (region.bloomRadius / OVERWORLD_SCENE.width) * 100;
-          const radiusY = (region.bloomRadius / OVERWORLD_SCENE.height) * 100;
-          return (
-            <div
+          {/* Colour lives UNDER the ink and is revealed by derived restoration. */}
+          {overworldRegions.map((region) => (
+            <RestoreGroup
               key={region.id}
-              aria-hidden
-              className="pointer-events-none absolute inset-0 mix-blend-multiply"
-              style={{
-                opacity: progress,
-                transition: "opacity var(--motion-travel) var(--ease-travel)",
-                background: `radial-gradient(${radiusX}% ${radiusY}% at ${pct(region.centroid.x, OVERWORLD_SCENE.width)} ${pct(region.centroid.y, OVERWORLD_SCENE.height)}, hsl(${regionTint[region.id] ?? "40 60% 60%"} / 0.85) 0%, hsl(${regionTint[region.id] ?? "40 60% 60%"} / 0.45) 55%, transparent 78%)`,
-              }}
-            />
-          );
-        })}
+              id={region.id}
+              kind="bloom"
+              cx={region.centroid.x}
+              cy={region.centroid.y}
+              radius={region.bloomRadius}
+              progress={bloomEase(regionProgress[region.id] ?? 0)}
+            >
+              <OverworldColor regionId={region.id} />
+            </RestoreGroup>
+          ))}
 
-        {/* Maittê's heart: the surviving colour, saturated from the opening. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute mix-blend-multiply"
-          style={{
-            left: pct(baseVisual.centroid.x - 68, OVERWORLD_SCENE.width),
-            top: pct(baseVisual.centroid.y - 62, OVERWORLD_SCENE.height),
-            width: pct(46, OVERWORLD_SCENE.width),
-            height: pct(46, OVERWORLD_SCENE.height),
-            background:
-              "radial-gradient(circle, hsl(var(--hope-h, 140) 65% 55% / 0.9) 0%, transparent 70%)",
-            opacity: 0.55 + 0.45 * avatarProgress,
-          }}
-        />
+          <OverworldInk prefix="ow" />
+
+          {/*
+            Region details that stay restored. Driven by the SAME derived
+            progress the region mask uses — no new milestone concept, no second
+            source of truth. Drawn above the ink so the restored object is the
+            thing the child can point at.
+          */}
+          {overworldRegions.flatMap((region) =>
+            getOverworldRestorationUnits(region.id).map((unit) => (
+              <RestoredUnit
+                key={unit.id}
+                unit={unit}
+                restored={isUnitRestored(unit, {
+                  completedSlotIds: [],
+                  progress: regionProgress[region.id] ?? 0,
+                })}
+              />
+            )),
+          )}
+
+          <BaseDaEsperancaArt />
+
+          {/* Maittê waits at the Base — her heart is the only saturated point. */}
+          <MaitteAvatar
+            progress={avatarProgress}
+            x={baseVisual.centroid.x + 128}
+            y={baseVisual.centroid.y + 52}
+            scale={0.5}
+            animated={hydrated}
+            title="Maittê na Base da Esperança"
+          />
+
+          <rect
+            x="0"
+            y="0"
+            width={OVERWORLD_SCENE.width}
+            height={OVERWORLD_SCENE.height}
+            fill="url(#ow-vignette)"
+            pointerEvents="none"
+          />
+        </svg>
       </div>
 
-      {/* Interaction lives in HTML for focus and hit size; the map draws the names. */}
+      {/* Interaction and labels live in HTML for focus, hit size and typography. */}
       <div className="pointer-events-none absolute inset-0">
+        <span
+          className="absolute -translate-x-1/2 text-[clamp(0.7rem,1.1vw,0.95rem)] font-medium tracking-[0.22em] text-ink-soft uppercase"
+          style={{
+            left: pct(baseVisual.centroid.x, OVERWORLD_SCENE.width),
+            top: pct(baseVisual.centroid.y + 112, OVERWORLD_SCENE.height),
+          }}
+        >
+          {baseVisual.displayName}
+        </span>
+
         {overworldRegions.map((region) => {
           const style = {
             left: pct(region.label.x, OVERWORLD_SCENE.width),
             top: pct(region.label.y, OVERWORLD_SCENE.height),
           };
+          const label = (
+            <span className="text-[clamp(0.85rem,1.5vw,1.35rem)] leading-none font-semibold">
+              {region.displayName}
+            </span>
+          );
 
           if (!region.worldId) {
             return (
               <span
                 key={region.id}
                 aria-disabled="true"
-                className="absolute flex -translate-x-1/2 flex-col items-center text-ink-soft/70"
+                className="absolute flex -translate-x-1/2 flex-col items-center gap-1 text-ink-soft/80"
                 style={style}
               >
-                <span className="sr-only">{region.displayName}</span>
-                <span className="rounded-full bg-[var(--paper)]/80 px-3 py-1 text-[clamp(0.55rem,0.85vw,0.75rem)] tracking-[0.2em] uppercase">
+                {label}
+                <span className="text-[0.7rem] tracking-[0.2em] uppercase opacity-70">
                   adormecida
                 </span>
               </span>
@@ -141,12 +185,12 @@ export function OverworldScene({
               key={region.id}
               to="/mundo/$worldId"
               params={{ worldId: region.worldId }}
-              className="pointer-events-auto absolute flex -translate-x-1/2 flex-col items-center rounded-full px-3 py-1 text-ink transition-transform duration-200 hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] motion-reduce:transition-none"
+              className="pointer-events-auto absolute flex -translate-x-1/2 flex-col items-center gap-1 rounded-full px-4 py-2 text-ink transition-transform duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] motion-reduce:transition-none"
               style={style}
               aria-label={`Entrar em ${region.displayName}`}
             >
-              <span className="sr-only">{region.displayName}</span>
-              <span className="flex items-center gap-2 rounded-full bg-[var(--paper)]/80 px-3 py-1 text-[clamp(0.55rem,0.85vw,0.75rem)] tracking-[0.2em] uppercase backdrop-blur-[1px]">
+              {label}
+              <span className="flex items-center gap-2 text-[0.72rem] tracking-[0.2em] uppercase">
                 <span className="inline-block h-2 w-2 rounded-full bg-[var(--hope)]" aria-hidden />
                 seguir a trilha
               </span>
