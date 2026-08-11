@@ -101,10 +101,10 @@ export function OverworldScene({
           aria-hidden
           className="pointer-events-none absolute mix-blend-multiply"
           style={{
-            left: pct(baseVisual.centroid.x - 26, OVERWORLD_SCENE.width),
-            top: pct(baseVisual.centroid.y - 12, OVERWORLD_SCENE.height),
-            width: pct(52, OVERWORLD_SCENE.width),
-            height: pct(52, OVERWORLD_SCENE.height),
+            left: pct(baseVisual.centroid.x - 68, OVERWORLD_SCENE.width),
+            top: pct(baseVisual.centroid.y - 62, OVERWORLD_SCENE.height),
+            width: pct(46, OVERWORLD_SCENE.width),
+            height: pct(46, OVERWORLD_SCENE.height),
             background:
               "radial-gradient(circle, hsl(var(--hope-h, 140) 65% 55% / 0.9) 0%, transparent 70%)",
             opacity: 0.55 + 0.45 * avatarProgress,
@@ -129,7 +129,7 @@ export function OverworldScene({
                 style={style}
               >
                 <span className="sr-only">{region.displayName}</span>
-                <span className="mt-[3.2vh] text-[clamp(0.55rem,0.85vw,0.75rem)] tracking-[0.2em] uppercase">
+                <span className="rounded-full bg-[var(--paper)]/80 px-3 py-1 text-[clamp(0.55rem,0.85vw,0.75rem)] tracking-[0.2em] uppercase">
                   adormecida
                 </span>
               </span>
@@ -146,7 +146,7 @@ export function OverworldScene({
               aria-label={`Entrar em ${region.displayName}`}
             >
               <span className="sr-only">{region.displayName}</span>
-              <span className="mt-[3.2vh] flex items-center gap-2 rounded-full bg-[var(--paper)]/80 px-3 py-1 text-[clamp(0.55rem,0.85vw,0.75rem)] tracking-[0.2em] uppercase backdrop-blur-[1px]">
+              <span className="flex items-center gap-2 rounded-full bg-[var(--paper)]/80 px-3 py-1 text-[clamp(0.55rem,0.85vw,0.75rem)] tracking-[0.2em] uppercase backdrop-blur-[1px]">
                 <span className="inline-block h-2 w-2 rounded-full bg-[var(--hope)]" aria-hidden />
                 seguir a trilha
               </span>

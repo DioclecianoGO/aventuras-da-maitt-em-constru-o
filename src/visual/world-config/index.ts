@@ -31,7 +31,7 @@ export const overworldRegions: RegionVisual[] = [
     centroid: { x: 300, y: 250 },
     bloomRadius: 300,
     hit: "80,60 520,60 560,330 470,470 140,470 70,300",
-    label: { x: 335, y: 68 },
+    label: { x: 335, y: 100 },
   },
   {
     id: "region-history",
@@ -39,7 +39,7 @@ export const overworldRegions: RegionVisual[] = [
     centroid: { x: 790, y: 200 },
     bloomRadius: 290,
     hit: "600,50 1020,50 1050,300 900,380 660,370 580,240",
-    label: { x: 778, y: 58 },
+    label: { x: 778, y: 92 },
   },
   {
     id: "region-geography",
@@ -47,7 +47,7 @@ export const overworldRegions: RegionVisual[] = [
     centroid: { x: 1240, y: 250 },
     bloomRadius: 300,
     hit: "1060,50 1480,50 1480,400 1300,470 1100,420 1050,240",
-    label: { x: 1235, y: 62 },
+    label: { x: 1235, y: 96 },
   },
   {
     id: "region-english",
@@ -55,7 +55,7 @@ export const overworldRegions: RegionVisual[] = [
     centroid: { x: 1270, y: 730 },
     bloomRadius: 300,
     hit: "1080,540 1490,540 1490,940 1250,960 1080,860",
-    label: { x: 1272, y: 510 },
+    label: { x: 1272, y: 544 },
   },
   {
     id: "region-mathematics",
@@ -64,7 +64,7 @@ export const overworldRegions: RegionVisual[] = [
     centroid: { x: 280, y: 720 },
     bloomRadius: 310,
     hit: "70,520 500,520 520,760 440,940 130,940 60,760",
-    label: { x: 292, y: 489 },
+    label: { x: 292, y: 524 },
   },
   {
     id: "region-science",
@@ -73,7 +73,7 @@ export const overworldRegions: RegionVisual[] = [
     centroid: { x: 800, y: 790 },
     bloomRadius: 310,
     hit: "560,660 1060,660 1060,940 580,940",
-    label: { x: 813, y: 955 },
+    label: { x: 813, y: 992 },
   },
 ];
 
