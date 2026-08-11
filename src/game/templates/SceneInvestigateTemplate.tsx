@@ -66,8 +66,11 @@ export function SceneInvestigateTemplate({
       // Accessibility read-aloud of the visible object name. Not a hint and
       // never a submission (docs/ux/EMERGENT-READER-SUPPORT.md).
       if (label) speakLabel(label);
-      // Presentation-only signal so the companion can react to WHAT was touched.
-      onObserve?.([optionId]);
+      // Presentation-only signal so the companion can react to WHAT was
+      // touched. The most recent observation is FIRST, followed by the earlier
+      // ones, so a consumer can react to the new object and still know how
+      // many distinct observations exist.
+      onObserve?.([optionId, ...selected.filter((id) => id !== optionId)]);
     }
   };
 
