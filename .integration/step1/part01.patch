@@ -1,0 +1,132 @@
+From 545409466355c5ada91c8ad31776701140177908 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 11 Aug 2026 23:01:25 +0000
+Subject: [PATCH] Introduce production presentation seam: asset descriptors +
+ registry normalization
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Step 1 of the Visual Production Implementation Plan (architecture only, no
+new art, no visual change).
+
+- Add IllustrationAsset descriptor (vector-component | raster) and the
+  <Illustration> renderer as the single dispatch point between a registry
+  key and the DOM, so a future authored PNG/WebP asset can replace an
+  inline-SVG scaffold entry with a one-line registry change and no call-site
+  edits (docs/design/ASSET-PRODUCTION-PIPELINE.md).
+- Migrate assetRegistry.tsx to the descriptor model; every entry still wraps
+  today's existing components, so runtime output is unchanged.
+- Move ChallengeStageShell's inline DesertSkin/CoastSkin/DefaultSkin into
+  src/assets/game/stage/StageSkinArt.tsx and resolve them through the
+  registry (stage-skin.*), matching every other scene asset. The stage
+  background renders in an HTML container (never an ambient <svg>), so this
+  call site explicitly passes as="html" with full-bleed/object-cover
+  positioning and aria-hidden — otherwise a future raster stage-skin would
+  render as an inert SVG <image> outside any <svg>, defeating the seam
+  (external audit finding, fixed here with a dedicated regression test).
+- Wire PlaceholderOrderTemplate to the same presentation.optionArt seam
+  PlacementTemplate already uses, falling back to the current handcrafted
+  stone since no content registers optionArt for it yet.
+- Add presentation-isolation restrictions (@/visual/**, @/assets/**) to the
+  existing evaluation- and domain-specific ESLint no-restricted-imports rule
+  blocks, and a new block for persistence + state. ESLint flat config does
+  not merge a rule's options across separately-matching config objects for
+  the same file — a later shared block covering all four directories would
+  have silently REPLACED (not extended) the pre-existing restrictions
+  instead of adding to them, and this applies at two levels, both found by
+  external audit and fixed here:
+    1. domain/evaluation already had their own no-restricted-imports config
+       before Step 1 (UI/state/template/component coupling) — the new
+       presentation-isolation patterns are added inside those SAME rule
+       configs, not a later block matching the same files.
+    2. persistence/state had no config of their own before Step 1, so they
+       inherited the base config's `paths: ["server-only"]` restriction by
+       fall-through. Step 1's new persistence/state block therefore repeats
+       that `paths` entry verbatim alongside its own `patterns`, rather than
+       only defining `patterns` and silently dropping `server-only`.
+  Verified via `eslint --print-config` on one real file per layer
+  (domain/schemas.ts, evaluation/orchestrator.ts, persistence/adapter.ts,
+  state/selectors.ts) that every original restriction and the new
+  presentation restriction are simultaneously effective, and via stdin
+  probes that all of them fire on real violations, including nested paths
+  (e.g. @/visual/stage/..., @/assets/game/characters/...) — the import-group
+  globs use recursive `**`, not single-segment `*`, since the latter would
+  have missed exactly those nested imports.
+- Add tests for the descriptor renderer, the registry migration, the
+  PlaceholderOrderTemplate presentation seam, and the ChallengeStageShell
+  stage-skin HTML-embedding fix (both the promoted-raster case and the
+  unchanged-vector-component case). 63/63 tests passing, typecheck clean.
+- Clarify in comments that the one-line registry promotion path applies to
+  static illustration keys only (full-scene backgrounds, ink layers,
+  landmarks, stage skins); parameterized renderers that take runtime props
+  to select a variant or acting state (character.maitte, character.companion,
+  object.slot) need a future, still-unapproved variant/identity asset
+  contract and are not promotable by this mechanism.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01MxFLUa9A9cX3bcmjvZWtNa
+---
+ eslint.config.js                              |  72 +++++++++-
+ src/assets/game/stage/StageSkinArt.tsx        | 117 ++++++++++++++++
+ .../templates/PlaceholderOrderTemplate.tsx    |  26 +++-
+ .../PlaceholderOrderTemplate.test.tsx         |  80 +++++++++++
+ src/visual/__tests__/assetRegistry.test.ts    |  55 ++++++++
+ src/visual/__tests__/illustration.test.tsx    |  87 ++++++++++++
+ src/visual/assetRegistry.tsx                  |  67 ++++++---
+ src/visual/illustration.tsx                   | 107 +++++++++++++++
+ src/visual/scenes/WorldBoardScene.tsx         |  26 ++--
+ src/visual/stage/ChallengeStageShell.tsx      | 129 +++---------------
+ ...geStageShell.stage-skin-unchanged.test.tsx |  64 +++++++++
+ .../__tests__/ChallengeStageShell.test.tsx    |  66 +++++++++
+ 12 files changed, 747 insertions(+), 149 deletions(-)
+ create mode 100644 src/assets/game/stage/StageSkinArt.tsx
+ create mode 100644 src/game/templates/__tests__/PlaceholderOrderTemplate.test.tsx
+ create mode 100644 src/visual/__tests__/assetRegistry.test.ts
+ create mode 100644 src/visual/__tests__/illustration.test.tsx
+ create mode 100644 src/visual/illustration.tsx
+ create mode 100644 src/visual/stage/__tests__/ChallengeStageShell.stage-skin-unchanged.test.tsx
+ create mode 100644 src/visual/stage/__tests__/ChallengeStageShell.test.tsx
+
+diff --git a/eslint.config.js b/eslint.config.js
+index e573ff8..33d9cf3 100644
+--- a/eslint.config.js
++++ b/eslint.config.js
+@@ -64,7 +64,18 @@ export default tseslint.config(
+       ],
+     },
+   },
+-  /** Evaluators must stay pure: no React, no state, no content coupling. */
++  /**
++   * Evaluators must stay pure: no React, no state, no content coupling, no
++   * presentation/asset coupling (docs/design/ASSET-PRODUCTION-PIPELINE.md).
++   *
++   * The presentation-isolation patterns live in THIS SAME rule config, not a
++   * later block matching the same files: ESLint flat config does not merge
++   * a rule's options across separately-matching config objects — the last
++   * config object to set `no-restricted-imports` for a given file wins
++   * outright and replaces every earlier one's options for that file. A
++   * later shared "domain + evaluation + persistence + state" block would
++   * silently discard the restrictions below instead of adding to them.
++   */
+   {
+     files: ["src/game/evaluation/**/*.{ts,tsx}"],
+     rules: {
+@@ -77,12 +88,21 @@ export default tseslint.config(
+               message:
+                 "Response Evaluators must be pure and UI-independent so they can be unit tested without rendering.",
+             },
++            {
++              group: ["@/visual/**", "@/assets/**"],
++              message:
++                "Response Evaluators must not import presentation/asset code. Visual configuration depends on the domain, never the other way around.",
++            },
+           ],
+         },
+       ],
+     },
+   },
+-  /** Domain schemas/types must not depend on UI or state. */
++  /**
++   * Domain schemas/types must not depend on UI, state, or presentation/asset
++   * code. Same flat-config merge caveat as the evaluation block above: the
