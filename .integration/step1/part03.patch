@@ -1,0 +1,182 @@
++        <path d="M320 220 q 12 -10 22 0 q 10 -10 20 0" fill="none" stroke={INK_SOFT} strokeWidth="2.2" />
++      </g>
++    </svg>
++  );
++}
+diff --git a/src/game/templates/PlaceholderOrderTemplate.tsx b/src/game/templates/PlaceholderOrderTemplate.tsx
+index 77b072e..2da060a 100644
+--- a/src/game/templates/PlaceholderOrderTemplate.tsx
++++ b/src/game/templates/PlaceholderOrderTemplate.tsx
+@@ -20,6 +20,12 @@
+  * OPTION, not to the position. The identity map is built once per item from the
+  * authored option order and looked up by option id, so dragging a stone never
+  * changes its body (docs/design/PHASE-1B-1-VISUAL-POLISH.md, Correction 3).
++ *
++ * Step 1 (production presentation seam): a stone now renders through the same
++ * `presentation.optionArt` seam every other template already uses (see
++ * PlacementTemplate). No current content registers `optionArt` for this
++ * template's item, so the fallback below — today's handcrafted `OrderStoneArt`
++ * — is what actually renders; this only wires the seam for later art.
+  */
+ import * as React from "react";
+ 
+@@ -38,6 +44,7 @@ export function PlaceholderOrderTemplate({
+   onRespond,
+   disabled = false,
+   confirmLabel = "Confirmar",
++  presentation,
+ }: PuzzleTemplateProps) {
+   const [order, setOrder] = React.useState(() => item.options.map((option) => option.id));
+   const [selectedId, setSelectedId] = React.useState<string | null>(null);
+@@ -111,6 +118,7 @@ export function PlaceholderOrderTemplate({
+       <ul className="flex flex-wrap items-end justify-center gap-2 sm:gap-4" role="list">
+         {order.map((id, index) => {
+           const isSelected = selectedId === id;
++          const overrideArt = presentation?.optionArt?.[id];
+           return (
+             <li key={id}>
+               <button
+@@ -150,13 +158,17 @@ export function PlaceholderOrderTemplate({
+                       settling === id ? "stone-settle" : isSelected ? "stone-lift" : undefined
+                     }
+                   >
+-                    <OrderStoneArt
+-                      label={labelOf(id)}
+-                      shape={getStoneIdentity(stoneIdentities, id).shape}
+-                      detail={getStoneIdentity(stoneIdentities, id).detail}
+-                      tilt={getStoneIdentity(stoneIdentities, id).tilt}
+-                      selected={isSelected}
+-                    />
++                    {overrideArt ? (
++                      overrideArt()
++                    ) : (
++                      <OrderStoneArt
++                        label={labelOf(id)}
++                        shape={getStoneIdentity(stoneIdentities, id).shape}
++                        detail={getStoneIdentity(stoneIdentities, id).detail}
++                        tilt={getStoneIdentity(stoneIdentities, id).tilt}
++                        selected={isSelected}
++                      />
++                    )}
+                   </g>
+                 </svg>
+               </button>
+diff --git a/src/game/templates/__tests__/PlaceholderOrderTemplate.test.tsx b/src/game/templates/__tests__/PlaceholderOrderTemplate.test.tsx
+new file mode 100644
+index 0000000..7c7b0e4
+--- /dev/null
++++ b/src/game/templates/__tests__/PlaceholderOrderTemplate.test.tsx
+@@ -0,0 +1,80 @@
++/**
++ * PlaceholderOrderTemplate — presentation-seam normalization guard (Step 1).
++ * Spec: docs/design/ASSET-PRODUCTION-PIPELINE.md, docs/game/templates/contract.ts.
++ *
++ * No current content registers `presentation.optionArt` for this template's
++ * item, so the first test is the actual regression guard: today's runtime
++ * output must be unaffected. The second test proves the seam is really wired,
++ * not merely declared in the prop type.
++ */
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { cleanup, fireEvent, render } from "@testing-library/react";
++
++afterEach(cleanup);
++
++import { PlaceholderOrderTemplate } from "@/game/templates/PlaceholderOrderTemplate";
++import type { TemplateItemView } from "@/game/templates/contract";
++
++const item: TemplateItemView = {
++  id: "item-order-test",
++  prompt: "Ordene as pedras.",
++  options: [
++    { id: "a", label: "Um" },
++    { id: "b", label: "Dois" },
++  ],
++  targets: [],
++  parts: [],
++};
++
++describe("PlaceholderOrderTemplate presentation seam", () => {
++  it("renders the existing handcrafted stone when no presentation is supplied", () => {
++    const { container } = render(
++      <PlaceholderOrderTemplate item={item} onRespond={vi.fn()} />,
++    );
++    expect(container.querySelector('[data-testid="custom-stone-a"]')).toBeNull();
++    // OrderStoneArt draws the option label as SVG <text>.
++    expect(container.textContent).toContain("Um");
++    expect(container.textContent).toContain("Dois");
++  });
++
++  it("renders presentation.optionArt in place of the handcrafted stone when supplied", () => {
++    const { container } = render(
++      <PlaceholderOrderTemplate
++        item={item}
++        onRespond={vi.fn()}
++        presentation={{
++          optionArt: {
++            a: () => <g data-testid="custom-stone-a">Custom A</g>,
++          },
++        }}
++      />,
++    );
++    expect(container.querySelector('[data-testid="custom-stone-a"]')).toBeTruthy();
++    // The option WITHOUT a presentation entry still falls back correctly.
++    expect(container.textContent).toContain("Dois");
++  });
++
++  it("still emits a generic ordering UserResponse regardless of which art rendered", () => {
++    // A move() schedules a real `window.setTimeout` settle callback. Fake
++    // timers keep it from firing after this test's jsdom environment is torn
++    // down (it would otherwise leak into a later test file's run window).
++    vi.useFakeTimers();
++    try {
++      const onRespond = vi.fn();
++      const { getByRole } = render(
++        <PlaceholderOrderTemplate
++          item={item}
++          onRespond={onRespond}
++          presentation={{ optionArt: { a: () => <g data-testid="custom-stone-a" /> } }}
++        />,
++      );
++      fireEvent.click(getByRole("button", { name: /Pedra Um/ }));
++      fireEvent.click(getByRole("button", { name: /Pedra Dois/ }));
++      fireEvent.click(getByRole("button", { name: "Confirmar" }));
++      expect(onRespond).toHaveBeenCalledWith({ kind: "ordering", orderedIds: ["b", "a"] });
++      vi.runOnlyPendingTimers();
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++});
+diff --git a/src/visual/__tests__/assetRegistry.test.ts b/src/visual/__tests__/assetRegistry.test.ts
+new file mode 100644
+index 0000000..4b3405f
+--- /dev/null
++++ b/src/visual/__tests__/assetRegistry.test.ts
+@@ -0,0 +1,55 @@
++/**
++ * Logical asset registry — descriptor migration guard.
++ * Spec: docs/design/VISUAL-IMPLEMENTATION.md §"Asset strategy",
++ *       docs/design/ASSET-PRODUCTION-PIPELINE.md.
++ */
++import { describe, expect, it } from "vitest";
++
++import { getAsset, hasAsset } from "@/visual/assetRegistry";
++
++describe("asset registry", () => {
++  it("resolves every current entry to a vector-component descriptor", () => {
++    const keys = [
++      "overworld.color",
++      "overworld.ink",
++      "overworld.base",
++      "board.dunas-douradas.color",
++      "board.dunas-douradas.ink",
++      "board.praia-das-conchas.color",
++      "board.praia-das-conchas.ink",
++      "landmark.rock-arch",
++      "object.slot",
++      "object.folded-map",
++      "object.backpack",
++      "character.maitte",
++      "character.companion",
++      "stage-skin.desert",
++      "stage-skin.coast",
