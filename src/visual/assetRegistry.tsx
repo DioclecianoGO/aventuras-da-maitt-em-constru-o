@@ -1,13 +1,27 @@
 /**
  * Logical asset registry.
- * Spec: docs/design/VISUAL-IMPLEMENTATION.md §"Asset strategy"
+ * Spec: docs/design/VISUAL-IMPLEMENTATION.md §"Asset strategy",
+ *       docs/design/ASSET-PRODUCTION-PIPELINE.md.
  *
  * Scenery is referenced by LOGICAL KEY, never by file path, so concept art can
  * be swapped for final art without touching scenes, routes or game logic. A
  * missing key degrades to a quiet placeholder instead of crashing the app.
+ *
+ * Step 1 (production presentation seam): a registry entry is now an
+ * `IllustrationAsset` DESCRIPTOR rather than a bare component. Every entry
+ * below is still `vector-component` — the existing inline-SVG scaffolding,
+ * unchanged in appearance and behaviour.
+ *
+ * Promoting a STATIC entry (a full-scene background, an ink layer, a
+ * landmark, a stage skin — one fixed image, no runtime variant) to a
+ * "raster" descriptor is a one-line change here; the call site does not
+ * change, provided it already declares the right `as` embedding context (see
+ * `src/visual/illustration.tsx`). A PARAMETERIZED entry — one whose call site
+ * passes runtime props to select a variant or acting state, e.g.
+ * "character.maitte", "character.companion" and "object.slot" below — is NOT
+ * a one-line swap: it needs an approved variant/identity asset contract that
+ * does not exist yet. Do not promote those three without that contract.
  */
-import type { ComponentType } from "react";
-
 import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
 import { DunasDouradasColor, DunasDouradasInk } from "@/assets/game/board/DunasDouradasArt";
@@ -27,6 +41,12 @@ import {
   OverworldColor,
   OverworldInk,
 } from "@/assets/game/overworld/OverworldArt";
+import {
+  CoastStageSkinArt,
+  DefaultStageSkinArt,
+  DesertStageSkinArt,
+} from "@/assets/game/stage/StageSkinArt";
+import { type IllustrationAsset, vectorAsset } from "@/visual/illustration";
 
 function MissingAsset() {
   return (
@@ -46,26 +66,29 @@ function MissingAsset() {
   );
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any -- registry is intentionally heterogeneous */
-const registry: Record<string, ComponentType<any>> = {
-  "overworld.color": OverworldColor,
-  "overworld.ink": OverworldInk,
-  "overworld.base": BaseDaEsperancaArt,
-  "board.dunas-douradas.color": DunasDouradasColor,
-  "board.dunas-douradas.ink": DunasDouradasInk,
-  "board.praia-das-conchas.color": PraiaDasConchasColor,
-  "board.praia-das-conchas.ink": PraiaDasConchasInk,
-  "landmark.rock-arch": RockArchArt,
-  "object.slot": SlotObjectArt,
-  "object.folded-map": FoldedMapArt,
-  "object.backpack": BackpackArt,
-  "character.maitte": MaitteFigure,
-  "character.companion": CompanionArt,
-};
-/* eslint-enable @typescript-eslint/no-explicit-any */
+const MISSING_ASSET: IllustrationAsset = vectorAsset(MissingAsset);
 
-export function getAsset(key: string): ComponentType<Record<string, unknown>> {
-  return registry[key] ?? MissingAsset;
+const registry: Record<string, IllustrationAsset> = {
+  "overworld.color": vectorAsset(OverworldColor),
+  "overworld.ink": vectorAsset(OverworldInk),
+  "overworld.base": vectorAsset(BaseDaEsperancaArt),
+  "board.dunas-douradas.color": vectorAsset(DunasDouradasColor),
+  "board.dunas-douradas.ink": vectorAsset(DunasDouradasInk),
+  "board.praia-das-conchas.color": vectorAsset(PraiaDasConchasColor),
+  "board.praia-das-conchas.ink": vectorAsset(PraiaDasConchasInk),
+  "landmark.rock-arch": vectorAsset(RockArchArt),
+  "object.slot": vectorAsset(SlotObjectArt),
+  "object.folded-map": vectorAsset(FoldedMapArt),
+  "object.backpack": vectorAsset(BackpackArt),
+  "character.maitte": vectorAsset(MaitteFigure),
+  "character.companion": vectorAsset(CompanionArt),
+  "stage-skin.desert": vectorAsset(DesertStageSkinArt),
+  "stage-skin.coast": vectorAsset(CoastStageSkinArt),
+  "stage-skin.default": vectorAsset(DefaultStageSkinArt),
+};
+
+export function getAsset(key: string): IllustrationAsset {
+  return registry[key] ?? MISSING_ASSET;
 }
 
 export function hasAsset(key: string): boolean {
