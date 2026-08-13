@@ -20,6 +20,12 @@
  * OPTION, not to the position. The identity map is built once per item from the
  * authored option order and looked up by option id, so dragging a stone never
  * changes its body (docs/design/PHASE-1B-1-VISUAL-POLISH.md, Correction 3).
+ *
+ * Step 1 (production presentation seam): a stone now renders through the same
+ * `presentation.optionArt` seam every other template already uses (see
+ * PlacementTemplate). No current content registers `optionArt` for this
+ * template's item, so the fallback below — today's handcrafted `OrderStoneArt`
+ * — is what actually renders; this only wires the seam for later art.
  */
 import * as React from "react";
 
@@ -38,6 +44,7 @@ export function PlaceholderOrderTemplate({
   onRespond,
   disabled = false,
   confirmLabel = "Confirmar",
+  presentation,
 }: PuzzleTemplateProps) {
   const [order, setOrder] = React.useState(() => item.options.map((option) => option.id));
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
@@ -111,6 +118,7 @@ export function PlaceholderOrderTemplate({
       <ul className="flex flex-wrap items-end justify-center gap-2 sm:gap-4" role="list">
         {order.map((id, index) => {
           const isSelected = selectedId === id;
+          const overrideArt = presentation?.optionArt?.[id];
           return (
             <li key={id}>
               <button
@@ -150,13 +158,17 @@ export function PlaceholderOrderTemplate({
                       settling === id ? "stone-settle" : isSelected ? "stone-lift" : undefined
                     }
                   >
-                    <OrderStoneArt
-                      label={labelOf(id)}
-                      shape={getStoneIdentity(stoneIdentities, id).shape}
-                      detail={getStoneIdentity(stoneIdentities, id).detail}
-                      tilt={getStoneIdentity(stoneIdentities, id).tilt}
-                      selected={isSelected}
-                    />
+                    {overrideArt ? (
+                      overrideArt()
+                    ) : (
+                      <OrderStoneArt
+                        label={labelOf(id)}
+                        shape={getStoneIdentity(stoneIdentities, id).shape}
+                        detail={getStoneIdentity(stoneIdentities, id).detail}
+                        tilt={getStoneIdentity(stoneIdentities, id).tilt}
+                        selected={isSelected}
+                      />
+                    )}
                   </g>
                 </svg>
               </button>

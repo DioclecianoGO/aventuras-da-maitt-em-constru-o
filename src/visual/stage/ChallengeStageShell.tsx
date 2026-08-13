@@ -13,126 +13,26 @@
  * remains for long copy, for narration with no visible speaker and as the
  * fallback. Exactly ONE placement decision is made per render, so the same
  * sentence is never shown twice.
+ *
+ * Step 1 (production presentation seam): the background skin is resolved
+ * through the asset registry (`stage-skin.<id>`) instead of a local ternary
+ * over inline components, so a future authored background can replace one
+ * skin without touching this file.
  */
 import type { ReactNode } from "react";
 
 import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { CaptionPlateArt, ReplayShellArt } from "@/assets/game/objects/DesertPuzzleArt";
 import { FoldedMapArt } from "@/assets/game/objects/NavigationArt";
-import { INK, INK_SOFT, PAPER_DEEP } from "@/assets/game/ink";
 import type { NarrationStatus } from "@/audio/narrationService";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
 import { SpeechBubble } from "@/visual/stage/SpeechBubble";
 import { resolveRestoredRegions } from "@/visual/character/MaitteAvatar";
+import { getAsset } from "@/visual/assetRegistry";
+import { Illustration } from "@/visual/illustration";
 import { useHydrated } from "@/visual/motion";
 import { getStageSkin, getWorldVisual } from "@/visual/world-config";
-
-/** Enriched desert cove: dune walls, distant ridges, scattered stones. */
-function DesertSkin() {
-  return (
-    <svg
-      viewBox="0 0 1200 700"
-      className="absolute inset-0 h-full w-full"
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden
-    >
-      <rect x="0" y="0" width="1200" height="700" fill="var(--paper)" />
-      {/* far ridges */}
-      <path
-        d="M-20 330 C 160 286, 300 300, 430 332 C 560 364, 700 344, 840 312 C 980 280, 1100 296, 1220 330 L 1220 400 L -20 400 Z"
-        fill="var(--paper)"
-        stroke={INK_SOFT}
-        strokeWidth="2.4"
-      />
-      <path d="M60 322 q 40 -22 84 -4 M700 318 q 46 -24 92 -2" fill="none" stroke="var(--ink-faint)" strokeWidth="2" />
-      {/* mid dune */}
-      <path
-        d="M-20 430 C 180 372, 420 384, 620 430 C 820 476, 1020 458, 1220 414 L 1220 720 L -20 720 Z"
-        fill={PAPER_DEEP}
-        stroke={INK}
-        strokeWidth="3.4"
-      />
-      {/* near dune shelf the challenge sits on */}
-      <path
-        d="M-20 556 C 220 490, 520 502, 760 552 C 940 588, 1080 576, 1220 548 L 1220 720 L -20 720 Z"
-        fill="var(--paper)"
-        stroke={INK}
-        strokeWidth="3"
-      />
-      <path
-        d="M-20 604 C 240 552, 540 566, 780 606 M120 646 q 50 -14 100 0 M880 660 q 46 -12 92 0"
-        fill="none"
-        stroke={INK_SOFT}
-        strokeWidth="2.2"
-      />
-      {/* scattered rocks and dry grass */}
-      <path d="M96 520 q 18 -20 38 -2 q 6 12 -6 14 q -22 4 -32 -12 Z" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2.4" />
-      <path d="M1064 500 q 22 -22 44 -2 q 8 12 -6 16 q -26 6 -38 -14 Z" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2.4" />
-      <path
-        d="M1010 552 c -4 -22 2 -36 6 -46 M1020 552 c 4 -20 12 -30 22 -38 M1002 552 c -10 -16 -14 -28 -14 -40"
-        fill="none"
-        stroke={INK_SOFT}
-        strokeWidth="2.2"
-      />
-      {/* drifting sand veils */}
-      <g className="sand-drift" opacity="0.5">
-        <path d="M-40 470 q 160 -22 320 -4" fill="none" stroke="var(--ink-faint)" strokeWidth="2" />
-        <path d="M700 494 q 180 -24 340 -6" fill="none" stroke="var(--ink-faint)" strokeWidth="2" />
-      </g>
-    </svg>
-  );
-}
-
-function DefaultSkin() {
-  return <div className="absolute inset-0 bg-[var(--paper)]" aria-hidden />;
-}
-
-/**
- * Coast skin — Praia das Conchas. Same functional shell, different place:
- * a low tide line, wet sand and quiet surf behind the staged characters.
- */
-function CoastSkin() {
-  return (
-    <svg
-      className="absolute inset-0 h-full w-full"
-      viewBox="0 0 1200 720"
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden
-    >
-      <rect x="0" y="0" width="1200" height="720" fill="var(--paper)" />
-      <path d="M-20 300 H1220" fill="none" stroke={INK_SOFT} strokeWidth="2.4" />
-      <path
-        d="M-20 420 C 220 386, 520 398, 780 428 C 960 448, 1080 440, 1220 418 L 1220 720 L -20 720 Z"
-        fill="var(--paper)"
-        stroke={INK}
-        strokeWidth="3"
-      />
-      <path
-        d="M-20 470 C 240 436, 540 448, 800 478 M120 530 q 60 -16 120 0 M900 546 q 50 -14 100 0"
-        fill="none"
-        stroke={INK_SOFT}
-        strokeWidth="2.2"
-      />
-      {/* rock shelf and shells on the sand */}
-      <path
-        d="M60 470 c 30 -30, 96 -34, 142 -12 c 30 14, 54 12, 76 20 c -78 20, -180 16, -218 -8 Z"
-        fill={PAPER_DEEP}
-        stroke={INK_SOFT}
-        strokeWidth="2.6"
-      />
-      {[[420, 560], [700, 590], [980, 556]].map(([x, y]) => (
-        <g key={`${x}-${y}`} transform={`translate(${x} ${y})`}>
-          <path d="M-12 0 q 1 -16 12 -16 q 11 0 12 16 Z" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2.4" />
-          <path d="M0 -15 v 13" fill="none" stroke={INK_SOFT} strokeWidth="1.8" />
-        </g>
-      ))}
-      <g className="bird-glide" opacity="0.6">
-        <path d="M320 220 q 12 -10 22 0 q 10 -10 20 0" fill="none" stroke={INK_SOFT} strokeWidth="2.2" />
-      </g>
-    </svg>
-  );
-}
 
 /**
  * One placement decision. A short line spoken by a companion who is actually
@@ -207,7 +107,20 @@ export function ChallengeStageShell({
         aria-label={title}
         className="stage-emerge absolute inset-0 overflow-hidden"
       >
-        {skin === "desert" ? <DesertSkin /> : skin === "coast" ? <CoastSkin /> : <DefaultSkin />}
+        {/*
+          This background sits directly in an HTML container (the dialog
+          div above), never inside an ambient <svg>. `as="html"` is
+          load-bearing: today every stage-skin descriptor is still
+          vector-component and ignores it, but the moment one is promoted to
+          a raster asset, this is what makes it mount as an <img> instead of
+          an SVG <image> (which would be invalid/inert outside an <svg>).
+        */}
+        <Illustration
+          asset={getAsset(`stage-skin.${skin}`)}
+          as="html"
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
 
         <div className="relative flex h-full flex-col">
           <header className="flex items-start justify-between gap-4 px-5 pt-5 sm:px-8">

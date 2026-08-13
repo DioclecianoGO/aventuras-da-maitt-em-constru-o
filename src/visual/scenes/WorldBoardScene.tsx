@@ -14,6 +14,7 @@ import { RestoreBloom, RestoreGroup } from "@/visual/RestoreGroup";
 import { RestoredUnit } from "@/visual/RestoredUnit";
 import { MaitteAvatar } from "@/visual/character/MaitteAvatar";
 import { getAsset } from "@/visual/assetRegistry";
+import { Illustration } from "@/visual/illustration";
 import { useHydrated } from "@/visual/motion";
 import { getSlotVisual, getWorldVisual } from "@/visual/world-config";
 import { getBoardRestorationUnits, isUnitRestored } from "@/visual/world-config/restoration-units";
@@ -48,10 +49,10 @@ export function WorldBoardScene({
     y: (anchor.y / 100) * height,
   });
 
-  const Color = getAsset(`${visual.sceneAssetKey}.color`);
-  const Ink = getAsset(`${visual.sceneAssetKey}.ink`);
-  const SlotObject = getAsset("object.slot");
-  const FoldedMap = getAsset("object.folded-map");
+  const colorAsset = getAsset(`${visual.sceneAssetKey}.color`);
+  const inkAsset = getAsset(`${visual.sceneAssetKey}.ink`);
+  const slotObjectAsset = getAsset("object.slot");
+  const foldedMapAsset = getAsset("object.folded-map");
 
   const current = slots.find((slot) => slot.id === currentSlotId) ?? slots[0];
   const completedSlotIds = slots.filter((slot) => slot.state === "completed").map((slot) => slot.id);
@@ -107,10 +108,10 @@ export function WorldBoardScene({
               );
             })}
         >
-          <Color />
+          <Illustration asset={colorAsset} />
         </RestoreGroup>
 
-        <Ink prefix="bd" />
+        <Illustration asset={inkAsset} prefix="bd" />
 
         {/*
           Concrete restoration units. The mask above is the transition
@@ -138,14 +139,14 @@ export function WorldBoardScene({
         />
 
         {visual.landmarks.map((landmark) => {
-          const Landmark = getAsset(landmark.assetKey);
+          const landmarkAsset = getAsset(landmark.assetKey);
           return (
             <g
               key={landmark.id}
               transform={`translate(${landmark.anchor.x} ${landmark.anchor.y}) scale(${landmark.scale ?? 1})`}
             >
               <title>{landmark.label}</title>
-              <Landmark />
+              <Illustration asset={landmarkAsset} />
             </g>
           );
         })}
@@ -156,7 +157,12 @@ export function WorldBoardScene({
           const offset = slotVisual.offset ?? { x: 0, y: 0 };
           return (
             <g key={slot.id} transform={`translate(${point.x + offset.x} ${point.y + offset.y})`}>
-              <SlotObject kind={slotVisual.objectKind} state={slot.state} animated={hydrated} />
+              <Illustration
+                asset={slotObjectAsset}
+                kind={slotVisual.objectKind}
+                state={slot.state}
+                animated={hydrated}
+              />
             </g>
           );
         })}
@@ -227,7 +233,7 @@ export function WorldBoardScene({
         className="absolute bottom-5 left-5 flex items-center gap-3 rounded-2xl px-3 py-2 text-ink transition-transform duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--hope)] motion-reduce:transition-none"
       >
         <svg viewBox="0 0 76 60" className="h-11 w-14" aria-hidden>
-          <FoldedMap />
+          <Illustration asset={foldedMapAsset} />
         </svg>
         <span className="text-sm font-semibold tracking-wide">Mapa</span>
       </Link>

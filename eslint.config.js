@@ -64,7 +64,18 @@ export default tseslint.config(
       ],
     },
   },
-  /** Evaluators must stay pure: no React, no state, no content coupling. */
+  /**
+   * Evaluators must stay pure: no React, no state, no content coupling, no
+   * presentation/asset coupling (docs/design/ASSET-PRODUCTION-PIPELINE.md).
+   *
+   * The presentation-isolation patterns live in THIS SAME rule config, not a
+   * later block matching the same files: ESLint flat config does not merge
+   * a rule's options across separately-matching config objects — the last
+   * config object to set `no-restricted-imports` for a given file wins
+   * outright and replaces every earlier one's options for that file. A
+   * later shared "domain + evaluation + persistence + state" block would
+   * silently discard the restrictions below instead of adding to them.
+   */
   {
     files: ["src/game/evaluation/**/*.{ts,tsx}"],
     rules: {
@@ -77,12 +88,21 @@ export default tseslint.config(
               message:
                 "Response Evaluators must be pure and UI-independent so they can be unit tested without rendering.",
             },
+            {
+              group: ["@/visual/**", "@/assets/**"],
+              message:
+                "Response Evaluators must not import presentation/asset code. Visual configuration depends on the domain, never the other way around.",
+            },
           ],
         },
       ],
     },
   },
-  /** Domain schemas/types must not depend on UI or state. */
+  /**
+   * Domain schemas/types must not depend on UI, state, or presentation/asset
+   * code. Same flat-config merge caveat as the evaluation block above: the
+   * presentation-isolation patterns are added to this rule config directly.
+   */
   {
     files: ["src/game/domain/**/*.{ts,tsx}"],
     rules: {
@@ -93,6 +113,54 @@ export default tseslint.config(
             {
               group: ["react", "react-dom", "@/components/*", "@/game/state/*", "@/routes/*"],
               message: "The domain layer must stay free of UI and state dependencies.",
+            },
+            {
+              group: ["@/visual/**", "@/assets/**"],
+              message:
+                "The domain layer must not import presentation/asset code. Visual configuration depends on the domain, never the other way around.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  /**
+   * Presentation isolation (Step 1, production presentation seam):
+   * docs/technical/ARCHITECTURE.md, docs/design/ASSET-PRODUCTION-PIPELINE.md.
+   * Persistence and state must stay unaware of the concrete art/asset used to
+   * render anything. Domain and evaluation carry the equivalent restriction
+   * inside their own dedicated rule blocks above (see the merge caveat
+   * there) rather than here, so this block intentionally does NOT list
+   * "src/game/domain/**" or "src/game/evaluation/**".
+   *
+   * This is the first `no-restricted-imports` config Step 1 introduces for
+   * persistence/state — unlike templates/evaluation/domain (which already
+   * had their own config before Step 1 and, as pre-existing behaviour, are
+   * out of scope here), persistence/state previously had none of their own
+   * and so inherited the base config's `paths: ["server-only"]` restriction
+   * by fall-through. Defining `no-restricted-imports` here without also
+   * repeating that `paths` entry would replace it, not add to it (the same
+   * flat-config merge behaviour noted above) — so it is repeated verbatim
+   * below alongside the new presentation-isolation `patterns`.
+   */
+  {
+    files: ["src/game/persistence/**/*.{ts,tsx}", "src/game/state/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "server-only",
+              message:
+                "TanStack Start does not use the Next.js `server-only` package. Rename the module to `*.server.ts` or mark it with `@tanstack/react-start/server-only`.",
+            },
+          ],
+          patterns: [
+            {
+              group: ["@/visual/**", "@/assets/**"],
+              message:
+                "Persistence and state must not import presentation/asset code. Visual configuration depends on the domain, never the other way around.",
             },
           ],
         },
