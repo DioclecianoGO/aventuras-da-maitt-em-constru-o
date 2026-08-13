@@ -1,0 +1,178 @@
++   * presentation-isolation patterns are added to this rule config directly.
++   */
+   {
+     files: ["src/game/domain/**/*.{ts,tsx}"],
+     rules: {
+@@ -94,6 +114,54 @@ export default tseslint.config(
+               group: ["react", "react-dom", "@/components/*", "@/game/state/*", "@/routes/*"],
+               message: "The domain layer must stay free of UI and state dependencies.",
+             },
++            {
++              group: ["@/visual/**", "@/assets/**"],
++              message:
++                "The domain layer must not import presentation/asset code. Visual configuration depends on the domain, never the other way around.",
++            },
++          ],
++        },
++      ],
++    },
++  },
++  /**
++   * Presentation isolation (Step 1, production presentation seam):
++   * docs/technical/ARCHITECTURE.md, docs/design/ASSET-PRODUCTION-PIPELINE.md.
++   * Persistence and state must stay unaware of the concrete art/asset used to
++   * render anything. Domain and evaluation carry the equivalent restriction
++   * inside their own dedicated rule blocks above (see the merge caveat
++   * there) rather than here, so this block intentionally does NOT list
++   * "src/game/domain/**" or "src/game/evaluation/**".
++   *
++   * This is the first `no-restricted-imports` config Step 1 introduces for
++   * persistence/state — unlike templates/evaluation/domain (which already
++   * had their own config before Step 1 and, as pre-existing behaviour, are
++   * out of scope here), persistence/state previously had none of their own
++   * and so inherited the base config's `paths: ["server-only"]` restriction
++   * by fall-through. Defining `no-restricted-imports` here without also
++   * repeating that `paths` entry would replace it, not add to it (the same
++   * flat-config merge behaviour noted above) — so it is repeated verbatim
++   * below alongside the new presentation-isolation `patterns`.
++   */
++  {
++    files: ["src/game/persistence/**/*.{ts,tsx}", "src/game/state/**/*.{ts,tsx}"],
++    rules: {
++      "no-restricted-imports": [
++        "error",
++        {
++          paths: [
++            {
++              name: "server-only",
++              message:
++                "TanStack Start does not use the Next.js `server-only` package. Rename the module to `*.server.ts` or mark it with `@tanstack/react-start/server-only`.",
++            },
++          ],
++          patterns: [
++            {
++              group: ["@/visual/**", "@/assets/**"],
++              message:
++                "Persistence and state must not import presentation/asset code. Visual configuration depends on the domain, never the other way around.",
++            },
+           ],
+         },
+       ],
+diff --git a/src/assets/game/stage/StageSkinArt.tsx b/src/assets/game/stage/StageSkinArt.tsx
+new file mode 100644
+index 0000000..29dfb52
+--- /dev/null
++++ b/src/assets/game/stage/StageSkinArt.tsx
+@@ -0,0 +1,117 @@
++/**
++ * Challenge Stage background skins — the scenery the shell stages a puzzle in.
++ * Spec: docs/ux/CHALLENGE-STAGE.md, docs/worlds/SCIENCE-WORLD.md
++ *
++ * Moved out of `src/visual/stage/ChallengeStageShell.tsx` (Step 1, production
++ * presentation seam): scenery art belongs under `src/assets/game/**` and is
++ * resolved through the registry, matching every other scene asset. Content and
++ * paths are unchanged from their previous inline definitions — this is a pure
++ * relocation, not a redesign.
++ */
++import { INK, INK_SOFT, PAPER_DEEP } from "@/assets/game/ink";
++
++/** Enriched desert cove: dune walls, distant ridges, scattered stones. */
++export function DesertStageSkinArt() {
++  return (
++    <svg
++      viewBox="0 0 1200 700"
++      className="absolute inset-0 h-full w-full"
++      preserveAspectRatio="xMidYMid slice"
++      aria-hidden
++    >
++      <rect x="0" y="0" width="1200" height="700" fill="var(--paper)" />
++      {/* far ridges */}
++      <path
++        d="M-20 330 C 160 286, 300 300, 430 332 C 560 364, 700 344, 840 312 C 980 280, 1100 296, 1220 330 L 1220 400 L -20 400 Z"
++        fill="var(--paper)"
++        stroke={INK_SOFT}
++        strokeWidth="2.4"
++      />
++      <path d="M60 322 q 40 -22 84 -4 M700 318 q 46 -24 92 -2" fill="none" stroke="var(--ink-faint)" strokeWidth="2" />
++      {/* mid dune */}
++      <path
++        d="M-20 430 C 180 372, 420 384, 620 430 C 820 476, 1020 458, 1220 414 L 1220 720 L -20 720 Z"
++        fill={PAPER_DEEP}
++        stroke={INK}
++        strokeWidth="3.4"
++      />
++      {/* near dune shelf the challenge sits on */}
++      <path
++        d="M-20 556 C 220 490, 520 502, 760 552 C 940 588, 1080 576, 1220 548 L 1220 720 L -20 720 Z"
++        fill="var(--paper)"
++        stroke={INK}
++        strokeWidth="3"
++      />
++      <path
++        d="M-20 604 C 240 552, 540 566, 780 606 M120 646 q 50 -14 100 0 M880 660 q 46 -12 92 0"
++        fill="none"
++        stroke={INK_SOFT}
++        strokeWidth="2.2"
++      />
++      {/* scattered rocks and dry grass */}
++      <path d="M96 520 q 18 -20 38 -2 q 6 12 -6 14 q -22 4 -32 -12 Z" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2.4" />
++      <path d="M1064 500 q 22 -22 44 -2 q 8 12 -6 16 q -26 6 -38 -14 Z" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2.4" />
++      <path
++        d="M1010 552 c -4 -22 2 -36 6 -46 M1020 552 c 4 -20 12 -30 22 -38 M1002 552 c -10 -16 -14 -28 -14 -40"
++        fill="none"
++        stroke={INK_SOFT}
++        strokeWidth="2.2"
++      />
++      {/* drifting sand veils */}
++      <g className="sand-drift" opacity="0.5">
++        <path d="M-40 470 q 160 -22 320 -4" fill="none" stroke="var(--ink-faint)" strokeWidth="2" />
++        <path d="M700 494 q 180 -24 340 -6" fill="none" stroke="var(--ink-faint)" strokeWidth="2" />
++      </g>
++    </svg>
++  );
++}
++
++export function DefaultStageSkinArt() {
++  return <div className="absolute inset-0 bg-[var(--paper)]" aria-hidden />;
++}
++
++/**
++ * Coast skin — Praia das Conchas. Same functional shell, different place:
++ * a low tide line, wet sand and quiet surf behind the staged characters.
++ */
++export function CoastStageSkinArt() {
++  return (
++    <svg
++      className="absolute inset-0 h-full w-full"
++      viewBox="0 0 1200 720"
++      preserveAspectRatio="xMidYMid slice"
++      aria-hidden
++    >
++      <rect x="0" y="0" width="1200" height="720" fill="var(--paper)" />
++      <path d="M-20 300 H1220" fill="none" stroke={INK_SOFT} strokeWidth="2.4" />
++      <path
++        d="M-20 420 C 220 386, 520 398, 780 428 C 960 448, 1080 440, 1220 418 L 1220 720 L -20 720 Z"
++        fill="var(--paper)"
++        stroke={INK}
++        strokeWidth="3"
++      />
++      <path
++        d="M-20 470 C 240 436, 540 448, 800 478 M120 530 q 60 -16 120 0 M900 546 q 50 -14 100 0"
++        fill="none"
++        stroke={INK_SOFT}
++        strokeWidth="2.2"
++      />
++      {/* rock shelf and shells on the sand */}
++      <path
++        d="M60 470 c 30 -30, 96 -34, 142 -12 c 30 14, 54 12, 76 20 c -78 20, -180 16, -218 -8 Z"
++        fill={PAPER_DEEP}
++        stroke={INK_SOFT}
++        strokeWidth="2.6"
++      />
++      {[[420, 560], [700, 590], [980, 556]].map(([x, y]) => (
++        <g key={`${x}-${y}`} transform={`translate(${x} ${y})`}>
++          <path d="M-12 0 q 1 -16 12 -16 q 11 0 12 16 Z" fill={PAPER_DEEP} stroke={INK_SOFT} strokeWidth="2.4" />
++          <path d="M0 -15 v 13" fill="none" stroke={INK_SOFT} strokeWidth="1.8" />
++        </g>
++      ))}
++      <g className="bird-glide" opacity="0.6">
