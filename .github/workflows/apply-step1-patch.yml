@@ -1,0 +1,69 @@
+name: Apply approved Step 1 patch
+
+on:
+  push:
+    branches:
+      - feat/step1-production-presentation-seam
+    paths:
+      - .github/workflows/apply-step1-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-approved-patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: feat/step1-production-presentation-seam
+
+      - name: Reassemble and verify approved patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .integration/step1/part*.patch > /tmp/step1.patch
+          echo '651683e2940b89217a99ccefaca9e1c2830e72c7f89e688d68c33ebd96dfd591  /tmp/step1.patch' | sha256sum -c -
+          git apply --check /tmp/step1.patch
+
+      - name: Apply patch and remove integration scaffolding
+        shell: bash
+        run: |
+          set -euo pipefail
+          git apply /tmp/step1.patch
+          rm -rf .integration/step1
+          rm .github/workflows/apply-step1-patch.yml
+
+      - name: Verify exact Step 1 changed-file scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/expected-files <<'EOF'
+          eslint.config.js
+          src/assets/game/stage/StageSkinArt.tsx
+          src/game/templates/PlaceholderOrderTemplate.tsx
+          src/game/templates/__tests__/PlaceholderOrderTemplate.test.tsx
+          src/visual/__tests__/assetRegistry.test.ts
+          src/visual/__tests__/illustration.test.tsx
+          src/visual/assetRegistry.tsx
+          src/visual/illustration.tsx
+          src/visual/scenes/WorldBoardScene.tsx
+          src/visual/stage/ChallengeStageShell.tsx
+          src/visual/stage/__tests__/ChallengeStageShell.stage-skin-unchanged.test.tsx
+          src/visual/stage/__tests__/ChallengeStageShell.test.tsx
+          EOF
+          git diff --name-only 72d1bc12f1342585308d274351155ae7e484d678 -- | sort > /tmp/actual-files
+          sort /tmp/expected-files > /tmp/expected-files.sorted
+          diff -u /tmp/expected-files.sorted /tmp/actual-files
+
+      - name: Commit exact approved integration result
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'feat: add production presentation seam'
+          git push origin HEAD:feat/step1-production-presentation-seam
