@@ -21,15 +21,26 @@ Use them complementarily rather than choosing one and discarding the other:
 
 - whichever reference provides the stronger Maittê / Burpee / Pipoca / Will / Lyra character treatment should guide character illustration quality, proportions and world/character style coherence;
 - whichever reference provides the stronger connected black-and-white map should guide continuous geography, transitions between worlds, environmental density and the quantity of colorable details;
-- preserve the open illustrated-book / spiral-bound metaphor;
+- preserve the landscape illustrated-notebook / adventure-page metaphor;
+- **DECIDED:** spiral binding belongs on the **LEFT EDGE**, not in the center of a two-page spread;
+- the subject regions should read as one continuous connected geography rather than isolated world cards/islands;
 - the opening state remains predominantly black ink line art on white/light paper;
-- restored color appears later through actual progression rather than being pre-painted into the starting world;
+- Maittê's green heart remains the primary saturated opening anchor; restored world color appears later through actual progression rather than being pre-painted/tinted into the starting world;
 - place names may use cursive/storybook lettering, while essential gameplay reading remains highly legible;
+- favor rich scenic density with many small closed/colorable details rather than sparse UI-over-background composition;
 - both images are art-direction references, not permission to use either as one permanent flattened runtime background or to trace them into large React SVG scenes.
 
 The intended production synthesis is therefore:
 
 **best character language from the approved references + best connected/detailed line-art world composition from the approved references + repository Specs and architecture.**
+
+## Identity/master relationship
+
+These two north stars do not by themselves make every character pose or extracted figure a canonical production asset.
+
+Character identity is governed by `docs/design/VISUAL-ASSET-CONTRACT.md`, `docs/design/CHARACTER-ART.md` and the character/pet Specs. Production work should establish explicitly approved Character Masters for Maittê, Burpee, Pipoca, Will and Lyra and preserve those identities across later poses/scenes.
+
+Missing final character art is a `PRODUCTION-ASSET-GAP`, not permission to silently choose a new canonical identity.
 
 ## Other expected review artifacts
 
@@ -43,6 +54,9 @@ Additional outputs may include:
 - Slot 1 Conclusion + Evidence mockup;
 - Maittê character sheet;
 - Burpee character sheet;
+- Pipoca character sheet;
+- Will character sheet;
+- Lyra character sheet;
 - interaction-state sheet;
 - audio-affordance study;
 - handoff notes for Claude Code.
