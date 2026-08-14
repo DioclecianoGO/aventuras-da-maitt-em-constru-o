@@ -1,22 +1,16 @@
 # Pipoca — Character Master Reference
 
-**Status:** PROVISIONAL — AWAITING EXPLICIT CHARACTER MASTER APPROVAL
+**Status:** DECIDED — APPROVED CHARACTER IDENTITY MASTER
 
-This folder is reserved for the production identity master for **Pipoca** in **Aventuras da Maittê**.
+This folder contains the approved production identity master for **Pipoca** in **Aventuras da Maittê**.
 
-No image stored here becomes canonical merely by being uploaded. Pipoca's master becomes authoritative only after explicit product review records it as `APPROVED` / `DECIDED`.
-
-## Canonical approved filename
-
-When a master is explicitly approved, store the approved binary exactly as:
+The canonical approved binary is:
 
 `PIPOCA_MASTER_APPROVED.png`
 
-Until that approved binary exists, classify the missing final master as:
+This file is now the **PRIMARY PIPOCA CHARACTER MASTER / IDENTITY NORTH STAR** for future production work.
 
-**`PRODUCTION-ASSET-GAP`**
-
-Do not substitute the neutral companion fallback, a generic white small-dog illustration, or an arbitrary generation as canonical identity.
+Its approval records identity and visual direction only. It does **not** make the PNG a runtime sprite and does **not** authorize Step 2C.
 
 ## Authority and supporting references
 
@@ -28,20 +22,18 @@ This folder is governed by:
 - `docs/design/ASSET-PRODUCTION-PIPELINE.md`
 - `references/visual/08-pipoca-identity/`
 
-Before approval, candidate production should combine two complementary sources:
+The approved master was reviewed against two complementary sources:
 
-1. the strongest previously approved illustrated Pipoca representation from the project north-star material — visual/character direction;
+1. the strongest preferred illustrated Pipoca representation from the project north-star material — visual/character direction;
 2. `08-pipoca-identity/` real-world photographs — anatomy, coat, face and recognizability evidence.
-
-Neither source alone authorizes a new canonical master without explicit product approval.
 
 Pipoca is an individual project character, not a generic mascot and not permanently assigned to one school subject.
 
-## IDENTITY_LOCK — required traits
+## IDENTITY_LOCK — approved traits
 
-The approved Pipoca master must read visually as **Pipoca**, a small white Maltese-type dog, without relying on a text label.
+The approved Pipoca master must remain recognizably **Pipoca**, a small white Maltese-type dog, without relying on a text label.
 
-Preserve:
+Lock the following traits:
 
 - small canine proportions appropriate to a Maltese-type dog;
 - white coat with soft, slightly wavy/curly texture rather than a smooth short coat;
@@ -51,7 +43,8 @@ Preserve:
 - floppy/drop ears integrated into the white coat silhouette;
 - soft feathered coat around face, chest, legs and tail;
 - small companion scale distinct from Burpee's athletic Border Collie proportions;
-- recognizable face/coat cues supported by the real Pipoca references.
+- recognizable face/coat cues supported by the real Pipoca references;
+- cheerful, alert and approachable baseline expression.
 
 At Challenge Stage scale, Pipoca must not plausibly read as a cat, fox, Westie, poodle, generic spitz or generic white plush animal.
 
@@ -72,7 +65,7 @@ Pipoca must feel like he belongs in the same illustrated universe as Maittê and
 
 ## Acting identity
 
-Pipoca's personality direction is adventurous, energetic and brave/exploratory, while remaining supportive and child-friendly.
+Pipoca's personality direction is **adventurous, energetic and brave/exploratory**, while remaining supportive and child-friendly.
 
 The shared companion acting contract remains:
 
@@ -82,7 +75,7 @@ The shared companion acting contract remains:
 - `success-reaction`;
 - `retry-reaction` / hint support.
 
-Do not create a separate visual identity from scratch for each acting state. Variants must derive from the same approved Pipoca master.
+Do not create a separate visual identity from scratch for each acting state. All variants must derive from this approved master.
 
 ## COLOR_STATE / stolen-color requirement
 
@@ -94,7 +87,7 @@ Because his real coat is already white, recognizability cannot depend on saturat
 - line art must preserve the distinction between white coat and empty paper/background through ink/value/detail rather than arbitrary fill color;
 - any future restoration treatment remains presentation-derived and must not introduce authoritative persisted visual state.
 
-The exact restoration granularity for Pipoca is not decided by this README.
+The exact restoration granularity for Pipoca is **not decided** by this README and remains a separate production/runtime design concern.
 
 ## Scale requirement
 
@@ -109,15 +102,24 @@ Separate optimized exports are allowed when they preserve the same approved mode
 
 ## Generative policy
 
-Before approval, generated candidates are `DRAFT` or `REVIEW` only.
+`PIPOCA_MASTER_APPROVED.png` is now under **IDENTITY_LOCK**.
 
-After `PIPOCA_MASTER_APPROVED.png` is explicitly approved:
+Future generated or edited variants may change only the requested acting/presentation dimension.
 
-- `IDENTITY_LOCK` applies to Pipoca;
-- pose/expression changes may vary only the requested acting dimension;
-- species anatomy, facial model, coat silhouette/texture, proportions, ears, muzzle, tail and recognizable identity cues are `GENERATIVE_FORBIDDEN` from arbitrary redesign;
-- changing Maittê, environment or pose does not authorize regenerating Pipoca's identity;
-- prefer localized editing/composition or variants derived from the approved master over full identity regeneration.
+The following are `GENERATIVE_FORBIDDEN` from arbitrary redesign:
+
+- species anatomy;
+- facial model;
+- coat silhouette and texture;
+- proportions;
+- ears;
+- muzzle;
+- tail;
+- recognizable individual identity cues.
+
+Changing Maittê, environment, world, pose or camera angle does not authorize regenerating Pipoca's identity from scratch.
+
+Prefer localized editing/composition or variants derived from the approved master over full identity regeneration.
 
 ## Runtime rule
 
@@ -125,18 +127,20 @@ The physical file `PIPOCA_MASTER_APPROVED.png` must never become a domain/gamepl
 
 Runtime integration will use stable presentation identity under the logical `character.pipoca.*` namespace through the existing companion presentation seam once separately planned and audited.
 
-Do not implement Pipoca runtime migration merely because a candidate master image exists.
+Do not use this master PNG directly as a runtime sprite merely because it is approved.
 
 ## Approval record
 
-Current state:
+**Approval:** DECIDED / APPROVED
 
-**No Pipoca generated Character Master is approved yet.**
+**Approved file:** `PIPOCA_MASTER_APPROVED.png`
 
-Expected review sequence:
+**Approved on:** 2026-08-14
 
-1. inspect the preferred illustrated Pipoca reference plus real Pipoca identity references;
-2. produce one neutral/base master candidate with `IDENTITY_LOCK` + `STYLE_LOCK`;
-3. review species readability, scale and individual recognizability;
-4. record explicit approval or rejection;
-5. only after approval, derive acting variants and plan runtime integration.
+**Meaning of approval:**
+
+- Pipoca identity master is now canonical;
+- future variants must derive from this identity;
+- runtime migration is still a separate Step 2B-M3 engineering task;
+- companion restoration/stolen-color behavior remains a `PRODUCTION-ASSET-GAP` until separately designed;
+- Step 2C remains locked until all required Character Masters are approved or explicitly dispositioned by the gate.
