@@ -26,6 +26,11 @@ describe("asset registry", () => {
       "character.maitte.success",
       "character.maitte.retry-thinking",
       "character.maitte.move",
+      "character.burpee.idle",
+      "character.burpee.speak",
+      "character.burpee.watch",
+      "character.burpee.success-reaction",
+      "character.burpee.retry-reaction",
       "character.companion",
       "stage-skin.desert",
       "stage-skin.coast",
@@ -59,5 +64,14 @@ describe("asset registry", () => {
 
   it("no longer exposes the bare character.maitte key removed by Step 2B-M1", () => {
     expect(hasAsset("character.maitte")).toBe(false);
+  });
+
+  it("Step 2B-M2: exposes all five Burpee per-state keys and keeps the generic companion fallback", () => {
+    for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
+      expect(hasAsset(`character.burpee.${state}`)).toBe(true);
+    }
+    // Unlike character.maitte, character.companion is NOT removed: it is
+    // still the real fallback for pets without per-state keys yet.
+    expect(hasAsset("character.companion")).toBe(true);
   });
 });

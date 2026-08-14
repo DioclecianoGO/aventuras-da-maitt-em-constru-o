@@ -36,8 +36,28 @@
  * compositing contract for character poses is separately designed and
  * approved (tracked as a named `PRODUCTION-ASSET-GAP` / blocker, not solved
  * here).
+ *
+ * Step 2B-M2: `character.burpee.*` follows the same one-entry-per-acting-
+ * state pattern, resolved by `BurpeeActor`. Unlike Maittê, the current
+ * `BurpeeArt` scaffold has NO restoration-region model at all (no `restored`
+ * prop, no per-region opacity gating) — so today there is no compositing
+ * hazard to warn about, but there will be the moment a stolen-color/
+ * restoration treatment is designed for companions: at that point these keys
+ * need the same "not eligible for naive raster promotion" caveat Maittê's
+ * keys already carry. Tracked as `PRODUCTION-ASSET-GAP`: companion
+ * restoration / stolen-color contract — not solved here.
+ *
+ * The generic `"character.companion"` key is unchanged and still resolves to
+ * `CompanionArt` directly (imported below, exactly as before) — it remains
+ * the real fallback for any configured pet without its own per-state keys
+ * yet (Pipoca, Will, Lyra today). `BurpeeActor`/`CompanionActor`
+ * (`src/visual/character/`) never import `CompanionArt` themselves; they
+ * only ever reach it indirectly through this registry, which is what keeps
+ * the dependency graph acyclic (this file already imports `CompanionArt`, so
+ * `CompanionArt` itself must never import anything that imports this file).
  */
 import { CompanionArt } from "@/assets/game/characters/CompanionArt";
+import { BurpeeArt } from "@/assets/game/characters/pets/BurpeeArt";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
 import { DunasDouradasColor, DunasDouradasInk } from "@/assets/game/board/DunasDouradasArt";
 import {
@@ -100,6 +120,11 @@ const registry: Record<string, IllustrationAsset> = {
   "character.maitte.success": vectorAsset(MaitteFigure),
   "character.maitte.retry-thinking": vectorAsset(MaitteFigure),
   "character.maitte.move": vectorAsset(MaitteFigure),
+  "character.burpee.idle": vectorAsset(BurpeeArt),
+  "character.burpee.speak": vectorAsset(BurpeeArt),
+  "character.burpee.watch": vectorAsset(BurpeeArt),
+  "character.burpee.success-reaction": vectorAsset(BurpeeArt),
+  "character.burpee.retry-reaction": vectorAsset(BurpeeArt),
   "character.companion": vectorAsset(CompanionArt),
   "stage-skin.desert": vectorAsset(DesertStageSkinArt),
   "stage-skin.coast": vectorAsset(CoastStageSkinArt),
