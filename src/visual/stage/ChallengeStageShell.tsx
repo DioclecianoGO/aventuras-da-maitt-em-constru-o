@@ -21,11 +21,11 @@
  */
 import type { ReactNode } from "react";
 
-import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { CaptionPlateArt, ReplayShellArt } from "@/assets/game/objects/DesertPuzzleArt";
 import { FoldedMapArt } from "@/assets/game/objects/NavigationArt";
 import type { NarrationStatus } from "@/audio/narrationService";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
+import { CompanionActor } from "@/visual/character/CompanionActor";
 import { MaitteActor } from "@/visual/character/MaitteActor";
 import { SpeechBubble } from "@/visual/stage/SpeechBubble";
 import { resolveRestoredRegions } from "@/visual/character/MaitteAvatar";
@@ -206,7 +206,7 @@ export function ChallengeStageShell({
                 role="img"
                 aria-label={petDisplayName ?? "Companheiro"}
               >
-                <CompanionArt
+                <CompanionActor
                   animated={hydrated}
                   state={speaking ? "speak" : companionState}
                   {...(petId ? { petId } : {})}
