@@ -21,7 +21,11 @@ describe("asset registry", () => {
       "object.slot",
       "object.folded-map",
       "object.backpack",
-      "character.maitte",
+      "character.maitte.idle-curious",
+      "character.maitte.listen-think",
+      "character.maitte.success",
+      "character.maitte.retry-thinking",
+      "character.maitte.move",
       "character.companion",
       "stage-skin.desert",
       "stage-skin.coast",
@@ -51,5 +55,9 @@ describe("asset registry", () => {
     for (const skin of ["desert", "coast", "default"]) {
       expect(hasAsset(`stage-skin.${skin}`)).toBe(true);
     }
+  });
+
+  it("no longer exposes the bare character.maitte key removed by Step 2B-M1", () => {
+    expect(hasAsset("character.maitte")).toBe(false);
   });
 });
