@@ -56,10 +56,15 @@
  * in `references/visual/14-pipoca-character-master/README.md` and
  * `docs/design/COLOR-RESTORATION.md`, neither resolved by this entry.
  *
+ * Step 2B-M4: `character.will.*` follows the identical pattern, resolved by
+ * `WillActor`, pointing at the new concept scaffold `WillArt` (also
+ * region-free). Same "not eligible for naive raster promotion" caveat
+ * applies once a companion restoration/stolen-color contract is designed.
+ *
  * The generic `"character.companion"` key is unchanged and still resolves to
  * `CompanionArt` directly (imported below, exactly as before) — it remains
  * the real fallback for any configured pet without its own per-state keys
- * yet (Will, Lyra today). `BurpeeActor`/`PipocaActor`/`CompanionActor`
+ * yet (Lyra today). `BurpeeActor`/`PipocaActor`/`WillActor`/`CompanionActor`
  * (`src/visual/character/`) never import `CompanionArt` themselves; they
  * only ever reach it indirectly through this registry, which is what keeps
  * the dependency graph acyclic (this file already imports `CompanionArt`, so
@@ -68,6 +73,7 @@
 import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { BurpeeArt } from "@/assets/game/characters/pets/BurpeeArt";
 import { PipocaArt } from "@/assets/game/characters/pets/PipocaArt";
+import { WillArt } from "@/assets/game/characters/pets/WillArt";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
 import { DunasDouradasColor, DunasDouradasInk } from "@/assets/game/board/DunasDouradasArt";
 import { PraiaDasConchasColor, PraiaDasConchasInk } from "@/assets/game/board/PraiaDasConchasArt";
@@ -133,6 +139,11 @@ const registry: Record<string, IllustrationAsset> = {
   "character.pipoca.watch": vectorAsset(PipocaArt),
   "character.pipoca.success-reaction": vectorAsset(PipocaArt),
   "character.pipoca.retry-reaction": vectorAsset(PipocaArt),
+  "character.will.idle": vectorAsset(WillArt),
+  "character.will.speak": vectorAsset(WillArt),
+  "character.will.watch": vectorAsset(WillArt),
+  "character.will.success-reaction": vectorAsset(WillArt),
+  "character.will.retry-reaction": vectorAsset(WillArt),
   "character.companion": vectorAsset(CompanionArt),
   "stage-skin.desert": vectorAsset(DesertStageSkinArt),
   "stage-skin.coast": vectorAsset(CoastStageSkinArt),
