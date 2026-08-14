@@ -1,6 +1,6 @@
 # Will Character Master
 
-Status: PROVISIONAL — CHARACTER MASTER CANDIDATE PENDING EXPLICIT APPROVAL
+Status: DECIDED — APPROVED CHARACTER IDENTITY MASTER
 
 ## Purpose
 
@@ -10,7 +10,7 @@ The Character Master is the identity authority for Will. It is not automatically
 
 ## Canonical approved filename
 
-After explicit visual approval, save the approved master as:
+The approved master is stored as:
 
 `WILL_MASTER_APPROVED.png`
 
@@ -43,17 +43,17 @@ Key identity traits to preserve:
 
 ## Governance
 
-Until explicit user approval of the final binary:
+- identity direction = DECIDED;
+- `WILL_MASTER_APPROVED.png` = PRIMARY WILL CHARACTER MASTER / IDENTITY NORTH STAR;
+- the approved master is an identity reference, not a gameplay/domain dependency and not automatically a runtime sprite;
+- arbitrary redesign of Will's species/anatomy, facial model, orange-tabby pattern, white bib/paws, ear shape, proportions or tail identity is GENERATIVE_FORBIDDEN;
+- runtime scaffold / `WillArt` = separate Step 2B-M4 construction task;
+- future logical runtime namespace = `character.will.*`;
+- final authored production art remains a separate `PRODUCTION-ASSET-GAP` until produced and approved;
+- Step 2C is not authorized by this approval.
 
-- identity direction = PROVISIONAL;
-- final approved binary = pending;
-- runtime scaffold / WillArt = separate Step 2B-M4 construction task;
-- final authored production art remains separate from the technical runtime scaffold.
+## Approval record
 
-After approval, this README must be updated to:
-
-`DECIDED — APPROVED CHARACTER IDENTITY MASTER`
-
-and the canonical binary must remain:
-
-`WILL_MASTER_APPROVED.png`
+- Approval date: 2026-08-14.
+- The user explicitly accepted the revised, less-realistic Will master direction and uploaded the resulting binary under the canonical filename.
+- Status: DECIDED — APPROVED CHARACTER IDENTITY MASTER.
