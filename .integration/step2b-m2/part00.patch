@@ -1,0 +1,93 @@
+From c3c69c8a305e346243f580c718b7e7cf5af9f013 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 14 Aug 2026 15:45:10 +0000
+Subject: [PATCH] Introduce BurpeeActor + CompanionActor presentation seam
+ (Step 2B-M2)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+On top of the approved BURPEE_MASTER_APPROVED.png identity master.
+Presentation-only: no production art, no raster promotion, no domain,
+evaluation, persistence, content, progression or route changes.
+
+- Add src/visual/character/BurpeeActor.tsx: mirrors MaitteActor exactly.
+  Callers provide one CompanionActingState; BurpeeActor derives
+  character.burpee.<state> itself and forwards that same state to the
+  resolved component. BurpeeActorProps has no key/assetKey/petId field, so
+  no caller can represent a mismatch between Burpee identity, logical key
+  and acting state.
+- Add src/visual/character/CompanionActor.tsx: the petId-aware seam a caller
+  uses when it only knows "there is a configured companion", not which one
+  (docs/narrative/PET-COMPANIONS.md — no pet permanently bound to a
+  subject/skill). petId === "burpee" delegates to BurpeeActor; every other
+  petId resolves through the existing generic "character.companion" registry
+  key, which still wraps CompanionArt unchanged.
+- Dependency direction is deliberately bottom-up to avoid a cycle:
+  assetRegistry already imports CompanionArt, so CompanionArt must never
+  import anything that imports assetRegistry. CompanionArt.tsx is left
+  BYTE-FOR-BYTE UNCHANGED — BurpeeActor and CompanionActor never import it
+  directly; they only reach it indirectly through getAsset("character.
+  companion"). A dedicated static test (dependency-direction.test.ts) checks
+  CompanionArt's source text for the four forbidden imports so this can't
+  regress silently.
+- Add five character.burpee.<state> registry entries (idle, speak, watch,
+  success-reaction, retry-reaction), all vectorAsset(BurpeeArt) for now —
+  byte-identical output. character.companion is kept, unlike character.
+  maitte's bare key removed in Step 2B-M1: it remains the real fallback for
+  Pipoca/Will/Lyra, which have no per-state keys yet.
+- Migrate ChallengeStageShell's single companion render site from
+  <CompanionArt> to <CompanionActor>, preserving petId, petDisplayName, the
+  pre-existing "speaking -> speak" override, animated/hydration behaviour,
+  positioning and accessibility exactly as before.
+- Companion restoration/stolen-color has no model in the current scaffold at
+  all (BurpeeArt has no `restored` prop or region gating, unlike Maittê) —
+  recorded as PRODUCTION-ASSET-GAP: companion restoration / stolen-color
+  contract, blocking any future raster promotion of character.burpee.*, not
+  solved here.
+- Tests: BurpeeActor key resolution (mocked) + scaffold passthrough
+  (unmocked); CompanionActor dispatch (mocked, proves Burpee vs. generic
+  fallback routing and prop forwarding) + fallback/Burpee equivalence
+  (unmocked, output-identical to calling CompanionArt/BurpeeArt directly);
+  ChallengeStageShell companion regression (speaking override, and staying
+  petId-agnostic for a non-Burpee pet); dependency-direction static guard.
+  99/99 tests passing, typecheck clean, zero new lint violations, zero diff
+  under src/game/{domain,evaluation,persistence,state,content},
+  src/visual/world-config, src/visual/character/acting.ts and src/routes.
+
+BURPEE_MASTER_APPROVED.png remains an identity/north-star reference only —
+not used as a runtime sprite anywhere in this change.
+
+This completes Step 2B-M2 only. Pipoca, Will and Lyra Character Masters,
+companion restoration compositing, and Step 2C Overworld composition remain
+separate, un-started future work.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01MxFLUa9A9cX3bcmjvZWtNa
+---
+ src/visual/__tests__/assetRegistry.test.ts    | 14 ++++
+ src/visual/assetRegistry.tsx                  | 25 ++++++
+ src/visual/character/BurpeeActor.tsx          | 35 +++++++++
+ src/visual/character/CompanionActor.tsx       | 41 ++++++++++
+ .../BurpeeActor.scaffold-unchanged.test.tsx   | 38 +++++++++
+ .../character/__tests__/BurpeeActor.test.tsx  | 59 ++++++++++++++
+ ...CompanionActor.scaffold-unchanged.test.tsx | 58 ++++++++++++++
+ .../__tests__/CompanionActor.test.tsx         | 52 +++++++++++++
+ .../__tests__/dependency-direction.test.ts    | 45 +++++++++++
+ src/visual/stage/ChallengeStageShell.tsx      |  4 +-
+ ...allengeStageShell.companion-actor.test.tsx | 78 +++++++++++++++++++
+ 11 files changed, 447 insertions(+), 2 deletions(-)
+ create mode 100644 src/visual/character/BurpeeActor.tsx
+ create mode 100644 src/visual/character/CompanionActor.tsx
+ create mode 100644 src/visual/character/__tests__/BurpeeActor.scaffold-unchanged.test.tsx
+ create mode 100644 src/visual/character/__tests__/BurpeeActor.test.tsx
+ create mode 100644 src/visual/character/__tests__/CompanionActor.scaffold-unchanged.test.tsx
+ create mode 100644 src/visual/character/__tests__/CompanionActor.test.tsx
+ create mode 100644 src/visual/character/__tests__/dependency-direction.test.ts
+ create mode 100644 src/visual/stage/__tests__/ChallengeStageShell.companion-actor.test.tsx
+
+diff --git a/src/visual/__tests__/assetRegistry.test.ts b/src/visual/__tests__/assetRegistry.test.ts
+index 0971ea6..bfc45d7 100644
+--- a/src/visual/__tests__/assetRegistry.test.ts
++++ b/src/visual/__tests__/assetRegistry.test.ts
+@@ -26,6
