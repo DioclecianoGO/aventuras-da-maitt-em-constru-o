@@ -26,7 +26,7 @@ import { CaptionPlateArt, ReplayShellArt } from "@/assets/game/objects/DesertPuz
 import { FoldedMapArt } from "@/assets/game/objects/NavigationArt";
 import type { NarrationStatus } from "@/audio/narrationService";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
-import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
+import { MaitteActor } from "@/visual/character/MaitteActor";
 import { SpeechBubble } from "@/visual/stage/SpeechBubble";
 import { resolveRestoredRegions } from "@/visual/character/MaitteAvatar";
 import { getAsset } from "@/visual/assetRegistry";
@@ -222,7 +222,7 @@ export function ChallengeStageShell({
 
           <div className="pointer-events-none absolute right-3 bottom-2 sm:right-10">
             <svg viewBox="0 0 130 262" className="h-32 w-16 sm:h-44 sm:w-24" role="img" aria-label="Maittê">
-              <MaitteFigure
+              <MaitteActor
                 restored={resolveRestoredRegions(avatarProgress)}
                 state={speaking ? "listen-think" : maitteState}
                 animated={hydrated}
