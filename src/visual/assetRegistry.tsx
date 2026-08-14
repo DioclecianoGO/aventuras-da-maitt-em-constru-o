@@ -47,10 +47,19 @@
  * keys already carry. Tracked as `PRODUCTION-ASSET-GAP`: companion
  * restoration / stolen-color contract — not solved here.
  *
+ * Step 2B-M3: `character.pipoca.*` follows the identical pattern, resolved
+ * by `PipocaActor`, pointing at the new concept scaffold `PipocaArt` (also
+ * region-free, same as `BurpeeArt`). Same "not eligible for naive raster
+ * promotion" caveat applies once a companion restoration/stolen-color
+ * contract is designed — Pipoca's white coat additionally compounds that
+ * future problem with a legibility concern (white-on-paper contrast), noted
+ * in `references/visual/14-pipoca-character-master/README.md` and
+ * `docs/design/COLOR-RESTORATION.md`, neither resolved by this entry.
+ *
  * The generic `"character.companion"` key is unchanged and still resolves to
  * `CompanionArt` directly (imported below, exactly as before) — it remains
  * the real fallback for any configured pet without its own per-state keys
- * yet (Pipoca, Will, Lyra today). `BurpeeActor`/`CompanionActor`
+ * yet (Will, Lyra today). `BurpeeActor`/`PipocaActor`/`CompanionActor`
  * (`src/visual/character/`) never import `CompanionArt` themselves; they
  * only ever reach it indirectly through this registry, which is what keeps
  * the dependency graph acyclic (this file already imports `CompanionArt`, so
@@ -58,18 +67,12 @@
  */
 import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { BurpeeArt } from "@/assets/game/characters/pets/BurpeeArt";
+import { PipocaArt } from "@/assets/game/characters/pets/PipocaArt";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
 import { DunasDouradasColor, DunasDouradasInk } from "@/assets/game/board/DunasDouradasArt";
-import {
-  PraiaDasConchasColor,
-  PraiaDasConchasInk,
-} from "@/assets/game/board/PraiaDasConchasArt";
+import { PraiaDasConchasColor, PraiaDasConchasInk } from "@/assets/game/board/PraiaDasConchasArt";
 import { INK_SOFT, PAPER_DEEP } from "@/assets/game/ink";
-import {
-  BackpackArt,
-  FoldedMapArt,
-  RockArchArt,
-} from "@/assets/game/objects/NavigationArt";
+import { BackpackArt, FoldedMapArt, RockArchArt } from "@/assets/game/objects/NavigationArt";
 import { SlotObjectArt } from "@/assets/game/objects/SlotObjectArt";
 import {
   BaseDaEsperancaArt,
@@ -125,6 +128,11 @@ const registry: Record<string, IllustrationAsset> = {
   "character.burpee.watch": vectorAsset(BurpeeArt),
   "character.burpee.success-reaction": vectorAsset(BurpeeArt),
   "character.burpee.retry-reaction": vectorAsset(BurpeeArt),
+  "character.pipoca.idle": vectorAsset(PipocaArt),
+  "character.pipoca.speak": vectorAsset(PipocaArt),
+  "character.pipoca.watch": vectorAsset(PipocaArt),
+  "character.pipoca.success-reaction": vectorAsset(PipocaArt),
+  "character.pipoca.retry-reaction": vectorAsset(PipocaArt),
   "character.companion": vectorAsset(CompanionArt),
   "stage-skin.desert": vectorAsset(DesertStageSkinArt),
   "stage-skin.coast": vectorAsset(CoastStageSkinArt),

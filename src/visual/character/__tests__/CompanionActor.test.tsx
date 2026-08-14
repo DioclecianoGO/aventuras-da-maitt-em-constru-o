@@ -33,9 +33,20 @@ describe("CompanionActor dispatch", () => {
     expect(container.querySelector('[data-testid="resolved-character.burpee.speak"]')).toBeTruthy();
     // The generic fallback key must NOT be the one resolved for Burpee.
     expect(container.querySelector('[data-testid="resolved-character.companion"]')).toBeNull();
+    // Nor the Pipoca key.
+    expect(container.querySelector('[data-testid="resolved-character.pipoca.speak"]')).toBeNull();
   });
 
-  it("a non-Burpee petId takes the generic character.companion fallback seam", () => {
+  it('petId="pipoca" takes the Pipoca presentation seam (character.pipoca.<state>)', () => {
+    const { container } = render(<CompanionActor petId="pipoca" state="speak" animated={false} />);
+    expect(container.querySelector('[data-testid="resolved-character.pipoca.speak"]')).toBeTruthy();
+    // The generic fallback key must NOT be the one resolved for Pipoca.
+    expect(container.querySelector('[data-testid="resolved-character.companion"]')).toBeNull();
+    // Nor the Burpee key.
+    expect(container.querySelector('[data-testid="resolved-character.burpee.speak"]')).toBeNull();
+  });
+
+  it("a non-Burpee-non-Pipoca petId takes the generic character.companion fallback seam", () => {
     const { container } = render(<CompanionActor petId="will" state="idle" animated={true} />);
     const resolved = container.querySelector('[data-testid="resolved-character.companion"]');
     expect(resolved).toBeTruthy();
@@ -43,6 +54,16 @@ describe("CompanionActor dispatch", () => {
     expect(resolved?.getAttribute("data-petid")).toBe("will");
     expect(resolved?.getAttribute("data-state")).toBe("idle");
     expect(resolved?.getAttribute("data-animated")).toBe("true");
+  });
+
+  it("lyra also takes the generic character.companion fallback seam", () => {
+    const { container } = render(<CompanionActor petId="lyra" state="idle" animated={true} />);
+    expect(container.querySelector('[data-testid="resolved-character.companion"]')).toBeTruthy();
+  });
+
+  it("an unknown petId takes the generic character.companion fallback seam", () => {
+    const { container } = render(<CompanionActor petId="totally-unknown-pet" state="idle" />);
+    expect(container.querySelector('[data-testid="resolved-character.companion"]')).toBeTruthy();
   });
 
   it("an absent/unconfigured petId also takes the generic fallback seam", () => {
