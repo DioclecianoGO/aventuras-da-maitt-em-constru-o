@@ -31,6 +31,11 @@ describe("asset registry", () => {
       "character.burpee.watch",
       "character.burpee.success-reaction",
       "character.burpee.retry-reaction",
+      "character.pipoca.idle",
+      "character.pipoca.speak",
+      "character.pipoca.watch",
+      "character.pipoca.success-reaction",
+      "character.pipoca.retry-reaction",
       "character.companion",
       "stage-skin.desert",
       "stage-skin.coast",
@@ -73,5 +78,18 @@ describe("asset registry", () => {
     // Unlike character.maitte, character.companion is NOT removed: it is
     // still the real fallback for pets without per-state keys yet.
     expect(hasAsset("character.companion")).toBe(true);
+  });
+
+  it("Step 2B-M3: exposes all five Pipoca per-state keys and keeps the generic companion fallback", () => {
+    for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
+      expect(hasAsset(`character.pipoca.${state}`)).toBe(true);
+    }
+    // character.companion remains the real fallback for pets without
+    // per-state keys yet (Will, Lyra today).
+    expect(hasAsset("character.companion")).toBe(true);
+    // Burpee's keys are unaffected by Pipoca's addition.
+    for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
+      expect(hasAsset(`character.burpee.${state}`)).toBe(true);
+    }
   });
 });

@@ -12,6 +12,7 @@ afterEach(cleanup);
 import { CompanionActor } from "@/visual/character/CompanionActor";
 import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { BurpeeArt } from "@/assets/game/characters/pets/BurpeeArt";
+import { PipocaArt } from "@/assets/game/characters/pets/PipocaArt";
 
 describe("CompanionActor scaffold passthrough (unmocked)", () => {
   it("Burpee path renders identically to calling BurpeeArt directly", () => {
@@ -23,6 +24,20 @@ describe("CompanionActor scaffold passthrough (unmocked)", () => {
     const { container: direct } = render(
       <svg>
         <BurpeeArt state="success-reaction" animated={false} />
+      </svg>,
+    );
+    expect(viaActor.querySelector("svg")?.innerHTML).toBe(direct.querySelector("svg")?.innerHTML);
+  });
+
+  it("Pipoca path renders identically to calling PipocaArt directly", () => {
+    const { container: viaActor } = render(
+      <svg>
+        <CompanionActor petId="pipoca" state="success-reaction" animated={false} />
+      </svg>,
+    );
+    const { container: direct } = render(
+      <svg>
+        <PipocaArt state="success-reaction" animated={false} />
       </svg>,
     );
     expect(viaActor.querySelector("svg")?.innerHTML).toBe(direct.querySelector("svg")?.innerHTML);
