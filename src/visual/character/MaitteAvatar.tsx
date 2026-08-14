@@ -5,8 +5,13 @@
  * The colour regions restored here are resolved from CONFIGURATION plus the
  * derived 0..1 avatar restoration. Regions are independently addressable; the
  * arrangement used is provisional configuration, not a decided reward order.
+ *
+ * Step 2B-M1: rendering goes through `MaitteActor`, not `MaitteFigure`
+ * directly, so this wrapper only ever supplies an acting state — it never
+ * resolves or names a logical asset key itself.
  */
-import { MaitteFigure, MAITTE_BOX } from "@/assets/game/characters/MaitteFigure";
+import { MAITTE_BOX } from "@/assets/game/characters/MaitteFigure";
+import { MaitteActor } from "@/visual/character/MaitteActor";
 import type { MaitteActingState } from "@/visual/character/acting";
 import { characterVisual } from "@/visual/world-config";
 import type { CharacterRegionId, CharacterVisualConfig } from "@/visual/world-config/types";
@@ -47,7 +52,7 @@ export function MaitteAvatar({
       transform={`translate(${x - (MAITTE_BOX.width / 2) * scale} ${y - MAITTE_BOX.height * scale}) scale(${scale})`}
       style={{ transition: "transform var(--motion-travel) var(--ease-travel)" }}
     >
-      <MaitteFigure restored={restored} state={state} animated={animated} title={title} />
+      <MaitteActor restored={restored} state={state} animated={animated} title={title} />
     </g>
   );
 }
