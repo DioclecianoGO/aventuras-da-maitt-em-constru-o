@@ -21,7 +21,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          sha256sum .integration/step2b-m2/part*.patch
           cat .integration/step2b-m2/part*.patch > /tmp/step2b-m2.patch
+          sha256sum /tmp/step2b-m2.patch
           echo "b2db9cd9878b4e2c6c7ea0d4d8a000fd6a606b58816d8f5da863663c11c12463  /tmp/step2b-m2.patch" | sha256sum -c -
           git apply --check /tmp/step2b-m2.patch
           git apply /tmp/step2b-m2.patch
