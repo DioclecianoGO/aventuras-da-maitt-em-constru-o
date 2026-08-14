@@ -36,6 +36,11 @@ describe("asset registry", () => {
       "character.pipoca.watch",
       "character.pipoca.success-reaction",
       "character.pipoca.retry-reaction",
+      "character.will.idle",
+      "character.will.speak",
+      "character.will.watch",
+      "character.will.success-reaction",
+      "character.will.retry-reaction",
       "character.companion",
       "stage-skin.desert",
       "stage-skin.coast",
@@ -90,6 +95,20 @@ describe("asset registry", () => {
     // Burpee's keys are unaffected by Pipoca's addition.
     for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
       expect(hasAsset(`character.burpee.${state}`)).toBe(true);
+    }
+  });
+
+  it("Step 2B-M4: exposes all five Will per-state keys and keeps the generic companion fallback", () => {
+    for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
+      expect(hasAsset(`character.will.${state}`)).toBe(true);
+    }
+    // character.companion remains the real fallback for pets without
+    // per-state keys yet (Lyra today).
+    expect(hasAsset("character.companion")).toBe(true);
+    // Burpee's and Pipoca's keys are unaffected by Will's addition.
+    for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
+      expect(hasAsset(`character.burpee.${state}`)).toBe(true);
+      expect(hasAsset(`character.pipoca.${state}`)).toBe(true);
     }
   });
 });

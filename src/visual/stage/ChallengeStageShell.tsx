@@ -26,6 +26,7 @@ import { FoldedMapArt } from "@/assets/game/objects/NavigationArt";
 import type { NarrationStatus } from "@/audio/narrationService";
 import type { CompanionActingState, MaitteActingState } from "@/visual/character/acting";
 import { CompanionActor } from "@/visual/character/CompanionActor";
+import { getCompanionViewBox } from "@/visual/character/companionViewport";
 import { MaitteActor } from "@/visual/character/MaitteActor";
 import { SpeechBubble } from "@/visual/stage/SpeechBubble";
 import { resolveRestoredRegions } from "@/visual/character/MaitteAvatar";
@@ -201,7 +202,7 @@ export function ChallengeStageShell({
             ) : null}
             <div className="flex items-end gap-3">
               <svg
-                viewBox="-140 -160 260 205"
+                viewBox={getCompanionViewBox(petId)}
                 className="h-28 w-36 sm:h-36 sm:w-48"
                 role="img"
                 aria-label={petDisplayName ?? "Companheiro"}

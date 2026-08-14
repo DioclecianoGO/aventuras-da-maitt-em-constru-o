@@ -46,20 +46,18 @@ function FallbackCompanionArt({ animated = true }: { animated?: boolean }) {
   );
 }
 
-/** Scene-space viewBox each pet asset is drawn in. */
-const PET_VIEWBOX: Record<string, string> = {
-  burpee: "-120 -155 240 200",
-};
-
+/**
+ * Scene-space viewBox for the fallback creature only. Step 2B-M4 removed the
+ * old `PET_VIEWBOX`/`getCompanionViewBox`/`hasCompanionArt` trio that used to
+ * live here: it was dead code (unused anywhere in `src/`) and its Burpee
+ * entry ("-120 -155 240 200") had drifted from `BurpeeArt`'s real, exported
+ * `BURPEE_BOX.viewBox` ("-140 -160 260 205") — a stale duplicate, not a
+ * source of truth. Per-pet viewport resolution now lives in
+ * `src/visual/character/companionViewport.ts`, which reads each pet's own
+ * exported `*_BOX` constant directly (one authoritative geometry path per
+ * pet) and falls back to this exact constant for any pet without one.
+ */
 export const FALLBACK_PET_VIEWBOX = "-56 -60 112 116";
-
-export function getCompanionViewBox(petId: string): string {
-  return PET_VIEWBOX[petId] ?? FALLBACK_PET_VIEWBOX;
-}
-
-export function hasCompanionArt(petId: string): boolean {
-  return petId in PET_VIEWBOX;
-}
 
 export function CompanionArt({ petId = "", state = "idle", animated = true }: CompanionArtProps) {
   if (petId === "burpee") return <BurpeeArt state={state} animated={animated} />;
