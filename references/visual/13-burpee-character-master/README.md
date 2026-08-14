@@ -1,22 +1,26 @@
-# Burpee — Character Master Reference
+# Burpee — Approved Character Master
 
-**Status:** PROVISIONAL — AWAITING EXPLICIT CHARACTER MASTER APPROVAL
+**Status:** DECIDED — APPROVED CHARACTER IDENTITY MASTER DIRECTION
 
-This folder is reserved for the production identity master for **Burpee** in **Aventuras da Maittê**.
+This folder contains the approved production identity master for **Burpee** in **Aventuras da Maittê**.
 
-No image stored here becomes canonical merely by being uploaded. Burpee's master becomes authoritative only after explicit product review records it as `APPROVED` / `DECIDED`.
+The approved master was explicitly accepted in product review on **2026-08-14** after comparison against:
+
+- the preferred illustrated Burpee representation previously approved as the strongest character reference;
+- real-world Burpee photographs used as anatomy, markings and recognizability support;
+- the project-wide visual language already locked for Maittê and the world.
 
 ## Canonical approved filename
 
-When a master is explicitly approved, store the approved binary as:
+Store the approved binary exactly as:
 
 `BURPEE_MASTER_APPROVED.png`
 
-Until that approved binary exists, classify the missing final master as:
+Once that binary is present under this exact path, it is the primary production identity reference for Burpee:
 
-**`PRODUCTION-ASSET-GAP`**
+`references/visual/13-burpee-character-master/BURPEE_MASTER_APPROVED.png`
 
-Do not substitute current SVG scaffolding, a generic dog illustration, or an arbitrary generation as canonical identity.
+Do not rename it casually. Runtime code must not depend on this physical filename directly.
 
 ## Authority and supporting references
 
@@ -28,46 +32,70 @@ This folder is governed by:
 - `docs/design/ASSET-PRODUCTION-PIPELINE.md`
 - `references/visual/07-burpee-identity/`
 
-The real-world references under `07-burpee-identity/` are the primary identity/anatomy evidence until an approved generated master is recorded here.
+Authority for Burpee visual production is:
+
+1. `BURPEE_MASTER_APPROVED.png` — primary Character Master / identity north star;
+2. preferred approved illustrated Burpee reference — style/character support;
+3. `07-burpee-identity/` real-world photographs — anatomy, fur pattern and recognizability evidence;
+4. written character/design specs — behavioral and production constraints.
+
+If prose and the approved master differ on a purely visual question already resolved by the approved master, do not silently redesign the character from prose.
 
 Burpee is an individual project character, not a generic mascot and not permanently assigned to one school subject.
 
-## IDENTITY_LOCK — required traits
+## IDENTITY_LOCK — DECIDED
 
-The approved Burpee master must read visually as a **blue-merle Border Collie-type dog** without relying on a text label.
+Future Burpee production assets must preserve the approved model rather than regenerating his identity independently for every pose.
 
-Preserve the combined identity cues defined by `CHARACTER-ART.md`:
+Locked traits include:
 
-- canine head/body anatomy;
-- athletic collie-like proportions;
+- blue-merle Border Collie identity;
+- athletic collie-like canine proportions;
 - elongated canine muzzle and correct dog nose placement;
-- recognizable collie ruff/chest fur;
-- semi-prick or folded-tip canine ears rather than feline/fox-like ears;
-- feathered canine tail with plausible attachment/posture;
-- blue-merle patch/value structure;
-- blue eyes where the current color state allows;
-- recognizable markings derived from Burpee's real-world identity references.
+- strong white chest/ruff;
+- semi-prick / folded-tip collie ears;
+- feathered canine tail;
+- recognizable blue-merle patch/value structure;
+- bright blue eyes;
+- black/gray/white facial markings consistent with the approved master and real references;
+- friendly, alert and intelligent facial model;
+- clear canine silhouette at small/tablet scale.
 
-At Challenge Stage scale, Burpee must not plausibly read as a cat, fox or generic small animal.
+At Challenge Stage scale, Burpee must never plausibly read as a cat, fox or generic small animal.
 
-## STYLE_LOCK
+The approved master intentionally keeps Burpee expressive and approachable while retaining enough individual detail to remain recognizable.
 
-Preserve the same original project-wide character language used by Maittê:
+## STYLE_LOCK — DECIDED
+
+Preserve the same original project-wide character language used by the approved Maittê master:
 
 - original 2D storybook / coloring-book illustration;
-- warm rounded forms;
-- expressive, confident line work;
+- warm, hand-authored feel;
+- rounded but anatomically readable forms;
+- expressive confident line work;
+- subtle paper/paint texture where appropriate;
 - clear silhouette at tablet scale;
 - light manga/anime influence only in expression and acting;
-- enough closed/detail regions to coexist with the project's color-restoration language;
+- enough closed/detail regions to coexist with the color-restoration language;
 - no photorealism;
 - no direct imitation of a named artist, studio or copyrighted character design.
 
-Burpee must feel like he belongs in the same illustrated universe as the approved Maittê master.
+Burpee must feel like he belongs in the same illustrated universe as Maittê.
 
-## Acting identity
+## Approved base acting read
 
-Burpee's personality direction is strategic, intelligent and observant, but acting must remain supportive and child-friendly rather than stern.
+The approved master establishes Burpee's neutral/default personality read as:
+
+- friendly;
+- alert;
+- intelligent;
+- curious;
+- energetic without looking uncontrolled;
+- supportive and child-friendly.
+
+His default master pose is a neutral seated pose suitable for identity inspection. It is not a requirement that every runtime variant remain seated.
+
+## Acting variants
 
 The shared companion acting contract remains:
 
@@ -77,64 +105,82 @@ The shared companion acting contract remains:
 - `success-reaction`;
 - `retry/hint-reaction`.
 
-Optional future enrichments such as curiosity/look-at-object, entrance/exit, tail/ear motion or blink/breath require no new domain semantics.
+Optional later enrichments may include look-at-object, entrance/exit, tail motion, ear motion, blink or breathing when presentation needs justify them.
 
-Do not create a separate visual identity from scratch for each acting state. Variants must derive from the same approved Burpee master.
+**Rule:** acting variants must derive from this same approved identity. A new pose is not authorization to redesign the face, merle pattern, muzzle, ears, body proportions or species read.
 
 ## COLOR_STATE / stolen-color requirement
 
-Burpee's blue-merle identity must remain recognizable even when saturation is absent or reduced.
+Burpee's identity must survive the project's stolen-color opening state.
 
 Therefore:
 
-- merle pattern/value structure must survive line-art/stolen-color treatment;
-- species readability must not depend only on blue/gray coloration;
-- blue eyes may appear where the approved restoration/color state allows, but eye color alone cannot carry identity;
-- future restoration implementation remains presentation-derived and must not introduce authoritative persisted visual state.
+- merle pattern/value structure must remain readable in line-art or reduced-saturation treatment;
+- species and identity cannot depend only on blue/gray coloration;
+- blue eyes are an important identity feature, but eye color alone cannot carry recognizability;
+- any future restoration state remains presentation-derived and must not introduce authoritative persisted visual state.
 
-The exact restoration granularity for Burpee is not decided by this README.
+The exact restoration granularity for Burpee remains outside this master-identity decision.
 
 ## Scale requirement
 
-The approved identity must remain readable at:
+The approved model must remain recognizable at:
 
 - Overworld/home scale;
 - World Board scale;
 - Challenge Stage/guide scale;
 - future profile/icon scale.
 
-Separate optimized exports are allowed when they preserve the same approved model.
+Separate optimized exports are allowed when they preserve the same approved identity model.
 
 ## Generative policy
 
-Before approval, generated candidates are `DRAFT` or `REVIEW` only.
+`BURPEE_MASTER_APPROVED.png` is now the identity anchor.
 
-After `BURPEE_MASTER_APPROVED.png` is explicitly approved:
+For future generated or edited variants:
 
-- `IDENTITY_LOCK` applies to Burpee;
-- pose/expression changes may vary only the requested acting dimension;
-- species anatomy, facial model, fur pattern, proportions, ears, muzzle, ruff, tail and recognizable markings are `GENERATIVE_FORBIDDEN` from arbitrary redesign;
-- changing Maittê, environment or pose does not authorize regenerating Burpee's identity;
-- prefer localized editing/composition or variants derived from the approved master over full identity regeneration.
+### GENERATIVE_ALLOWED
+
+- requested pose changes;
+- requested expression/acting changes;
+- localized ear/tail/body movement consistent with the pose;
+- scale/export optimization;
+- color-restoration variants;
+- scene lighting and environmental integration when identity remains unchanged.
+
+### GENERATIVE_FORBIDDEN without explicit re-approval
+
+- changing Burpee's species read;
+- replacing the blue-merle pattern with a substantially different identity pattern;
+- changing the facial model or muzzle proportions arbitrarily;
+- changing eye color away from the approved identity when color is visible;
+- changing ear construction into feline/fox-like ears;
+- changing the body into a chibi puppy or generic mascot form;
+- independently regenerating Burpee from scratch for each scene;
+- treating a newly generated variant as a new canonical identity without review.
+
+Prefer localized editing/composition or variants derived from the approved master over full identity regeneration.
 
 ## Runtime rule
 
-The physical file `BURPEE_MASTER_APPROVED.png` must never become a domain/gameplay dependency.
+The physical file `BURPEE_MASTER_APPROVED.png` is a production/reference asset, not a gameplay/domain dependency.
 
-Runtime integration will use stable presentation identity under the logical `character.burpee.*` namespace (or another later-approved presentation-only variant contract) through the asset registry/presentation seam.
+Runtime integration must resolve Burpee through stable logical presentation keys under the `character.burpee.*` namespace (or another explicitly approved presentation-only contract) through the asset registry/presentation seam.
 
-Do not implement Burpee runtime migration merely because a candidate master image exists. Production integration requires a separately audited construction step.
+Gameplay, curriculum, evaluator, persistence and progression code must never know this physical filename.
+
+Do not implement Burpee runtime migration merely because the approved master exists. Runtime integration requires a separately audited **Step 2B-M2** construction plan/seam.
 
 ## Approval record
 
-Current state:
+**2026-08-14 — APPROVED / DECIDED**
 
-**No Burpee generated Character Master is approved yet.**
+The generated Burpee Character Master was explicitly accepted as the production identity direction.
 
-Expected review sequence:
+Production state after binary upload:
 
-1. inspect real Burpee identity references;
-2. produce one neutral/base master candidate with `IDENTITY_LOCK` + `STYLE_LOCK`;
-3. review species readability and individual recognizability;
-4. record explicit approval or rejection;
-5. only after approval, derive acting variants and plan runtime integration.
+**`BURPEE_MASTER_APPROVED.png` = PRIMARY BURPEE CHARACTER MASTER / IDENTITY NORTH STAR**
+
+Next authorized planning target after the binary is present and verified:
+
+**STEP 2B-M2 — BURPEE PRESENTATION / VARIANT INTEGRATION PLAN**
