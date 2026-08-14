@@ -1,0 +1,136 @@
+/** Idle motion. Disabled for SSR and reduced motion. */
++  animated?: boolean;
++};
++
++export function BurpeeActor({ state, animated = true }: BurpeeActorProps) {
++  const asset = getAsset(`character.burpee.${state}`);
++  return <Illustration asset={asset} state={state} animated={animated} />;
++}
+diff --git a/src/visual/character/CompanionActor.tsx b/src/visual/character/CompanionActor.tsx
+new file mode 100644
+index 0000000..37e356b
+--- /dev/null
++++ b/src/visual/character/CompanionActor.tsx
+@@ -0,0 +1,41 @@
++/**
++ * Companion presentation resolver — the petId-aware seam a caller uses when
++ * it only knows "there is a configured companion", not which one.
++ * Spec: docs/narrative/PET-COMPANIONS.md ("no pet permanently bound to a
++ *       subject/skill"), docs/design/VISUAL-ASSET-CONTRACT.md.
++ *
++ * Step 2B-M2. Dependency direction (bottom to top), by design, to avoid a
++ * cycle through `assetRegistry` (which already imports `CompanionArt`):
++ *
++ *   assets/scaffolds (BurpeeArt, CompanionArt)
++ *     ← assetRegistry (wraps them behind stable logical keys)
++ *       ← BurpeeActor (resolves character.burpee.<state>)
++ *         ← CompanionActor (THIS FILE — decides Burpee vs. generic fallback)
++ *           ← scene/call sites (ChallengeStageShell, future Board/Overworld)
++ *
++ * `CompanionArt.tsx` is never imported here or by `BurpeeActor`: it stays
++ * pure asset-layer code, reached only indirectly — through the registry's
++ * generic `"character.companion"` key — for any pet without its own
++ * per-state keys yet (Pipoca, Will, Lyra today). Do not import
++ * `CompanionArt` into this file; resolve the fallback through `getAsset`
++ * instead, exactly like every other registry-backed asset.
++ */
++import { getAsset } from "@/visual/assetRegistry";
++import { Illustration } from "@/visual/illustration";
++import { BurpeeActor } from "@/visual/character/BurpeeActor";
++import type { CompanionActingState } from "@/visual/character/acting";
++
++export type CompanionActorProps = {
++  /** Configured pet id. Unknown/absent ids fall back gracefully. */
++  petId?: string;
++  state?: CompanionActingState;
++  animated?: boolean;
++};
++
++export function CompanionActor({ petId = "", state = "idle", animated = true }: CompanionActorProps) {
++  if (petId === "burpee") {
++    return <BurpeeActor state={state} animated={animated} />;
++  }
++  const asset = getAsset("character.companion");
++  return <Illustration asset={asset} petId={petId} state={state} animated={animated} />;
++}
+diff --git a/src/visual/character/__tests__/BurpeeActor.scaffold-unchanged.test.tsx b/src/visual/character/__tests__/BurpeeActor.scaffold-unchanged.test.tsx
+new file mode 100644
+index 0000000..31f1f18
+--- /dev/null
++++ b/src/visual/character/__tests__/BurpeeActor.scaffold-unchanged.test.tsx
+@@ -0,0 +1,38 @@
++/**
++ * BurpeeActor — current vector scaffold passthrough (Step 2B-M2), REAL
++ * registry, REAL BurpeeArt. No mocking in this file on purpose: proves
++ * BurpeeActor's `state`/`animated` still reach BurpeeArt's own POSES table
++ * unchanged.
++ */
++import { afterEach, describe, expect, it } from "vitest";
++import { cleanup, render } from "@testing-library/react";
++
++afterEach(cleanup);
++
++import { BurpeeActor } from "@/visual/character/BurpeeActor";
++
++describe("BurpeeActor scaffold passthrough (unmocked)", () => {
++  it("forwards state to the underlying figure so the correct pose renders", () => {
++    const { container } = render(
++      <svg>
++        <BurpeeActor state="speak" animated={false} />
++      </svg>,
++    );
++    // "speak" pose's open-mouth path is unique to that state.
++    expect(
++      container.querySelector('path[d^="M-92 -70 C -84 -56, -66 -54, -58 -64"]'),
++    ).toBeTruthy();
++  });
++
++  it("renders a different pose for a different state", () => {
++    const { container } = render(
++      <svg>
++        <BurpeeActor state="idle" animated={false} />
++      </svg>,
++    );
++    // "idle" has a closed mouth — the "speak" open-mouth marker must be absent.
++    expect(
++      container.querySelector('path[d^="M-92 -70 C -84 -56, -66 -54, -58 -64"]'),
++    ).toBeNull();
++  });
++});
+diff --git a/src/visual/character/__tests__/BurpeeActor.test.tsx b/src/visual/character/__tests__/BurpeeActor.test.tsx
+new file mode 100644
+index 0000000..36debd9
+--- /dev/null
++++ b/src/visual/character/__tests__/BurpeeActor.test.tsx
+@@ -0,0 +1,59 @@
++/**
++ * BurpeeActor — key-resolution guard (Step 2B-M2), mocked registry.
++ * Spec: docs/design/VISUAL-ASSET-CONTRACT.md, docs/design/CHARACTER-ART.md.
++ *
++ * `vi.mock` hoists to the top of the WHOLE file, not to a describe block, so
++ * this file is dedicated to the mocked-registry assertions only. The real,
++ * unmocked-registry passthrough assertions live in the sibling file
++ * `BurpeeActor.scaffold-unchanged.test.tsx` on purpose (same split already
++ * used by MaitteActor's tests).
++ */
++import { afterEach, describe, expect, it, vi } from "vitest";
++import { cleanup, render } from "@testing-library/react";
++
++afterEach(cleanup);
++
++vi.mock("@/visual/assetRegistry", () => ({
++  getAsset: (key: string) => ({
++    kind: "vector-component" as const,
++    Component: () => <g data-testid={`resolved-${key}`} />,
++  }),
++}));
++
++import { BurpeeActor } from "@/visual/character/BurpeeActor";
++import type { CompanionActingState } from "@/visual/character/acting";
++
++const STATES: CompanionActingState[] = [
++  "idle",
++  "speak",
++  "watch",
++  "success-reaction",
++  "retry-reactio
