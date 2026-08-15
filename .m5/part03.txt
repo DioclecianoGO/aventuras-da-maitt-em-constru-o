@@ -120,4 +120,4 @@ index 5dcd362..4dfd57d 100644
 +      expect(hasAsset(`character.lyra.${state}`)).toBe(true);
 +    }
 +    // character.companion remains the real fallback for unknown/absent/
-+    // future-unconfigured pet ids — as of M5, 
++    // future-unconfigured pet ids — as of M5,
