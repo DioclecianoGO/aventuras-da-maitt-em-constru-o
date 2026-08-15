@@ -1,22 +1,22 @@
 # Visual Production — Step 2 Gate
 
-**Status:** DECIDED gate and sequencing; production assets remain PROVISIONAL until explicitly approved; mobile packaging remains FUTURE/PROVISIONAL.
+**Status:** DECIDED gate and sequencing; **Step 2A COMPLETE; Step 2B COMPLETE**; production assets remain PROVISIONAL until explicitly approved; Step 2C remains NOT STARTED; mobile packaging remains FUTURE/PROVISIONAL.
 
 ## Purpose
 
 Step 1 established the production presentation seam and is merged on `main`.
 
-Step 2 must now convert approved visual direction into a production-ready asset/composition workflow without repeating the Phase 1B failure mode of treating increasingly complex programmatic SVG as final illustration quality.
+Step 2 must convert approved visual direction into a production-ready asset/composition workflow without repeating the Phase 1B failure mode of treating increasingly complex programmatic SVG as final illustration quality.
 
 This gate supersedes any earlier Step 2 plan that assumed a center binding, a flattened north-star image, or immediate implementation before character/environment identity locking.
 
 ## 1. Step 2 is not one giant build
 
-Step 2 is deliberately split into three reviewable sub-gates.
+Step 2 is deliberately split into three reviewable sub-gates, with a controlled character-production benchmark between Step 2B closure and broad Step 2C composition.
 
 ### Step 2A — Asset identity and production contract
 
-**DECIDED:** complete before production-character or Overworld replacement work.
+**COMPLETE — DECIDED.**
 
 Deliverables:
 
@@ -28,11 +28,11 @@ Deliverables:
 
 No child-facing visual redesign is required in Step 2A.
 
-### Step 2B — Character Master production
+### Step 2B — Character Master + presentation foundation
 
-**DECIDED:** create/review approved master identity for Maittê and the four pets before using generated character art as canonical runtime identity.
+**COMPLETE — DECIDED.** Closure is recorded in `STEP-2B-CHARACTER-FOUNDATION-CLOSURE.md`.
 
-Required master set:
+The required master set is approved and present:
 
 - Maittê;
 - Burpee;
@@ -40,15 +40,29 @@ Required master set:
 - Will;
 - Lyra.
 
-The master review must prioritize identity consistency before pose count.
+Step 2B also established technical/concept runtime scaffolds and stable presentation seams so final authored assets can replace those scaffolds without changing gameplay/domain contracts.
 
-Maittê must preserve `MAITTE.md`/`CHARACTER-ART.md` traits. Each pet must remain species-readable and individually recognizable.
+The master review prioritizes identity consistency before pose count. Maittê preserves `MAITTE.md`/`CHARACTER-ART.md` traits. Each pet remains species-readable and individually recognizable.
 
-Acting variants may be produced after the base master model is approved. Do not regenerate the full identity from scratch for each pose.
+The current programmatic character drawings remain **TECHNICAL / CONCEPT RUNTIME SCAFFOLDS**, not production art.
+
+Acting variants must derive from the approved Character Masters; do not regenerate the full identity from scratch for each pose and do not treat scaffold SVG fidelity as the production target.
+
+### Character Production Asset Benchmark — next gate after Step 2B
+
+**READY / DECIDED METHOD; winning tool remains PROVISIONAL.**
+
+Before broad Step 2C implementation, execute `CHARACTER-PRODUCTION-BENCHMARK.md`.
+
+The first controlled benchmark target is **Lyra — `watch`**. It compares production-capable workflows against the same approved identity and pose requirement, with the Character Master as authority and the technical scaffold only as optional pose/structure guidance.
+
+This benchmark selects a replaceable production workflow; it does not change architecture or authorize Step 2C.
 
 ### Step 2C — Overworld production composition
 
-**DECIDED:** only after the required Character Masters are approved or an explicit temporary `PRODUCTION-ASSET-GAP` is accepted for a named layer.
+**NOT STARTED.**
+
+**DECIDED:** Step 2C may proceed only against approved Character Masters/production assets or explicit named `PRODUCTION-ASSET-GAP`s, after the controlled production workflow is understood well enough to avoid embedding low-quality placeholder art as final output.
 
 The Overworld is rebuilt at the presentation/composition layer using authored replaceable assets and the approved Step 1 seam.
 
@@ -219,6 +233,8 @@ Step 2A passes when:
 5. production prompts can state what is locked vs generative;
 6. no child-facing visual behavior changed merely to document the contract.
 
+**Status: PASSED.**
+
 ## 10. Acceptance criteria — Step 2B
 
 Step 2B passes when:
@@ -227,7 +243,10 @@ Step 2B passes when:
 2. each of the four pets has an approved master identity and species readability;
 3. masters can support later poses/scales without identity drift;
 4. no master is considered approved solely because an image generator produced it;
-5. approval status is recorded in the repository/reference system.
+5. approval status is recorded in the repository/reference system;
+6. the named characters have stable presentation seams behind logical keys so final authored assets can replace technical scaffolds without gameplay/domain changes.
+
+**Status: PASSED / COMPLETE.** See `STEP-2B-CHARACTER-FOUNDATION-CLOSURE.md` for the audited closure record.
 
 ## 11. Acceptance criteria — Step 2C
 
@@ -244,18 +263,21 @@ Step 2C passes when:
 9. current routes, domain, evaluator, persistence and progression semantics remain intact;
 10. missing final authored layers are reported as `PRODUCTION-ASSET-GAP`, not silently replaced with production-claimed programmatic art.
 
-## 12. Implementation authorization sequence
+**Status: NOT STARTED.**
 
-The next implementation agent must not jump from Step 1 directly to a large Step 2C rewrite.
+## 12. Current authorization sequence
 
-Sequence:
+The visual-production sequence is now:
 
-1. merge Step 2A specifications;
-2. inspect both approved north stars and identity references;
-3. plan Character Master production/review;
-4. explicitly approve the required masters or accepted gaps;
-5. Plan Mode proposal for Step 2C against the approved assets/contracts;
-6. audit plan;
-7. explicit Build authorization;
-8. implementation;
-9. screenshot/runtime audit before further visual scope.
+1. Step 2A specifications — **COMPLETE**;
+2. Character Master production/review + presentation foundation (Step 2B) — **COMPLETE**;
+3. execute `CHARACTER-PRODUCTION-BENCHMARK.md` using Lyra `watch` as the first controlled target;
+4. audit benchmark candidates and select primary/fallback production workflow;
+5. define/approve the first production character variant(s) and physical export strategy;
+6. only then prepare a Plan Mode proposal for broad Step 2C against approved assets/contracts and named `PRODUCTION-ASSET-GAP`s;
+7. audit Step 2C plan;
+8. explicit Build authorization;
+9. implementation;
+10. screenshot/runtime audit before further visual scope.
+
+No implementation agent may treat Step 2B completion as permission to bypass the benchmark or jump directly into a large low-quality Step 2C art rewrite.
