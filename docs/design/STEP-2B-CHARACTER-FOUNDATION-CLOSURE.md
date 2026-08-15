@@ -1,6 +1,8 @@
 # Step 2B — Character Foundation Closure
 
-**Status:** APPROVED FOR CLOSURE — M1–M4 integrated; M5 Lyra build externally audited and approved; final `main` integration verification still required before marking Step 2B COMPLETE.
+**Status:** **COMPLETE — DECIDED.** M1–M5 are integrated and verified on `main`. Step 2B is closed; final authored character art remains a separate `PRODUCTION-ASSET-GAP` governed by the production-asset benchmark/workflow.
+
+**Closure verification commit:** `8769533c9fae707fc8819941d050c40082328582` (`feat: add Lyra companion actor seam`, squash merge of PR #24).
 
 ## Purpose
 
@@ -32,7 +34,7 @@ Step 2B covers:
 | Burpee | `BURPEE_MASTER_APPROVED.png` | `BurpeeArt` | `BurpeeActor` + `character.burpee.*` | COMPLETE |
 | Pipoca | `PIPOCA_MASTER_APPROVED.png` | `PipocaArt` | `PipocaActor` + `character.pipoca.*` | COMPLETE |
 | Will | `WILL_MASTER_APPROVED.png` | `WillArt` | `WillActor` + `character.will.*` | COMPLETE |
-| Lyra | `LYRA_MASTER_APPROVED.png` | `LyraArt` | `LyraActor` + `character.lyra.*` | APPROVED / PENDING MAIN INTEGRATION VERIFICATION |
+| Lyra | `LYRA_MASTER_APPROVED.png` | `LyraArt` | `LyraActor` + `character.lyra.*` | COMPLETE |
 
 ## Binding classification
 
@@ -46,7 +48,7 @@ They are not automatically runtime sprites and must not be replaced by the curre
 
 ### Current code-drawn character/pet art
 
-`MaitteFigure`, `BurpeeArt`, `PipocaArt`, `WillArt`, and planned/integration-approved `LyraArt` are:
+`MaitteFigure`, `BurpeeArt`, `PipocaArt`, `WillArt`, and `LyraArt` are:
 
 **TECHNICAL / CONCEPT RUNTIME SCAFFOLDS.**
 
@@ -84,9 +86,9 @@ Companions use the shared five-state contract:
 
 Identity/personality differentiation is expressed through visual acting, not through separate domain contracts per pet.
 
-## Named-companion dispatch end-state
+## Named-companion dispatch end-state — VERIFIED
 
-After M5 is verified on `main`, `CompanionActor` must resolve all four named pets specifically:
+`CompanionActor` resolves all four named pets specifically:
 
 - `burpee -> BurpeeActor`;
 - `pipoca -> PipocaActor`;
@@ -99,13 +101,13 @@ The generic `character.companion` / `CompanionArt` path remains a **technical gr
 - unknown pet id;
 - future/unconfigured ids.
 
-No currently named canonical companion should require the generic fallback after Step 2B closure.
+No currently named canonical companion requires the generic fallback after Step 2B closure.
 
-## Companion viewport end-state
+## Companion viewport end-state — VERIFIED
 
 Per-pet framing remains presentation-owned.
 
-After M5, the resolver must use the scaffold-owned boxes:
+The resolver uses the scaffold-owned boxes:
 
 - `BURPEE_BOX`;
 - `PIPOCA_BOX`;
@@ -129,19 +131,20 @@ Binding replacement direction:
 
 `approved Character Master -> reviewed production pose/state variant -> production export -> existing logical key -> Actor -> scene`
 
-## Closure acceptance criteria
+## Closure acceptance criteria — VERIFIED
 
-Step 2B becomes **COMPLETE** only when all of the following are verified on `main`:
+Step 2B is **COMPLETE** because all closure checks were verified on `main`:
 
-1. all five canonical Character Masters are present and explicitly approved;
+1. all five canonical Character Masters are present under their canonical reference folders;
 2. Maittê and all four companions have stable presentation seams;
 3. the four named companions resolve through their own Actor paths;
 4. generic companion fallback is reserved for unknown/absent/future ids;
 5. per-pet viewport resolution includes all four companions;
 6. shared companion acting-state contract remains unchanged;
-7. protected gameplay/domain/evaluation/persistence/content layers were not modified merely to integrate character presentation;
-8. M5 Lyra integration is present on `main` and its approved tests/validation are not lost during integration;
-9. final authored art remains explicitly classified as a separate production gap rather than silently treating scaffolds as final.
+7. the externally audited M5 patch was reconstructed byte-for-byte from SHA-256 `d5d06e200b5ded16d4034d43541ce5d0222d0ed0ab85029a81f5d22e1693a5a3` before integration;
+8. the M5 integration gate verified the exact 13-file source/test scope and zero changes under protected `src/game/domain`, `src/game/evaluation`, `src/game/persistence`, `src/game/state`, and `src/game/content` paths;
+9. the integration validation passed the full test suite and `tsc --noEmit` before the source-only branch commit;
+10. final authored art remains explicitly classified as a separate production gap rather than silently treating scaffolds as final.
 
 ## Next gate after closure
 
