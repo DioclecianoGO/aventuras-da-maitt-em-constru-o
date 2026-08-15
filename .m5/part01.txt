@@ -1,0 +1,169 @@
+nd controlled: `idle` calm
++ *    attentive presence, `speak` measured/composed, `watch` focused close
++ *    observation, `success-reaction` quiet satisfied approval (not
++ *    exuberant), `retry-reaction` thoughtful/analytical head-tilt, never
++ *    sad/punitive.
++ *
++ * The companion NEVER owns the instructional sentence, never evaluates and
++ * is never bound to a subject or skill. It renders the state it is given.
++ * This scaffold does NOT solve or persist restoration state — there is no
++ * `restored` prop and no per-region opacity gating, matching the other
++ * companion scaffolds' current (also region-free) state exactly.
++ *
++ * Drawn in a box roughly x -98..100, y -123..35, ground line at y = 30 —
++ * the same general "adult cat" scale family as WILL_BOX, deliberately given
++ * its own distinct numeric footprint rather than an identical copy.
++ */
++import { INK, INK_SOFT, PAPER_DEEP } from "@/assets/game/ink";
++import type { CompanionActingState } from "@/visual/character/acting";
++
++const PAPER = "var(--paper)";
++const INK_FAINT = "var(--ink-faint)";
++const EYE_OLIVE = "oklch(0.72 0.13 125)";
++const NOSE_PINK = "oklch(0.75 0.09 15)";
++const COAT_ORANGE = "oklch(0.72 0.14 55)";
++const COAT_BLACK = "oklch(0.28 0.02 40)";
++
++type Pose = {
++  headRotate: number;
++  headX: number;
++  headY: number;
++  earNearTip: string;
++  earFarTip: string;
++  tail: string;
++  tailClass?: string;
++  bodyClass?: string;
++  eyes: "open" | "squint" | "soft";
++  mouth: "closed" | "smile" | "open";
++  brow: number;
++};
++
++const POSES: Record<CompanionActingState, Pose> = {
++  idle: {
++    headRotate: 0,
++    headX: 0,
++    headY: 0,
++    earNearTip: "-30 -104",
++    earFarTip: "4 -108",
++    tail: "M30 -14 C 46 -6, 54 10, 46 24 C 40 34, 26 34, 14 28 C 8 25, 6 20, 10 18",
++    bodyClass: "pet-breathe",
++    eyes: "open",
++    mouth: "closed",
++    brow: 0,
++  },
++  speak: {
++    headRotate: -5,
++    headX: -1,
++    headY: -1,
++    earNearTip: "-31 -106",
++    earFarTip: "5 -110",
++    tail: "M30 -14 C 44 -22, 52 -34, 48 -48 C 46 -55, 39 -58, 34 -53 C 31 -50, 32 -46, 37 -44",
++    bodyClass: "pet-speak",
++    eyes: "open",
++    mouth: "open",
++    brow: -1,
++  },
++  watch: {
++    headRotate: 9,
++    headX: 3,
++    headY: 1,
++    earNearTip: "-28 -102",
++    earFarTip: "3 -106",
++    tail: "M30 -14 C 44 -10, 52 0, 48 12 C 45 20, 35 22, 27 18",
++    eyes: "soft",
++    mouth: "closed",
++    brow: -2,
++  },
++  "success-reaction": {
++    headRotate: -8,
++    headX: -1,
++    headY: -4,
++    earNearTip: "-32 -108",
++    earFarTip: "6 -112",
++    tail: "M30 -16 C 40 -30, 52 -48, 48 -66 C 46 -74, 38 -78, 32 -72 C 29 -68, 30 -63, 36 -61",
++    tailClass: "pet-tail-wag",
++    bodyClass: "pet-hop",
++    eyes: "squint",
++    mouth: "smile",
++    brow: -3,
++  },
++  "retry-reaction": {
++    headRotate: 13,
++    headX: 4,
++    headY: 2,
++    earNearTip: "-26 -98",
++    earFarTip: "2 -102",
++    tail: "M30 -14 C 42 -6, 48 6, 41 16 C 36 22, 27 22, 21 17",
++    eyes: "soft",
++    mouth: "closed",
++    brow: 2,
++  },
++};
++
++function Eyes({ kind }: { kind: Pose["eyes"] }) {
++  if (kind === "squint") {
++    return (
++      <path
++        d="M-24 -74 q 6 -5 11 0 M-11 -74 q 6 -5 11 0"
++        stroke={INK}
++        strokeWidth="2.4"
++        fill="none"
++      />
++    );
++  }
++  const ry = kind === "soft" ? 4.4 : 5.4;
++  return (
++    <g>
++      {/* green/olive eyes, grounded in the approved master */}
++      <ellipse cx="-19" cy="-74" rx="6.4" ry={ry} fill={EYE_OLIVE} stroke={INK} strokeWidth="1.8" />
++      <ellipse cx="-6" cy="-75" rx="6.4" ry={ry} fill={EYE_OLIVE} stroke={INK} strokeWidth="1.8" />
++      <ellipse cx="-19" cy="-74" rx="1.4" ry={ry * 0.75} fill={INK} />
++      <ellipse cx="-6" cy="-75" rx="1.4" ry={ry * 0.75} fill={INK} />
++    </g>
++  );
++}
++
++function Mouth({ kind }: { kind: Pose["mouth"] }) {
++  if (kind === "open") {
++    return (
++      <ellipse cx="-19" cy="-49" rx="4.2" ry="5.4" fill={INK_SOFT} stroke={INK} strokeWidth="2" />
++    );
++  }
++  if (kind === "smile") {
++    return (
++      <path d="M-27 -52 q 4 6 8 0 M-19 -52 q 4 6 8 0" stroke={INK} strokeWidth="2.2" fill="none" />
++    );
++  }
++  return (
++    <path d="M-27 -52 q 4 4 8 0 M-19 -52 q 4 4 8 0" stroke={INK} strokeWidth="2" fill="none" />
++  );
++}
++
++export function LyraArt({
++  state = "idle",
++  animated = true,
++}: {
++  state?: CompanionActingState;
++  animated?: boolean;
++}) {
++  const pose = POSES[state];
++
++  return (
++    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
++      {/* ground contact shadow */}
++      <ellipse
++        cx="6"
++        cy="30"
++        rx="56"
++        ry="8"
++        fill={PAPER_DEEP}
++        stroke={INK_FAINT}
++        strokeWidth="1.8"
++      />
++
++      <g
++        className={animated ? pose.bodyClass : undefined}
++        style={{ transformBox: "fill-box", transformOrigin: "center bottom" }}
++      >
++        {/* ---- far-side legs, slim (leaner cat build) ---- */}
++        <path d="M-8 -6 C -10 8, -10 20, 
