@@ -61,10 +61,18 @@
  * region-free). Same "not eligible for naive raster promotion" caveat
  * applies once a companion restoration/stolen-color contract is designed.
  *
+ * Step 2B-M5: `character.lyra.*` follows the identical pattern, resolved by
+ * `LyraActor`, pointing at the new concept scaffold `LyraArt` (also
+ * region-free). Lyra is the last currently-named companion — after this
+ * entry, every named pet (Burpee, Pipoca, Will, Lyra) has its own per-state
+ * keys, and `"character.companion"` below is reachable only by an unknown,
+ * absent, or future/not-yet-named pet id, not by any pet this codebase
+ * currently names.
+ *
  * The generic `"character.companion"` key is unchanged and still resolves to
  * `CompanionArt` directly (imported below, exactly as before) — it remains
- * the real fallback for any configured pet without its own per-state keys
- * yet (Lyra today). `BurpeeActor`/`PipocaActor`/`WillActor`/`CompanionActor`
+ * the real fallback for unknown, absent, or future/unconfigured pet ids.
+ * `BurpeeActor`/`PipocaActor`/`WillActor`/`LyraActor`/`CompanionActor`
  * (`src/visual/character/`) never import `CompanionArt` themselves; they
  * only ever reach it indirectly through this registry, which is what keeps
  * the dependency graph acyclic (this file already imports `CompanionArt`, so
@@ -74,6 +82,7 @@ import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { BurpeeArt } from "@/assets/game/characters/pets/BurpeeArt";
 import { PipocaArt } from "@/assets/game/characters/pets/PipocaArt";
 import { WillArt } from "@/assets/game/characters/pets/WillArt";
+import { LyraArt } from "@/assets/game/characters/pets/LyraArt";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
 import { DunasDouradasColor, DunasDouradasInk } from "@/assets/game/board/DunasDouradasArt";
 import { PraiaDasConchasColor, PraiaDasConchasInk } from "@/assets/game/board/PraiaDasConchasArt";
@@ -144,6 +153,11 @@ const registry: Record<string, IllustrationAsset> = {
   "character.will.watch": vectorAsset(WillArt),
   "character.will.success-reaction": vectorAsset(WillArt),
   "character.will.retry-reaction": vectorAsset(WillArt),
+  "character.lyra.idle": vectorAsset(LyraArt),
+  "character.lyra.speak": vectorAsset(LyraArt),
+  "character.lyra.watch": vectorAsset(LyraArt),
+  "character.lyra.success-reaction": vectorAsset(LyraArt),
+  "character.lyra.retry-reaction": vectorAsset(LyraArt),
   "character.companion": vectorAsset(CompanionArt),
   "stage-skin.desert": vectorAsset(DesertStageSkinArt),
   "stage-skin.coast": vectorAsset(CoastStageSkinArt),

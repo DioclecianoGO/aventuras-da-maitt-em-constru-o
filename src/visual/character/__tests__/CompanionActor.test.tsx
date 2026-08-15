@@ -56,12 +56,33 @@ describe("CompanionActor dispatch", () => {
     expect(container.querySelector('[data-testid="resolved-character.pipoca.speak"]')).toBeNull();
   });
 
-  it("a non-Burpee-non-Pipoca-non-Will petId takes the generic character.companion fallback seam", () => {
-    const { container } = render(<CompanionActor petId="lyra" state="idle" animated={true} />);
+  it('petId="lyra" takes the Lyra presentation seam (character.lyra.<state>)', () => {
+    const { container } = render(<CompanionActor petId="lyra" state="speak" animated={false} />);
+    expect(container.querySelector('[data-testid="resolved-character.lyra.speak"]')).toBeTruthy();
+    // The generic fallback key must NOT be the one resolved for Lyra.
+    expect(container.querySelector('[data-testid="resolved-character.companion"]')).toBeNull();
+    // Nor the Burpee/Pipoca/Will keys.
+    expect(container.querySelector('[data-testid="resolved-character.burpee.speak"]')).toBeNull();
+    expect(container.querySelector('[data-testid="resolved-character.pipoca.speak"]')).toBeNull();
+    expect(container.querySelector('[data-testid="resolved-character.will.speak"]')).toBeNull();
+  });
+
+  it("no named/canonical pet (burpee, pipoca, will, lyra) resolves through the generic fallback", () => {
+    for (const petId of ["burpee", "pipoca", "will", "lyra"]) {
+      const { container, unmount } = render(<CompanionActor petId={petId} state="idle" />);
+      expect(container.querySelector('[data-testid="resolved-character.companion"]')).toBeNull();
+      unmount();
+    }
+  });
+
+  it("a deliberately-unconfigured petId takes the generic character.companion fallback seam", () => {
+    const { container } = render(
+      <CompanionActor petId="unconfigured-pet" state="idle" animated={true} />,
+    );
     const resolved = container.querySelector('[data-testid="resolved-character.companion"]');
     expect(resolved).toBeTruthy();
     // petId/state/animated still reach whatever the fallback key wraps.
-    expect(resolved?.getAttribute("data-petid")).toBe("lyra");
+    expect(resolved?.getAttribute("data-petid")).toBe("unconfigured-pet");
     expect(resolved?.getAttribute("data-state")).toBe("idle");
     expect(resolved?.getAttribute("data-animated")).toBe("true");
   });

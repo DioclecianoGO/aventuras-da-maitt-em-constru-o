@@ -14,6 +14,7 @@ import { CompanionArt } from "@/assets/game/characters/CompanionArt";
 import { BurpeeArt } from "@/assets/game/characters/pets/BurpeeArt";
 import { PipocaArt } from "@/assets/game/characters/pets/PipocaArt";
 import { WillArt } from "@/assets/game/characters/pets/WillArt";
+import { LyraArt } from "@/assets/game/characters/pets/LyraArt";
 
 describe("CompanionActor scaffold passthrough (unmocked)", () => {
   it("Burpee path renders identically to calling BurpeeArt directly", () => {
@@ -58,15 +59,29 @@ describe("CompanionActor scaffold passthrough (unmocked)", () => {
     expect(viaActor.querySelector("svg")?.innerHTML).toBe(direct.querySelector("svg")?.innerHTML);
   });
 
-  it("fallback path renders identically to calling CompanionArt directly for a non-Burpee/Pipoca/Will pet", () => {
+  it("Lyra path renders identically to calling LyraArt directly", () => {
     const { container: viaActor } = render(
       <svg>
-        <CompanionActor petId="lyra" state="idle" animated={false} />
+        <CompanionActor petId="lyra" state="success-reaction" animated={false} />
       </svg>,
     );
     const { container: direct } = render(
       <svg>
-        <CompanionArt petId="lyra" state="idle" animated={false} />
+        <LyraArt state="success-reaction" animated={false} />
+      </svg>,
+    );
+    expect(viaActor.querySelector("svg")?.innerHTML).toBe(direct.querySelector("svg")?.innerHTML);
+  });
+
+  it("fallback path renders identically to calling CompanionArt directly for a deliberately-unconfigured pet", () => {
+    const { container: viaActor } = render(
+      <svg>
+        <CompanionActor petId="unconfigured-pet" state="idle" animated={false} />
+      </svg>,
+    );
+    const { container: direct } = render(
+      <svg>
+        <CompanionArt petId="unconfigured-pet" state="idle" animated={false} />
       </svg>,
     );
     expect(viaActor.querySelector("svg")?.innerHTML).toBe(direct.querySelector("svg")?.innerHTML);
