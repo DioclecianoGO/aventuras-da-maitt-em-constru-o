@@ -1,0 +1,87 @@
+From 3c41975076ddbf0cf6bbdc6dc790bfced1b78172 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sat, 15 Aug 2026 09:43:10 +0000
+Subject: [PATCH] feat: add Lyra companion actor seam, completing Step 2B
+ named-pet coverage
+
+---
+ src/assets/game/characters/pets/LyraArt.tsx   | 427 ++++++++++++++++++
+ src/visual/__tests__/assetRegistry.test.ts    |  27 +-
+ src/visual/assetRegistry.tsx                  |  18 +-
+ src/visual/character/CompanionActor.tsx       |  23 +-
+ src/visual/character/LyraActor.tsx            |  35 ++
+ ...CompanionActor.scaffold-unchanged.test.tsx |  21 +-
+ .../__tests__/CompanionActor.test.tsx         |  27 +-
+ .../LyraActor.scaffold-unchanged.test.tsx     |  35 ++
+ .../character/__tests__/LyraActor.test.tsx    |  59 +++
+ .../__tests__/companionViewport.test.ts       |  21 +-
+ .../__tests__/dependency-direction.test.ts    |  23 +-
+ src/visual/character/companionViewport.ts     |  17 +-
+ ...allengeStageShell.companion-actor.test.tsx |  43 +-
+ 13 files changed, 732 insertions(+), 44 deletions(-)
+ create mode 100644 src/assets/game/characters/pets/LyraArt.tsx
+ create mode 100644 src/visual/character/LyraActor.tsx
+ create mode 100644 src/visual/character/__tests__/LyraActor.scaffold-unchanged.test.tsx
+ create mode 100644 src/visual/character/__tests__/LyraActor.test.tsx
+
+diff --git a/src/assets/game/characters/pets/LyraArt.tsx b/src/assets/game/characters/pets/LyraArt.tsx
+new file mode 100644
+index 0000000..3e61117
+--- /dev/null
++++ b/src/assets/game/characters/pets/LyraArt.tsx
+@@ -0,0 +1,427 @@
++/**
++ * TECHNICAL / CONCEPT RUNTIME SCAFFOLD — Lyra (Step 2B-M5).
++ * NOT final authored production art. This is an interim, hand-authored
++ * inline-SVG scaffold — the same status BurpeeArt.tsx, PipocaArt.tsx and
++ * WillArt.tsx already carry — built only so `character.lyra.<state>` has a
++ * real, identity-bearing component to resolve to, per the Step 2B-M5 build
++ * authorization. Final authored Lyra production art remains a named
++ * `PRODUCTION-ASSET-GAP`; see
++ * references/visual/16-lyra-character-master/README.md.
++ *
++ * Spec: docs/narrative/PET-COMPANIONS.md, docs/design/CHARACTER-ART.md,
++ *       references/visual/16-lyra-character-master/README.md,
++ *       references/visual/16-lyra-character-master/LYRA_MASTER_APPROVED.png.
++ *
++ * The architectural PATTERN mirrors WillArt.tsx (a POSES table keyed by
++ * CompanionActingState, small Eyes/Mouth sub-components, a ground-contact
++ * shadow, animated body/tail groups, a head transform group) — including its
++ * corrected tail-decoration technique (a dashed stroke drawn over the SAME
++ * `pose.tail` path data, so decoration is mathematically tied to the actual
++ * per-state geometry instead of a second, independently-authored coordinate
++ * set that can drift out of alignment across poses, as WillArt's original
++ * tail-stripe marks once did before that bug was fixed). That is a reused
++ * TECHNIQUE, not anatomy — every identity-bearing shape below is Lyra-
++ * specific, drawn from the approved master and its README, not copied-and-
++ * recolored Will (or any other pet) geometry:
++ *
++ *  - clearly feline anatomy/silhouette, medium adult-cat proportions —
++ *    naturally similar in general build to Will (both adult domestic cats),
++ *    which is expected and not an anatomical invention to avoid — identity
++ *    differentiation comes from face/coat markings, not from artificially
++ *    distinct ear/eye shapes;
++ *  - ASYMMETRIC tricolor face — predominantly orange on the (viewer's) left
++ *    side, a strong black area over the crown extending down across the
++ *    right eye/cheek, and a white blaze running down the center of the face
++ *    into the muzzle. This asymmetry is the primary Lyra-specific identity
++ *    anchor and is deliberately NOT mirrored/symmetric — a generic
++ *    left-right-symmetric "calico" treatment would violate the README's own
++ *    explicit "do NOT simplify into a generic calico pattern" lock;
++ *  - individually-distributed orange-and-black torso patches (not a
++ *    repeating/symmetric pattern) over a white base, continuing the same
++ *    "individual distribution, not a generic pattern" discipline to the
++ *    body;
++ *  - white blaze/muzzle continuing into a broad white chest/bib, and white
++ *    paws;
++ *  - green/olive-green eyes — grounded in the master, distinct in exact hue
++ *    from Will's eyes without inventing an artificial difference;
++ *  - pink nose; large upright triangular ears with pink interior;
++ *  - long white whiskers;
++ *  - a long tricolor tail with individually-distributed orange/black ring
++ *    and patch marks (not a uniform tabby-ring convention) — carried up and
++ *    curled at the tip, grounded in the approved master rather than a
++ *    generic calico-tail convention;
++ *  - calm / observant / detail-attentive / precise / quietly analytical
++ *    acting flavor per PET-COMPANIONS.md and the README's own "Acting
++ *    direction" — poses read as composed a
