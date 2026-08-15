@@ -1,16 +1,16 @@
 # Lyra Character Master
 
-Status: PROVISIONAL — CHARACTER MASTER CANDIDATE PENDING EXPLICIT APPROVAL
+Status: DECIDED — APPROVED CHARACTER IDENTITY MASTER
 
 ## Purpose
 
-This folder will hold the approved identity direction and supporting material for Lyra, the tricolor mixed-breed cat companion in Aventuras da Maittê.
+This folder holds the approved identity direction and supporting material for Lyra, the tricolor mixed-breed cat companion in Aventuras da Maittê.
 
-The Character Master will become the identity authority for Lyra after explicit visual approval. It is not automatically a runtime sprite and must not be referenced directly by game/domain code.
+The Character Master is the identity authority for Lyra. It is not automatically a runtime sprite and must not be referenced directly by game/domain code.
 
 ## Canonical approved filename
 
-After explicit visual approval, save the approved master as:
+The approved master must be stored as:
 
 `LYRA_MASTER_APPROVED.png`
 
@@ -20,19 +20,22 @@ Upload the binary already under this exact filename. Do not use a text-editor re
 
 Lyra must remain recognizably the same individual represented by the approved master and real-life reference photos.
 
-Key identity traits to preserve from the reference set:
+Key identity traits to preserve:
 
 - tricolor mixed-breed domestic cat;
-- real individual coat distribution rather than a generic calico pattern;
-- individual face markings;
-- face shape and muzzle;
-- ear shape and placement;
-- eye shape/color when visible;
-- body proportions;
-- tail shape/carriage;
-- recognizable posture and silhouette;
+- individual orange / black / white coat distribution rather than a generic calico pattern;
+- predominantly orange left side of the face with dark markings toward the forehead/crown;
+- strong black patch on the right side of the face around the eye/cheek region;
+- white blaze/muzzle continuing into a broad white chest/bib;
+- orange-and-black body patches with visible individual distribution;
+- green to olive-green eyes;
+- pink nose;
+- large upright triangular ears;
+- long white whiskers;
+- medium adult-cat proportions with a clearly feline silhouette;
+- long expressive tricolor tail; exact production markings/carriage must remain grounded in approved identity references rather than a generic calico convention;
 - calm, observant, detail-attentive expression;
-- clearly feline anatomy and silhouette.
+- precise / quietly analytical acting personality.
 
 ## Style direction
 
@@ -43,22 +46,32 @@ Key identity traits to preserve from the reference set:
 - readable at tablet scale;
 - no direct imitation of any named artist.
 
+## Acting direction
+
+Lyra uses the shared companion acting-state vocabulary when integrated at runtime:
+
+- `idle`;
+- `speak`;
+- `watch`;
+- `success-reaction`;
+- `retry-reaction`.
+
+Variants must derive from the same approved identity rather than redesigning her per pose.
+
 ## Governance
 
-Until explicit user approval of the final binary:
-
-- identity direction = PROVISIONAL;
-- final approved binary = pending;
-- `LYRA_MASTER_APPROVED.png` = reserved canonical filename;
-- runtime scaffold / `LyraArt` = separate Step 2B-M5 construction task after master approval;
+- identity direction = DECIDED;
+- `LYRA_MASTER_APPROVED.png` = PRIMARY LYRA CHARACTER MASTER / IDENTITY NORTH STAR;
+- the approved master is an identity reference, not a gameplay/domain dependency and not automatically a runtime sprite;
+- arbitrary redesign of Lyra's species/anatomy, facial model, tricolor distribution, face markings, ear shape, proportions or tail identity is GENERATIVE_FORBIDDEN;
+- runtime scaffold / `LyraArt` = separate Step 2B-M5 construction task;
 - future logical runtime namespace = `character.lyra.*`;
-- final authored production art remains a separate `PRODUCTION-ASSET-GAP` until produced and approved;
-- Step 2C is not authorized by creating this folder.
+- final authored Lyra production art remains a separate `PRODUCTION-ASSET-GAP` until produced and approved;
+- Step 2C is not authorized by this approval.
 
-After approval, this README must be updated to:
+## Approval record
 
-`DECIDED — APPROVED CHARACTER IDENTITY MASTER`
-
-and the canonical binary must remain:
-
-`LYRA_MASTER_APPROVED.png`
+- Approval date: 2026-08-15.
+- The user explicitly approved the generated Lyra Character Master direction based on the preferred illustrated reference and real-life Lyra photograph.
+- The canonical binary is to be uploaded under the exact filename `LYRA_MASTER_APPROVED.png`.
+- Status: DECIDED — APPROVED CHARACTER IDENTITY MASTER.
