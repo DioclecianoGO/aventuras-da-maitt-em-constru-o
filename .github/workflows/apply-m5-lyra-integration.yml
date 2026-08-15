@@ -10,82 +10,18 @@ permissions:
 
 jobs:
   apply:
-    if: ${{ !contains(github.event.head_commit.message, '[m5-integrated]') }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout integration branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Verify transport and reconstruct audited patch
+      - name: Diagnose transport hashes
         shell: bash
         run: |
           set -euo pipefail
-          git fetch origin main
-          test "$(git rev-parse origin/main)" = "b073bebf6108004436c11604d33517d4860ba676"
-
-          echo "5ae2cb96a64b5e70ce65b50cf1cdd06ff34700c91da79aea80a14550004134aa  .m5/part00.txt" | sha256sum -c -
-          echo "4ed6e4be7706ac220bab9a23fac767286ed6efb4816afa01f192e8f7be62d508  .m5/part01.txt" | sha256sum -c -
-          echo "b60b9144d17a5f73a0c8cc647c93e2249e18a7feccdf936ed56b85545bdb0eea  .m5/part02.txt" | sha256sum -c -
-          echo "5e8677f39d34a96f2a65faaf173d1ae21f27bcbe49f061edb2f4fd9f6bce9680  .m5/part03.txt" | sha256sum -c -
-          echo "d54ee1e0b00d96992924046ad4710084b6af828ffb91e628fce1831afd00c198  .m5/part04.txt" | sha256sum -c -
-          echo "6494ff0667c1b54b78f9d85e6a07aa0e2f5cb7ea4f47e76c90f8857f59a169bd  .m5/part05.txt" | sha256sum -c -
-          echo "6944ec870cf3c5466c9029b9f748e6f082ac9924e1f8e7c3cb0fcc7971a28f00  .m5/part06.txt" | sha256sum -c -
-          echo "df811a5f4cb8f00760903fed3803a412bfb852216930050390c0ebc8a0d830e5  .m5/part07.txt" | sha256sum -c -
-          echo "3de4507574c9b6b3909768acacef556aebd7a26f8e3f53139b4aaa0ee510b33a  .m5/part08.txt" | sha256sum -c -
-          echo "6ff1b5fa926d4e439f9b9bfbd3a605a0b17d5292a82cc36a780a84d863405ab3  .m5/part09.txt" | sha256sum -c -
-
+          sha256sum .m5/part*.txt
+          wc -c .m5/part*.txt
           cat .m5/part00.txt .m5/part01.txt .m5/part02.txt .m5/part03.txt .m5/part04.txt .m5/part05.txt .m5/part06.txt .m5/part07.txt .m5/part08.txt .m5/part09.txt > /tmp/step2bm5.patch
-          echo "d5d06e200b5ded16d4034d43541ce5d0222d0ed0ab85029a81f5d22e1693a5a3  /tmp/step2bm5.patch" | sha256sum -c -
-          git apply --check /tmp/step2bm5.patch
-          git apply /tmp/step2bm5.patch
-
-      - name: Remove transport artifacts and validate exact source scope
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf .m5
-          rm -f .github/workflows/apply-m5-lyra-integration.yml
-
-          cat > /tmp/expected.txt <<'EOF'
-          src/assets/game/characters/pets/LyraArt.tsx
-          src/visual/__tests__/assetRegistry.test.ts
-          src/visual/assetRegistry.tsx
-          src/visual/character/CompanionActor.tsx
-          src/visual/character/LyraActor.tsx
-          src/visual/character/__tests__/CompanionActor.scaffold-unchanged.test.tsx
-          src/visual/character/__tests__/CompanionActor.test.tsx
-          src/visual/character/__tests__/LyraActor.scaffold-unchanged.test.tsx
-          src/visual/character/__tests__/LyraActor.test.tsx
-          src/visual/character/__tests__/companionViewport.test.ts
-          src/visual/character/__tests__/dependency-direction.test.ts
-          src/visual/character/companionViewport.ts
-          src/visual/stage/__tests__/ChallengeStageShell.companion-actor.test.tsx
-          EOF
-          sed -i 's/^          //' /tmp/expected.txt
-          sort -o /tmp/expected.txt /tmp/expected.txt
-          git diff --name-only origin/main | sort > /tmp/actual.txt
-          diff -u /tmp/expected.txt /tmp/actual.txt
-          test -z "$(git diff --name-only origin/main -- src/game/domain src/game/evaluation src/game/persistence src/game/state src/game/content)"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npx vitest run
-
-      - name: TypeScript check
-        run: npx tsc --noEmit
-
-      - name: Commit source-only integrated result
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --cached --name-only origin/main | sort > /tmp/final.txt
-          diff -u /tmp/expected.txt /tmp/final.txt
-          git commit -m "feat: add Lyra companion actor seam [m5-integrated]"
-          git push origin HEAD:feat/step2b-m5-lyra-integration
+          sha256sum /tmp/step2bm5.patch
+          wc -c /tmp/step2bm5.patch
+          exit 1
