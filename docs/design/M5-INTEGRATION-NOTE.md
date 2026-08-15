@@ -1,1 +1,0 @@
-This file should never be committed; placeholder used to verify branch write path.
