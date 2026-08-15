@@ -41,6 +41,11 @@ describe("asset registry", () => {
       "character.will.watch",
       "character.will.success-reaction",
       "character.will.retry-reaction",
+      "character.lyra.idle",
+      "character.lyra.speak",
+      "character.lyra.watch",
+      "character.lyra.success-reaction",
+      "character.lyra.retry-reaction",
       "character.companion",
       "stage-skin.desert",
       "stage-skin.coast",
@@ -89,8 +94,7 @@ describe("asset registry", () => {
     for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
       expect(hasAsset(`character.pipoca.${state}`)).toBe(true);
     }
-    // character.companion remains the real fallback for pets without
-    // per-state keys yet (Will, Lyra today).
+    // character.companion remains the real fallback for unnamed/unconfigured pets.
     expect(hasAsset("character.companion")).toBe(true);
     // Burpee's keys are unaffected by Pipoca's addition.
     for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
@@ -102,13 +106,28 @@ describe("asset registry", () => {
     for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
       expect(hasAsset(`character.will.${state}`)).toBe(true);
     }
-    // character.companion remains the real fallback for pets without
-    // per-state keys yet (Lyra today).
+    // character.companion remains the real fallback for unnamed/unconfigured pets.
     expect(hasAsset("character.companion")).toBe(true);
     // Burpee's and Pipoca's keys are unaffected by Will's addition.
     for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
       expect(hasAsset(`character.burpee.${state}`)).toBe(true);
       expect(hasAsset(`character.pipoca.${state}`)).toBe(true);
+    }
+  });
+
+  it("Step 2B-M5: exposes all five Lyra per-state keys and keeps the generic companion fallback", () => {
+    for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
+      expect(hasAsset(`character.lyra.${state}`)).toBe(true);
+    }
+    // character.companion remains the real fallback for unknown/absent/
+    // future-unconfigured pet ids — as of M5, no currently-named pet
+    // (Burpee, Pipoca, Will, Lyra) relies on it anymore.
+    expect(hasAsset("character.companion")).toBe(true);
+    // Burpee's, Pipoca's and Will's keys are unaffected by Lyra's addition.
+    for (const state of ["idle", "speak", "watch", "success-reaction", "retry-reaction"]) {
+      expect(hasAsset(`character.burpee.${state}`)).toBe(true);
+      expect(hasAsset(`character.pipoca.${state}`)).toBe(true);
+      expect(hasAsset(`character.will.${state}`)).toBe(true);
     }
   });
 });

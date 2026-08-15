@@ -1,13 +1,13 @@
 /**
- * Dependency-direction guard (Step 2B-M2, extended Step 2B-M3/M4).
+ * Dependency-direction guard (Step 2B-M2, extended Step 2B-M3/M4/M5).
  * Spec: docs/design/VISUAL-ASSET-CONTRACT.md.
  *
  * `assetRegistry.tsx` already imports `CompanionArt`. If `CompanionArt` ever
  * imported anything that imports `assetRegistry` (BurpeeActor, PipocaActor,
- * WillActor, CompanionActor, or assetRegistry/Illustration directly), that
- * would form an import cycle. This is a static source-text check rather than
- * a runtime one on purpose: the whole point is to catch the mistake before
- * it can ever execute.
+ * WillActor, LyraActor, CompanionActor, or assetRegistry/Illustration
+ * directly), that would form an import cycle. This is a static source-text
+ * check rather than a runtime one on purpose: the whole point is to catch
+ * the mistake before it can ever execute.
  */
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -27,6 +27,7 @@ describe("CompanionArt stays asset-layer code (no upward imports)", () => {
     "@/visual/character/BurpeeActor",
     "@/visual/character/PipocaActor",
     "@/visual/character/WillActor",
+    "@/visual/character/LyraActor",
     "@/visual/character/CompanionActor",
     "@/visual/character/companionViewport",
     "@/visual/assetRegistry",
@@ -69,6 +70,18 @@ describe("WillActor stays below CompanionActor (no upward import back to it)", (
 
   it("does not import CompanionArt directly", () => {
     expect(willActorSource).not.toContain("CompanionArt");
+  });
+});
+
+describe("LyraActor stays below CompanionActor (no upward import back to it)", () => {
+  const lyraActorSource = read("../LyraActor.tsx");
+
+  it("does not import CompanionActor", () => {
+    expect(lyraActorSource).not.toContain("@/visual/character/CompanionActor");
+  });
+
+  it("does not import CompanionArt directly", () => {
+    expect(lyraActorSource).not.toContain("CompanionArt");
   });
 });
 
