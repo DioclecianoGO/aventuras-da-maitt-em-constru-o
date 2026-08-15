@@ -65,9 +65,11 @@ jobs:
           EOF
           sed -i 's/^          //' /tmp/expected.txt
           sort -o /tmp/expected.txt /tmp/expected.txt
-          git diff --name-only origin/main | sort > /tmp/actual.txt
+
+          git add -A
+          git diff --cached --name-only origin/main | sort > /tmp/actual.txt
           diff -u /tmp/expected.txt /tmp/actual.txt
-          test -z "$(git diff --name-only origin/main -- src/game/domain src/game/evaluation src/game/persistence src/game/state src/game/content)"
+          test -z "$(git diff --cached --name-only origin/main -- src/game/domain src/game/evaluation src/game/persistence src/game/state src/game/content)"
 
       - name: Install dependencies
         run: npm ci
@@ -84,7 +86,6 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
           git diff --cached --name-only origin/main | sort > /tmp/final.txt
           diff -u /tmp/expected.txt /tmp/final.txt
           git commit -m "feat: add Lyra companion actor seam [m5-integrated]"
