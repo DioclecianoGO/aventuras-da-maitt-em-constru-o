@@ -1,0 +1,103 @@
+ated={false} />
++      </svg>,
++    );
++    expect(viaActor.querySelector("svg")?.innerHTML).toBe(direct.querySelector("svg")?.innerHTML);
++  });
++
++  it("fallback path renders identically to calling CompanionArt directly for a deliberately-unconfigured pet", () => {
++    const { container: viaActor } = render(
++      <svg>
++        <CompanionActor petId="unconfigured-pet" state="idle" animated={false} />
++      </svg>,
++    );
++    const { container: direct } = render(
++      <svg>
++        <CompanionArt petId="unconfigured-pet" state="idle" animated={false} />
+       </svg>,
+     );
+     expect(viaActor.querySelector("svg")?.innerHTML).toBe(direct.querySelector("svg")?.innerHTML);
+diff --git a/src/visual/character/__tests__/CompanionActor.test.tsx b/src/visual/character/__tests__/CompanionActor.test.tsx
+index 9570def..0cf5fd8 100644
+--- a/src/visual/character/__tests__/CompanionActor.test.tsx
++++ b/src/visual/character/__tests__/CompanionActor.test.tsx
+@@ -56,12 +56,33 @@ describe("CompanionActor dispatch", () => {
+     expect(container.querySelector('[data-testid="resolved-character.pipoca.speak"]')).toBeNull();
+   });
+ 
+-  it("a non-Burpee-non-Pipoca-non-Will petId takes the generic character.companion fallback seam", () => {
+-    const { container } = render(<CompanionActor petId="lyra" state="idle" animated={true} />);
++  it('petId="lyra" takes the Lyra presentation seam (character.lyra.<state>)', () => {
++    const { container } = render(<CompanionActor petId="lyra" state="speak" animated={false} />);
++    expect(container.querySelector('[data-testid="resolved-character.lyra.speak"]')).toBeTruthy();
++    // The generic fallback key must NOT be the one resolved for Lyra.
++    expect(container.querySelector('[data-testid="resolved-character.companion"]')).toBeNull();
++    // Nor the Burpee/Pipoca/Will keys.
++    expect(container.querySelector('[data-testid="resolved-character.burpee.speak"]')).toBeNull();
++    expect(container.querySelector('[data-testid="resolved-character.pipoca.speak"]')).toBeNull();
++    expect(container.querySelector('[data-testid="resolved-character.will.speak"]')).toBeNull();
++  });
++
++  it("no named/canonical pet (burpee, pipoca, will, lyra) resolves through the generic fallback", () => {
++    for (const petId of ["burpee", "pipoca", "will", "lyra"]) {
++      const { container, unmount } = render(<CompanionActor petId={petId} state="idle" />);
++      expect(container.querySelector('[data-testid="resolved-character.companion"]')).toBeNull();
++      unmount();
++    }
++  });
++
++  it("a deliberately-unconfigured petId takes the generic character.companion fallback seam", () => {
++    const { container } = render(
++      <CompanionActor petId="unconfigured-pet" state="idle" animated={true} />,
++    );
+     const resolved = container.querySelector('[data-testid="resolved-character.companion"]');
+     expect(resolved).toBeTruthy();
+     // petId/state/animated still reach whatever the fallback key wraps.
+-    expect(resolved?.getAttribute("data-petid")).toBe("lyra");
++    expect(resolved?.getAttribute("data-petid")).toBe("unconfigured-pet");
+     expect(resolved?.getAttribute("data-state")).toBe("idle");
+     expect(resolved?.getAttribute("data-animated")).toBe("true");
+   });
+diff --git a/src/visual/character/__tests__/LyraActor.scaffold-unchanged.test.tsx b/src/visual/character/__tests__/LyraActor.scaffold-unchanged.test.tsx
+new file mode 100644
+index 0000000..99bcdf8
+--- /dev/null
++++ b/src/visual/character/__tests__/LyraActor.scaffold-unchanged.test.tsx
+@@ -0,0 +1,35 @@
++/**
++ * LyraActor — current vector scaffold passthrough (Step 2B-M5), REAL
++ * registry, REAL LyraArt. No mocking in this file on purpose: proves
++ * LyraActor's `state`/`animated` still reach LyraArt's own POSES table
++ * unchanged.
++ */
++import { afterEach, describe, expect, it } from "vitest";
++import { cleanup, render } from "@testing-library/react";
++
++afterEach(cleanup);
++
++import { LyraActor } from "@/visual/character/LyraActor";
++
++describe("LyraActor scaffold passthrough (unmocked)", () => {
++  it("forwards state to the underlying figure so the correct pose renders", () => {
++    const { container } = render(
++      <svg>
++        <LyraActor state="speak" animated={false} />
++      </svg>,
++    );
++    // "speak" pose's open-mouth ellipse is unique to that state (only
++    // "speak" uses mouth kind "open").
++    expect(container.querySelector('ellipse[cx="-19"][cy="-49"]')).toBeTruthy();
++  });
++
++  it("renders a different pose for a different state", () => {
++    const { container } = render(
++      <svg>
++        <LyraActor state="idle" animated={false} />
++      </svg>,
++    );
++    // "idle" has a closed mouth — the "speak" open-mouth marker must be absent.
++    expect(container.querySelector('ellipse[cx="-19"][cy="-49"]')).toBeNull();
++  });
++});
+diff --git a/src/visual/character/__tests__/LyraActor.test.tsx b/src/visual/character/__tests__/LyraActor.test.tsx
+new file mode 100644
+index 0000000..5cd9
