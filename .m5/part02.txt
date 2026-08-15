@@ -127,4 +127,4 @@
 +            stroke={INK}
 +            strokeWidth="2.4"
 +          />
-+          {/* black patch — far/right 
++          {/* black patch — far/right
