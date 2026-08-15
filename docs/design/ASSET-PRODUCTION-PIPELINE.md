@@ -72,6 +72,68 @@ Where acting states are required, production assets may be supplied as separate 
 
 The visual target remains stylized storybook/colouring-book illustration with light anime influence and original identity. References guide qualities, not direct copying of a living artist's protected style or a copyrighted character design.
 
+## Character scaffold replacement strategy
+
+**DECIDED:** approved Character Masters, not the current programmatic SVG scaffolds, are the identity authority for future production character art.
+
+The current `MaitteFigure`, `BurpeeArt`, `PipocaArt`, `WillArt` and `LyraArt`-style components are technical/concept scaffolds. Their purpose is to prove runtime concerns such as acting-state vocabulary, logical-key resolution, viewport/framing, animation hooks and scene integration. They are replaceable and may ultimately be removed from the production rendering path.
+
+Production replacement must follow this direction:
+
+`approved Character Master -> reviewed pose/state variant -> production export -> stable character.<id>.<state> key -> Actor -> scene`
+
+The following rules are binding:
+
+- do not ask an implementation/code assistant to recreate the approved watercolor/storybook master by manually expanding JSX/SVG paths and treat that result as production art;
+- do not use the technical scaffold as the identity source of truth when it differs from the approved Character Master;
+- a technical scaffold may be used as a pose/structure/composition reference when useful, but the Character Master remains the identity/style authority;
+- when a new acting pose is required, prefer a controlled edit/variant derived from the approved master over full identity regeneration from prose;
+- preserve approved face/anatomy, proportions, coat/hair markings, clothing/accessories, palette and texture across pose variants unless the relevant lock explicitly permits change;
+- human/product approval remains required before a production variant becomes authoritative;
+- replacing a scaffold with final art should normally change only presentation descriptors/assets behind the existing logical keys, not curriculum, evaluator, persistence or gameplay contracts.
+
+**DECIDED:** visual fidelity is evaluated against the approved Character Master and relevant locks, not against the temporary SVG scaffold. A scaffold can therefore be visually crude yet technically compliant, while a final production asset must meet the approved identity/style bar.
+
+## Production character variant workflow
+
+**DECIDED workflow; exact tools remain PROVISIONAL:**
+
+1. select the approved Character Master and the required acting state/context;
+2. if useful, supply the current scaffold render or another approved sketch only as pose/structure guidance;
+3. generate or edit a candidate while locking identity/style from the Character Master;
+4. review for identity drift, anatomy, markings, texture, silhouette, scale and state readability;
+5. perform localized corrections instead of regenerating unaffected identity regions where practical;
+6. prepare production-ready transparency/layers/exports as required by runtime behavior;
+7. approve the physical production asset explicitly;
+8. replace the concept scaffold behind the existing logical registry key;
+9. run visual and runtime regression checks at the actual target scales.
+
+For an acting state that can be expressed through a small runtime transform without visual degradation, production does not require a unique full-frame illustration merely to satisfy symmetry. Micro-animation such as breathing, blinking, small head/body movement, bounce or independently-layered tail motion may be owned by the application when that preserves the approved illustration quality.
+
+Larger pose/expression changes may use separate authored variants while retaining the same identity model.
+
+## Authoring-tool policy
+
+**DECIDED:** authoring/generation/editing tools are replaceable production tools, not architectural dependencies or sources of truth.
+
+**PROVISIONAL:** exact tool selection should be made through a small visual benchmark against the same approved Character Master and the same requested pose/state. Candidate tools may include image-generation/editing systems, raster editors and vector editors already available to the project.
+
+The benchmark should compare at minimum:
+
+- identity preservation;
+- face/anatomy consistency;
+- hair/fur/coat marking preservation;
+- watercolor/storybook texture consistency;
+- ability to change pose without redesigning the subject;
+- localized edit quality;
+- transparent/layered export workflow;
+- repeatability across all five characters;
+- practical human correction effort.
+
+Implementation assistants may prepare prompts, asset manifests, registry changes, export validation, file optimization, tests and runtime integration. They are not expected to hand-code final illustrated character quality.
+
+Raster/vector finishing tools may be used to clean masks, transparencies, layers, edge artifacts, localized anatomy/detail issues and exports. A vector editor is not required merely because the current placeholder happens to be SVG; preserving the approved illustrated texture takes precedence over retaining SVG as a physical format.
+
 ## File-format policy
 
 **PROVISIONAL:** source and runtime formats may include transparent PNG/WebP, authored SVG, layered raster exports or other web-suitable assets.
@@ -99,6 +161,7 @@ Small corrections required for function, readability or interaction are still al
 A production-art replacement is successful when:
 
 - the new asset materially raises the intended illustrated visual quality;
+- the approved Character Master identity and applicable locks remain recognizable across required states;
 - existing routes/interactions continue working;
 - restoration still derives from the same facts;
 - touch targets remain reliable;
