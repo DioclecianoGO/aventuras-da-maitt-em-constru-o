@@ -1,6 +1,6 @@
 # Round 1 — Maittê `listen-think`
 
-**Status:** IN EXECUTION — ChatGPT initial candidate set generated; strongest-candidate selection and localized correction pending; Gemini and Adobe rounds pending.
+**Status:** IN EXECUTION — ChatGPT initial candidate set generated; C1 selected as strongest initial candidate; localized correction pending; Gemini and Adobe rounds pending.
 
 This folder is the controlled evidence workspace for the first Character Production Asset Benchmark round.
 
@@ -43,12 +43,15 @@ Round 1 compares:
 ### ChatGPT Images
 
 - three initial candidates: **GENERATED**;
-- strongest candidate: **PENDING PRODUCT SELECTION**;
+- strongest initial candidate: **C1 — SELECTED BY PRODUCT REVIEW**;
+- C1 identifying pose: hand at chin + opposite arm crossed, thoughtful upward gaze;
 - one localized correction round: **PENDING**;
 - corrected best result: **PENDING**;
 - scoring: **PENDING**.
 
-The three initial candidates are benchmark evidence only and are not approved production assets merely because they were generated.
+C1 selection means only that it is the strongest ChatGPT initial candidate for the required correction test. It is **not** yet an approved production asset and it does not make ChatGPT the benchmark winner.
+
+The three initial candidates remain benchmark evidence only.
 
 ### Gemini / Nano Banana
 
@@ -57,6 +60,16 @@ The three initial candidates are benchmark evidence only and are not approved pr
 ### Adobe Firefly / Photoshop
 
 **PENDING.**
+
+## Localized correction test — ChatGPT C1
+
+The required correction round should modify **one deliberately narrow visual property** while preserving all unaffected regions.
+
+First correction target:
+
+**pink-glasses geometry/fidelity** — refine only the glasses so their frame shape/proportion reads closer to the approved Character Master while preserving C1's face, pose, hands, hair, lighter streak, clothing, body proportions, acting expression, watercolor/storybook texture and framing.
+
+The corrected output is evaluated specifically for localized-edit preservation. A broad redraw or identity drift is a benchmark defect even if the resulting image is attractive.
 
 ## Required evidence per workflow
 
