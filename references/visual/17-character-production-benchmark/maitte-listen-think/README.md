@@ -1,6 +1,6 @@
 # Round 1 — Maittê `listen-think`
 
-**Status:** IN EXECUTION — ChatGPT initial candidate set generated; C1 selected as strongest initial candidate; localized correction pending; Gemini and Adobe rounds pending.
+**Status:** IN EXECUTION — ChatGPT initial candidate set generated; C1 selected as strongest initial candidate; localized glasses-correction review approved for benchmark evidence; binary evidence upload pending; Gemini and Adobe rounds pending.
 
 This folder is the controlled evidence workspace for the first Character Production Asset Benchmark round.
 
@@ -45,13 +45,15 @@ Round 1 compares:
 - three initial candidates: **GENERATED**;
 - strongest initial candidate: **C1 — SELECTED BY PRODUCT REVIEW**;
 - C1 identifying pose: hand at chin + opposite arm crossed, thoughtful upward gaze;
-- one localized correction round: **PENDING**;
-- corrected best result: **PENDING**;
+- localized correction target: **pink-glasses geometry/fidelity**;
+- localized correction review: **APPROVED FOR BENCHMARK EVIDENCE**;
+- clean standalone corrected export: **NOT YET STORED**;
+- binary evidence upload: **PENDING**;
 - scoring: **PENDING**.
 
-C1 selection means only that it is the strongest ChatGPT initial candidate for the required correction test. It is **not** yet an approved production asset and it does not make ChatGPT the benchmark winner.
+C1 selection and correction approval are benchmark-review dispositions only. They do **not** promote C1 to a production asset and they do not make ChatGPT the benchmark winner.
 
-The three initial candidates remain benchmark evidence only.
+The correction round exposed a workflow characteristic that must be recorded during scoring: the image tool repeatedly surfaced comparison/review compositions rather than a clean standalone corrected character export. This does not invalidate the visual correction review, but it is relevant to `transparency / separability workflow`, `localized-edit preservation` and `human correction effort` until a clean corrected export is obtained.
 
 ### Gemini / Nano Banana
 
@@ -63,20 +65,42 @@ The three initial candidates remain benchmark evidence only.
 
 ## Localized correction test — ChatGPT C1
 
-The required correction round should modify **one deliberately narrow visual property** while preserving all unaffected regions.
+The required correction round modifies **one deliberately narrow visual property** while preserving all unaffected regions.
 
-First correction target:
+Correction target:
 
 **pink-glasses geometry/fidelity** — refine only the glasses so their frame shape/proportion reads closer to the approved Character Master while preserving C1's face, pose, hands, hair, lighter streak, clothing, body proportions, acting expression, watercolor/storybook texture and framing.
 
-The corrected output is evaluated specifically for localized-edit preservation. A broad redraw or identity drift is a benchmark defect even if the resulting image is attractive.
+Product review accepted the correction direction as visually appropriate benchmark evidence.
+
+The benchmark still distinguishes between:
+
+1. **correction-review evidence** — demonstrates the intended localized visual change and preservation judgment;
+2. **clean standalone corrected export** — preferred before any candidate could be considered production-ready.
+
+A broad redraw or identity drift remains a benchmark defect even if the resulting image is attractive.
+
+## Canonical ChatGPT evidence names
+
+When the binaries are uploaded, use:
+
+- `chatgpt/maitte-listen-think-chatgpt-candidate-01.png`;
+- `chatgpt/maitte-listen-think-chatgpt-candidate-02.png`;
+- `chatgpt/maitte-listen-think-chatgpt-candidate-03.png`;
+- `chatgpt/maitte-listen-think-chatgpt-correction-review.png`.
+
+If a clean standalone corrected C1 export is later obtained, store it separately as:
+
+- `chatgpt/maitte-listen-think-chatgpt-selected-c1-corrected.png`.
+
+Do not rename binary assets through a text-editor workflow; upload each binary already using its canonical filename.
 
 ## Required evidence per workflow
 
 - 3 initial candidates;
 - selection of the strongest candidate;
 - 1 localized correction round;
-- best corrected result;
+- best corrected result or explicit workflow limitation if clean export cannot be obtained;
 - notes on identity drift, pose fidelity, texture, edit preservation and human effort;
 - review at production size and approximate Challenge Stage size.
 
