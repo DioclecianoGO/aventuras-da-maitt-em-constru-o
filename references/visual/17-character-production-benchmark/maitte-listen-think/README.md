@@ -1,6 +1,6 @@
 # Round 1 — Maittê `listen-think`
 
-**Status:** IN EXECUTION — ChatGPT and Gemini candidate/review rounds completed; Adobe Firefly candidate/review round completed and rejected from Round-1 leader consideration by product review; cross-tool runtime-size scoring and final Round-1 leader record remain pending.
+**Status:** COMPLETE — benchmark evidence collected; ChatGPT selected as Round-1 leader; final cross-round workflow decision completed after Lyra Round 2. No image in this folder is automatically a production runtime asset.
 
 This folder is the controlled evidence workspace for the first Character Production Asset Benchmark round.
 
@@ -8,95 +8,68 @@ Binding operational gate:
 
 `docs/design/MAITTE-PRODUCTION-BENCHMARK-ROUND-1.md`
 
-Binding benchmark protocol:
+Benchmark method/history:
 
 `docs/design/CHARACTER-PRODUCTION-BENCHMARK.md`
+
+Cross-round closure:
+
+`docs/design/CHARACTER-PRODUCTION-BENCHMARK-CLOSURE.md`
+
+Final workflow decision:
+
+`docs/design/CHARACTER-PRODUCTION-WORKFLOW-DECISION.md`
 
 ## Identity authority
 
 `references/visual/12-maitte-character-master/MAITTE_MASTER_APPROVED.png`
 
-The approved master governs identity. Current runtime SVG/scaffold art may be used only for pose/structure guidance and must not define face, age, texture or illustration quality.
+The approved master governs identity. Runtime SVG/scaffold art may provide pose/structure guidance only and does not define face, age, texture or illustration quality.
 
 ## Target
 
 Produce the **same approved Maittê** in the `listen-think` acting state:
 
 - attentive;
+- listening;
 - thoughtful;
 - curious;
 - supportive/positive;
 - never sad, punished or negatively confused.
 
-Identity locks include the approved approximately-8-year-old character model, recognizable face, dark-brown hair/fringe/curl-wave treatment, lighter hair streak, pink glasses, shirt with green heart, skirt, colorful socks, high-top canvas sneakers and the approved original storybook/watercolor illustration language.
+Identity locks include the approved approximately-8-year-old model, recognizable face, dark-brown hair/fringe/curl-wave treatment, lighter hair streak, pink glasses, green-heart shirt, skirt, colorful socks, high-top canvas sneakers and original storybook/watercolor language.
 
-## Candidate workflows
-
-Round 1 compares:
-
-1. ChatGPT Images;
-2. Gemini / Nano Banana;
-3. Adobe Firefly / Photoshop generative workflow.
-
-The benchmark compares **production workflows**, not only isolated image quality. Identity preservation, editability, repeatability, separability and human correction effort all remain part of the evaluation.
-
-## Execution state
+## Workflow results
 
 ### ChatGPT Images
 
 - three initial candidates: **GENERATED + STORED**;
-- strongest initial candidate: **C1 — SELECTED BY PRODUCT REVIEW**;
-- C1 identifying pose: hand at chin + opposite arm crossed, thoughtful upward gaze;
-- localized correction target: **pink-glasses geometry/fidelity**;
-- localized correction review: **APPROVED FOR BENCHMARK EVIDENCE + STORED**;
-- clean standalone corrected export: **NOT AVAILABLE / NOT STORED**;
-- product perception: **CURRENT STRONGEST VISUAL FIDELITY / PROVISIONAL ROUND-1 PREFERENCE**;
-- formal weighted scoring: **PENDING**.
+- strongest initial candidate: **C1 — SELECTED**;
+- localized correction target: pink-glasses geometry/fidelity;
+- correction review: **APPROVED BENCHMARK EVIDENCE + STORED**;
+- clean standalone corrected C1 export: **NOT AVAILABLE**;
+- product disposition: **ROUND-1 LEADER / STRONGEST IDENTITY-STYLE CONTINUITY**.
 
-C1 selection and correction approval are benchmark-review dispositions only. They do **not** promote C1 to a production asset and do not yet constitute the formal Round-1 winner record.
-
-The correction round exposed a workflow characteristic that must be recorded during scoring: the image tool repeatedly surfaced comparison/review compositions rather than a clean standalone corrected character export. This is relevant to `localized-edit preservation`, `transparency / separability workflow` and `human correction effort`.
+The missing clean standalone correction export is a recorded workflow limitation and is not hidden by cropping the review board.
 
 ### Gemini / Nano Banana
 
-- three initial candidates: **GENERATED**;
-- strongest initial candidate: **C3 — SELECTED BY PRODUCT REVIEW**;
-- one correction/refinement round over C3: **COMPLETED**;
-- correction-review canonical filename: `maitte-listen-think-gemini-correction-review.png`;
-- product perception: **VIABLE / STRONG SECONDARY RESULT**;
-- formal weighted scoring: **PENDING**.
-
-Product review found Gemini visually strong and substantially faithful to the approved Maittê, but with small divergences from the approved visual language and from the strongest ChatGPT result.
-
-The Gemini round was executed from the approved Character Master plus a controlled benchmark prompt, without direct access to the repository's full spec set. This context difference must be recorded when interpreting cross-tool results; it does not invalidate the round, but it means tool-context parity was not perfect.
+- three initial candidates: **GENERATED + STORED**;
+- strongest candidate: **C3 — SELECTED**;
+- one correction/refinement round: **COMPLETED + STORED**;
+- product disposition: **VIABLE / STRONG SECONDARY RESULT**;
+- product review observed small visual-language/identity divergences versus the strongest ChatGPT result.
 
 ### Adobe Firefly
 
-- three initial candidates: **GENERATED**;
-- strongest initial candidate: **Candidate 01 — SELECTED FOR CORRECTION TEST**;
-- one correction/review round: **COMPLETED**;
-- correction-review canonical filename: `maitte-listen-think-adobe-correction-review.png`;
-- product disposition: **REJECTED FROM ROUND-1 LEADER CONSIDERATION**;
-- reason: **material visual/identity/style divergence from the approved Maittê compared with ChatGPT and Gemini**;
-- evidence retention: **REQUIRED**.
+- three initial candidates: **GENERATED + STORED**;
+- Candidate 01 selected for correction;
+- one correction/review round: **COMPLETED + STORED**;
+- product disposition: **REJECTED FROM ROUND-1 LEADER CONSIDERATION** due materially larger identity/style divergence.
 
-Adobe evidence remains useful benchmark data even though the workflow has been discarded for this Round-1 leader decision. Rejection is a workflow/product decision, not a reason to delete evidence.
+Adobe evidence is intentionally retained because benchmark evidence includes failed/rejected workflows.
 
-## Localized correction tests
-
-Each workflow receives exactly one controlled correction/refinement round after its strongest initial candidate is selected.
-
-The correction step is benchmark evidence for:
-
-- localized-edit preservation;
-- identity stability;
-- repeatability;
-- human correction effort;
-- production separability practicality.
-
-A correction result is not automatically a production asset.
-
-## Stored ChatGPT evidence — VERIFIED
+## Stored ChatGPT evidence — verified earlier
 
 Upload commit:
 
@@ -109,51 +82,25 @@ Upload commit:
 | `maitte-listen-think-chatgpt-candidate-03.png` | `f244e67a5f76e7800801e4bab5cfe330479756d0` | 2,649,434 bytes |
 | `maitte-listen-think-chatgpt-correction-review.png` | `29997f4e4172a4a1311c30b91715de5019238f5d` | 2,121,261 bytes |
 
-All four were verified as PNG evidence on `main`.
+## Evidence naming/layout
 
-## Canonical Gemini evidence names
+Round-1 evidence remains flat under this folder with the workflow name embedded in the filename.
 
-Store the Gemini evidence flat in this folder using:
+Canonical patterns:
 
-- `maitte-listen-think-gemini-candidate-01.png`;
-- `maitte-listen-think-gemini-candidate-02.png`;
-- `maitte-listen-think-gemini-candidate-03.png`;
-- `maitte-listen-think-gemini-correction-review.png`.
+- `maitte-listen-think-chatgpt-*`;
+- `maitte-listen-think-gemini-*`;
+- `maitte-listen-think-adobe-*`.
 
-## Canonical Adobe evidence names
+Do not rename binary evidence through a text-editor workflow merely for cleanup.
 
-Store the Adobe evidence flat in this folder using:
+## What these images are — and are not
 
-- `maitte-listen-think-adobe-candidate-01.png`;
-- `maitte-listen-think-adobe-candidate-02.png`;
-- `maitte-listen-think-adobe-candidate-03.png`;
-- `maitte-listen-think-adobe-correction-review.png`.
-
-**DECIDED:** upload/store Adobe evidence even though Adobe is rejected from Round-1 leader consideration. Benchmark evidence records failures and rejected workflows as well as successful ones.
-
-## Round-1 evidence layout
-
-**DECIDED for this Round 1 workspace:** keep benchmark binaries **flat under `maitte-listen-think/` with the workflow name embedded in the canonical filename**.
-
-Examples:
-
-- `maitte-listen-think-chatgpt-candidate-01.png`;
-- `maitte-listen-think-gemini-candidate-01.png`;
-- `maitte-listen-think-adobe-candidate-01.png`.
-
-This keeps all Round-1 candidates directly comparable in one evidence directory.
-
-Do not rename binary assets through a text-editor workflow; upload each binary already using its canonical filename.
-
-## What these benchmark images are — and are not
-
-### Current benchmark files
-
-The current ChatGPT/Gemini/Adobe images are:
+All current files here are:
 
 **BENCHMARK EVIDENCE / NOT PRODUCTION RUNTIME ASSETS.**
 
-They prove or expose:
+They demonstrate:
 
 - identity preservation;
 - acting-state quality;
@@ -163,41 +110,44 @@ They prove or expose:
 - correction effort;
 - separability/transparency practicality.
 
-They must **not** be treated as final game skins merely because they exist in this reference folder.
+They are not automatically game skins or final runtime sprites merely because they are stored here.
 
-### Future production direction
+## Production direction after benchmark
 
-The intended production path remains:
+Selected production path:
 
-`approved Character Master -> selected production workflow -> clean reviewed acting-state variant -> production preparation/separation -> existing character.maitte.<state> logical key -> MaitteActor -> scene`
+`approved Character Master`
+`-> ChatGPT Images primary generation/editing`
+`-> human product review`
+`-> Photoshop preparation / transparency / masks / layers / cleanup`
+`-> explicitly approved production export(s)`
+`-> existing character.maitte.<state> logical key`
+`-> MaitteActor`
+`-> scene`
 
-The final character illustration may be a transparent raster/layered raster asset (for example PNG/WebP or another approved physical format) rendered behind the existing logical key. It is **not** expected to be manually redrawn as a large JSX/SVG tracing of the benchmark image.
+The current `MaitteFigure` SVG remains a **TECHNICAL / CONCEPT RUNTIME SCAFFOLD**, not an artistic production target.
 
-The current `MaitteFigure` SVG remains a **TECHNICAL / CONCEPT RUNTIME SCAFFOLD**, not the artistic production target.
+For Maittê, final runtime preparation must preserve independent color-restoration behavior. A single flattened full-color bitmap cannot silently replace that contract.
 
-For Maittê specifically, the final runtime asset strategy must also preserve the existing independent color-restoration behavior. A single flattened full-color bitmap cannot automatically replace that restoration contract. The eventual production-preparation step may require layers, masks, region assets or another presentation-layer composition strategy. That remains a separate `PRODUCTION-ASSET-GAP` and does not invalidate the image-production benchmark.
+The first real preparation/runtime test is defined in:
 
-## Required evidence per workflow
-
-- 3 initial candidates;
-- selection of the strongest candidate;
-- 1 localized correction round;
-- best corrected result or explicit workflow limitation;
-- notes on identity drift, pose fidelity, texture, edit preservation and human effort;
-- review at production size and approximate Challenge Stage size.
+`docs/design/MAITTE-PRODUCTION-PROOF-01.md`
 
 ## Approval rule
 
 Storage is not approval.
 
-No image in this workspace becomes a production variant until explicit product review records its promotion.
+Round-1 result:
 
-Current product perception after visual generation rounds:
+**ChatGPT Images — ROUND-1 LEADER.**
 
-1. **ChatGPT Images — provisional visual preference / strongest identity-language match**;
-2. **Gemini / Nano Banana — viable and close, with small visual-language divergences**;
-3. **Adobe Firefly — rejected from Round-1 leader consideration due material divergence**.
+Cross-round result after Lyra stress test:
 
-Formal Round-1 closure still requires the planned cross-tool runtime-size review/scoring record. Final primary/fallback workflow selection remains **PROVISIONAL until the required Lyra `watch` Round 2 stress test**.
+- ChatGPT Images — **PRIMARY**;
+- Gemini / Nano Banana — **FALLBACK**;
+- Adobe Firefly — **REJECTED as primary generator for this pass**;
+- Photoshop — **PREFERRED finishing/production-preparation environment**.
 
-Step 2C remains **NOT STARTED** during benchmark execution.
+Final Maittê `listen-think` production asset remains a **PRODUCTION-ASSET-GAP** until Production Proof 01 passes and an asset is explicitly promoted.
+
+Step 2C remains **NOT STARTED**.
