@@ -1,6 +1,6 @@
 # Round 1 — Maittê `listen-think`
 
-**Status:** IN EXECUTION — ChatGPT initial candidate set generated; C1 selected as strongest initial candidate; localized glasses-correction review approved for benchmark evidence; binary evidence upload pending; Gemini and Adobe rounds pending.
+**Status:** IN EXECUTION — ChatGPT initial candidate set stored; C1 selected as strongest initial candidate; localized glasses-correction review approved and stored as benchmark evidence; clean standalone corrected export still unavailable; ChatGPT scoring pending; Gemini and Adobe rounds pending.
 
 This folder is the controlled evidence workspace for the first Character Production Asset Benchmark round.
 
@@ -42,18 +42,17 @@ Round 1 compares:
 
 ### ChatGPT Images
 
-- three initial candidates: **GENERATED**;
+- three initial candidates: **GENERATED + STORED**;
 - strongest initial candidate: **C1 — SELECTED BY PRODUCT REVIEW**;
 - C1 identifying pose: hand at chin + opposite arm crossed, thoughtful upward gaze;
 - localized correction target: **pink-glasses geometry/fidelity**;
-- localized correction review: **APPROVED FOR BENCHMARK EVIDENCE**;
-- clean standalone corrected export: **NOT YET STORED**;
-- binary evidence upload: **PENDING**;
+- localized correction review: **APPROVED FOR BENCHMARK EVIDENCE + STORED**;
+- clean standalone corrected export: **NOT AVAILABLE / NOT STORED**;
 - scoring: **PENDING**.
 
 C1 selection and correction approval are benchmark-review dispositions only. They do **not** promote C1 to a production asset and they do not make ChatGPT the benchmark winner.
 
-The correction round exposed a workflow characteristic that must be recorded during scoring: the image tool repeatedly surfaced comparison/review compositions rather than a clean standalone corrected character export. This does not invalidate the visual correction review, but it is relevant to `transparency / separability workflow`, `localized-edit preservation` and `human correction effort` until a clean corrected export is obtained.
+The correction round exposed a workflow characteristic that must be recorded during scoring: the image tool repeatedly surfaced comparison/review compositions rather than a clean standalone corrected character export. This does not invalidate the visual correction review, but it is relevant to `localized-edit preservation`, `transparency / separability workflow` and `human correction effort` until a clean corrected export is obtained.
 
 ### Gemini / Nano Banana
 
@@ -73,27 +72,47 @@ Correction target:
 
 Product review accepted the correction direction as visually appropriate benchmark evidence.
 
-The benchmark still distinguishes between:
+The benchmark distinguishes between:
 
 1. **correction-review evidence** — demonstrates the intended localized visual change and preservation judgment;
 2. **clean standalone corrected export** — preferred before any candidate could be considered production-ready.
 
 A broad redraw or identity drift remains a benchmark defect even if the resulting image is attractive.
 
-## Canonical ChatGPT evidence names
+## Stored ChatGPT evidence — VERIFIED
 
-When the binaries are uploaded, use:
+Upload commit:
 
-- `chatgpt/maitte-listen-think-chatgpt-candidate-01.png`;
-- `chatgpt/maitte-listen-think-chatgpt-candidate-02.png`;
-- `chatgpt/maitte-listen-think-chatgpt-candidate-03.png`;
-- `chatgpt/maitte-listen-think-chatgpt-correction-review.png`.
+`54403ff0a9ef8f1c4b989261661cdb0fa69bbde0`
+
+Current binaries are stored directly in this `maitte-listen-think/` folder:
+
+| Evidence | Blob SHA | Size |
+|---|---|---:|
+| `maitte-listen-think-chatgpt-candidate-01.png` | `6d684488f9ce541e6459d20cbc645817ad969417` | 2,578,747 bytes |
+| `maitte-listen-think-chatgpt-candidate-02.png` | `595a376ebe8635fc2ffe0082b6fe52a3f40a369c` | 2,697,247 bytes |
+| `maitte-listen-think-chatgpt-candidate-03.png` | `f244e67a5f76e7800801e4bab5cfe330479756d0` | 2,649,434 bytes |
+| `maitte-listen-think-chatgpt-correction-review.png` | `29997f4e4172a4a1311c30b91715de5019238f5d` | 2,121,261 bytes |
+
+All four were verified as PNG evidence on `main`.
+
+## Round-1 evidence layout
+
+**DECIDED for this Round 1 workspace:** keep benchmark binaries **flat under `maitte-listen-think/` with the workflow name embedded in the canonical filename**.
+
+Examples:
+
+- `maitte-listen-think-chatgpt-candidate-01.png`;
+- future `maitte-listen-think-gemini-candidate-01.png`;
+- future `maitte-listen-think-adobe-candidate-01.png`.
+
+This decision avoids moving already-stored binary history and keeps all Round-1 candidates directly comparable in one evidence directory. Tool-specific subfolders are therefore not required for this Round 1 workspace.
+
+Do not rename binary assets through a text-editor workflow; upload each binary already using its canonical filename.
 
 If a clean standalone corrected C1 export is later obtained, store it separately as:
 
-- `chatgpt/maitte-listen-think-chatgpt-selected-c1-corrected.png`.
-
-Do not rename binary assets through a text-editor workflow; upload each binary already using its canonical filename.
+`maitte-listen-think-chatgpt-selected-c1-corrected.png`
 
 ## Required evidence per workflow
 
@@ -103,14 +122,6 @@ Do not rename binary assets through a text-editor workflow; upload each binary a
 - best corrected result or explicit workflow limitation if clean export cannot be obtained;
 - notes on identity drift, pose fidelity, texture, edit preservation and human effort;
 - review at production size and approximate Challenge Stage size.
-
-Suggested subfolders when evidence is ready for repository storage:
-
-- `chatgpt/`;
-- `gemini/`;
-- `adobe/`.
-
-Do not create empty folders merely for structure; add them when evidence exists.
 
 ## Approval rule
 
