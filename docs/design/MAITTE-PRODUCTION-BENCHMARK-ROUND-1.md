@@ -1,24 +1,24 @@
 # Maittê Production Benchmark — Round 1 Gate
 
-**Status:** DECIDED operational gate; ChatGPT initial candidates generated and stored; C1 selected; localized glasses-correction review approved and stored; ChatGPT runtime-size/scoring review pending; Gemini and Adobe rounds pending; production integration remains pending.
+**Status:** COMPLETE — benchmark evidence collected across ChatGPT, Gemini and Adobe; ChatGPT selected as Round-1 leader; final cross-round workflow decision completed after Lyra Round 2.
 
 ## Purpose
 
-Round 1 validates whether a production image workflow can create a new Maittê acting pose while preserving the approved protagonist identity and storybook/watercolor visual language.
+Round 1 validated whether a production image workflow could create a new Maittê acting pose while preserving the approved protagonist identity and storybook/watercolor visual language.
 
-This gate is part of `CHARACTER-PRODUCTION-BENCHMARK.md` and does not reopen Step 2B.
+This gate is part of `CHARACTER-PRODUCTION-BENCHMARK.md` and did not reopen Step 2B.
 
 ## Critical boundary
 
-The goal is **not** to improve `MaitteFigure.tsx` until it resembles the final illustration.
+The goal was **not** to improve `MaitteFigure.tsx` until it resembled final illustration.
 
 `MaitteFigure` remains a **TECHNICAL / CONCEPT RUNTIME SCAFFOLD**.
 
-The production direction is:
+Production direction remains:
 
-`MAITTE_MASTER_APPROVED.png -> reviewed listen-think production candidate -> approved production export -> character.maitte.listen-think -> MaitteActor -> scene`
+`MAITTE_MASTER_APPROVED.png -> reviewed acting-state variant -> Photoshop production preparation -> approved production export -> character.maitte.listen-think -> MaitteActor -> scene`
 
-A coding agent may prepare comparison harnesses, evidence manifests, runtime-size previews and later presentation-layer integration. It must not recreate the approved watercolor/storybook Maittê by adding manual JSX/SVG paths and call that production art.
+A coding agent must not recreate the approved watercolor/storybook Maittê by adding manual JSX/SVG paths and call that production art.
 
 ## Identity authority
 
@@ -26,7 +26,9 @@ Canonical source:
 
 `references/visual/12-maitte-character-master/MAITTE_MASTER_APPROVED.png`
 
-The master is `DECIDED` identity authority.
+Status:
+
+**DECIDED identity authority.**
 
 Locked identity traits include:
 
@@ -47,7 +49,7 @@ Logical state:
 
 `character.maitte.listen-think`
 
-Target acting must read as:
+Target acting:
 
 - listening;
 - attentive;
@@ -56,67 +58,79 @@ Target acting must read as:
 - positive/supportive;
 - never sad, punished or negatively confused.
 
-Pose may use a hand near chin/cheek/temple, upward or sideward thoughtful gaze, folded/supporting arm, or another natural child-appropriate listening/thinking gesture, provided identity remains stable.
-
-## Round 1 workflows
-
-Required comparison:
+## Workflows tested
 
 1. ChatGPT Images;
-2. Gemini / Nano Banana image-generation/editing workflow where available;
+2. Gemini / Nano Banana;
 3. Adobe Firefly / Photoshop generative workflow.
 
-The same identity locks, acting target and scoring logic apply to all three as closely as each tool permits.
+## Evidence workspace
 
-## Evidence protocol
+`references/visual/17-character-production-benchmark/maitte-listen-think/`
 
-Per workflow:
+The workspace retains all successful and rejected benchmark evidence.
 
-1. produce three initial candidates;
-2. select one strongest candidate;
-3. identify one localized defect/detail for correction;
-4. perform exactly one localized correction round before scoring edit preservation;
-5. retain the corrected best candidate or explicitly record a clean-export capability limitation;
-6. review at full/review size and approximate Challenge Stage size;
-7. record identity drift, acting readability, texture preservation, edit preservation, separability/transparency practicality and human correction effort.
+## Product dispositions
 
-### ChatGPT execution state
+### ChatGPT Images
 
-Three initial ChatGPT Maittê `listen-think` candidates were generated from the approved Character Master and are stored in the Round-1 evidence workspace.
+- three initial candidates generated and stored;
+- **C1 selected** as strongest initial candidate;
+- localized correction target: pink-glasses geometry/fidelity;
+- correction review accepted as benchmark evidence;
+- clean standalone corrected C1 export was not obtained;
+- product perception: strongest identity/style continuity.
 
-**Current disposition:**
+### Gemini / Nano Banana
 
-- candidate set: **GENERATED + STORED**;
-- strongest initial candidate: **C1 — SELECTED BY PRODUCT REVIEW**;
-- C1 pose: hand at chin + opposite arm crossed + thoughtful/upward gaze;
-- localized correction target: **pink-glasses geometry/fidelity**;
-- localized correction review: **APPROVED FOR BENCHMARK EVIDENCE + STORED**;
-- clean standalone corrected C1 export: **NOT AVAILABLE / NOT STORED**;
-- runtime-size comparison: **PENDING**;
-- scoring: **PENDING**.
+- three candidates generated;
+- **C3 selected**;
+- one correction/refinement round completed;
+- result remained strong and viable;
+- product review observed small visual-language/identity divergences versus the strongest ChatGPT result.
 
-The current lack of a clean standalone corrected export is a workflow limitation to be reflected in localized-edit preservation, transparency/separability and human correction effort. The correction-review board must not be cropped or silently promoted as the final production asset.
+### Adobe Firefly
 
-Storage or selection alone does not approve any candidate as production art.
+- three candidates generated;
+- Candidate 01 selected for correction;
+- one correction/review round completed;
+- **rejected from Round-1 leader consideration** because visual identity/style divergence was materially larger than ChatGPT/Gemini.
 
-## Runtime-size review
+## Round-1 decision
 
-Before a Round-1 result is accepted as a tool leader, the selected corrected output/evidence must be evaluated at approximately the size used in `ChallengeStageShell`.
+**ROUND-1 LEADER: ChatGPT Images.**
 
-Review must verify that the following remain readable without relying on the full-resolution image:
+This did not alone authorize a primary workflow. The required Lyra Round 2 stress test was completed afterward and confirmed ChatGPT as the cross-round primary workflow.
 
-- face/eyes/glasses;
-- hair silhouette and lighter streak;
-- green-heart anchor;
-- `listen-think` acting signal;
-- overall child silhouette;
-- no severe edge/transparency artifacts when a separable export exists.
+Final decision:
 
-A temporary comparison harness is permitted for this review and must not redefine production architecture.
+`docs/design/CHARACTER-PRODUCTION-WORKFLOW-DECISION.md`
 
-## Scoring
+Closure/audit:
 
-Use the Round-1 weighted model from `CHARACTER-PRODUCTION-BENCHMARK.md`:
+`docs/design/CHARACTER-PRODUCTION-BENCHMARK-CLOSURE.md`
+
+## Recorded limitations
+
+### ChatGPT clean-export limitation
+
+The localized-edit exercise produced comparison/review compositions rather than a clean standalone corrected character export.
+
+Classification:
+
+**WORKFLOW-LIMITATION — NON-BLOCKING FOR ROUND-1 LEADER / MUST BE RESOLVED IN PRODUCTION PREPARATION.**
+
+### Runtime-size / transparency scoring
+
+A strict fully numeric score was not fabricated for criteria that required final transparent/runtime-ready production exports.
+
+Classification:
+
+**PROCESS-DEVIATION — ACCEPTED FOR ENGINE SELECTION; PRODUCTION-FIT CRITERIA TRANSFERRED TO PRODUCTION PROOF 01.**
+
+## Scoring framework retained
+
+Round-1 review categories remain available for future reruns:
 
 - identity / face preservation — 25%;
 - age / anatomy / proportions — 10%;
@@ -129,57 +143,38 @@ Use the Round-1 weighted model from `CHARACTER-PRODUCTION-BENCHMARK.md`:
 - repeatability — 4%;
 - human correction effort — 3%.
 
-## Blockers
+## Blockers retained
 
-A workflow cannot pass Round 1 if:
+A future workflow cannot pass if it materially:
 
-- Maittê becomes a different-looking child;
-- age drifts materially from the approved child model;
-- face, hair model, lighter streak or pink glasses are materially redesigned;
-- green-heart/clothing identity is lost;
-- storybook/watercolor texture is materially lost;
-- pose change or localized correction causes uncontrolled regeneration of unaffected identity regions;
-- the output cannot be made runtime-usable without disproportionate reconstruction.
+- makes Maittê a different-looking child;
+- causes age drift;
+- redesigns face/hair/lighter streak/pink glasses;
+- loses green-heart/clothing identity;
+- loses storybook/watercolor texture;
+- causes uncontrolled identity regeneration during pose/edit changes;
+- requires disproportionate reconstruction for runtime use.
 
-## Claude Code role in this round
+## Next gate
 
-Claude Code is authorized only for planning/implementation support around benchmark evidence and presentation validation, including:
+Round 1 is closed.
 
-- verify current `main` and the stable Maittê presentation seam;
-- inspect `MaitteActor`, `MaitteFigure`, `assetRegistry` and `ChallengeStageShell` without changing their contracts;
-- determine the exact current runtime display scale/framing relevant to `listen-think`;
-- propose a temporary/non-production comparison harness if useful;
-- define evidence naming/manifest conventions;
-- identify the minimal future presentation-layer change required to replace `vectorAsset(MaitteFigure)` behind `character.maitte.listen-think` after a production asset is explicitly approved.
+The benchmark as a whole is closed for workflow selection.
 
-Claude Code is **not** authorized in this round to:
+Proceed to:
 
-- redraw Maittê in SVG;
-- polish `MaitteFigure` into production art;
-- choose the benchmark winner on behalf of product review;
-- wire an unapproved generated candidate into runtime;
-- change gameplay/domain/evaluation/persistence/content contracts;
-- start Step 2C.
+`docs/design/MAITTE-PRODUCTION-PROOF-01.md`
 
-## Exit criteria
-
-Round 1 is complete only when:
-
-1. each of ChatGPT, Gemini and Adobe has three initial candidates or an explicit recorded capability limitation;
-2. one candidate per workflow is selected;
-3. one localized correction round per workflow is completed;
-4. all selected corrected candidates are scored;
-5. a Round-1 leader is recorded;
-6. no candidate is promoted to final primary workflow until the required Lyra `watch` Round 2 stress test is complete.
+The next task is to prove the real production preparation and runtime restoration composition for Maittê `listen-think`, not to generate more benchmark candidates.
 
 ## Governance
 
 - Maittê Character Master: **DECIDED identity authority**.
 - Current Maittê SVG scaffold: **TECHNICAL / CONCEPT SCAFFOLD**.
-- ChatGPT initial Round-1 candidates: **BENCHMARK EVIDENCE / NOT APPROVED PRODUCTION ASSETS**.
-- ChatGPT C1: **SELECTED STRONGEST INITIAL CANDIDATE / NOT PRODUCTION ASSET**.
-- ChatGPT glasses correction review: **APPROVED BENCHMARK EVIDENCE / NOT CLEAN PRODUCTION EXPORT**.
-- Round-1 leader: **PENDING**.
-- Final primary workflow: **PROVISIONAL until Round 2**.
-- Final `listen-think` production asset: **PRODUCTION-ASSET-GAP until explicitly approved and promoted**.
+- Round 1: **COMPLETE**.
+- Round-1 leader: **ChatGPT Images**.
+- Final cross-round primary workflow: **ChatGPT Images — DECIDED**.
+- Gemini: **FALLBACK — DECIDED**.
+- Firefly primary-generator role: **REJECTED for this production pass**.
+- Final `listen-think` production asset: **PRODUCTION-ASSET-GAP**.
 - Step 2C: **NOT STARTED**.
