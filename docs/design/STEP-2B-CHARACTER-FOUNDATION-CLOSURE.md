@@ -1,6 +1,6 @@
 # Step 2B — Character Foundation Closure
 
-**Status:** **COMPLETE — DECIDED.** M1–M5 are integrated and verified on `main`. Step 2B is closed; final authored character art remains a separate `PRODUCTION-ASSET-GAP` governed by the production-asset benchmark/workflow.
+**Status:** **COMPLETE — DECIDED.** M1–M5 are integrated and verified on `main`. Step 2B is closed; final authored character art remains a separate `PRODUCTION-ASSET-GAP` governed by the production workflow and Production Proof 01.
 
 **Closure verification commit:** `8769533c9fae707fc8819941d050c40082328582` (`feat: add Lyra companion actor seam`, squash merge of PR #24).
 
@@ -8,13 +8,13 @@
 
 This document records the closure state of Step 2B as an auditable product/architecture gate rather than relying on conversational history or current runtime appearance.
 
-Step 2B deliberately separates three concerns that must not be conflated:
+Step 2B deliberately separates three concerns:
 
 1. **Character Master** — approved visual identity authority;
 2. **technical/concept runtime scaffold** — temporary code-drawn representation used to prove acting states, framing and integration;
 3. **presentation seam** — stable logical keys + Actor/dispatch path that allows final authored art to replace scaffolds later without changing gameplay/domain contracts.
 
-Final production artwork is **not** a Step 2B completion requirement. Missing final authored variants remain `PRODUCTION-ASSET-GAP` and are handled by the production-character workflow after this closure.
+Final production artwork is **not** a Step 2B completion requirement. Missing final authored variants remain `PRODUCTION-ASSET-GAP` and are handled after this closure.
 
 ## Required named-character set
 
@@ -66,7 +66,7 @@ They are not the final illustrated visual bar.
 
 ### Presentation seams
 
-The stable presentation path is:
+Stable presentation path:
 
 `state/context -> character.<id>.<state> -> asset registry -> Actor/Illustration -> scene`
 
@@ -101,13 +101,13 @@ The generic `character.companion` / `CompanionArt` path remains a **technical gr
 - unknown pet id;
 - future/unconfigured ids.
 
-No currently named canonical companion requires the generic fallback after Step 2B closure.
+No named canonical companion requires the generic fallback after Step 2B closure.
 
 ## Companion viewport end-state — VERIFIED
 
 Per-pet framing remains presentation-owned.
 
-The resolver uses the scaffold-owned boxes:
+The resolver uses:
 
 - `BURPEE_BOX`;
 - `PIPOCA_BOX`;
@@ -115,7 +115,7 @@ The resolver uses the scaffold-owned boxes:
 - `LYRA_BOX`;
 - generic fallback box for unknown/absent/future ids.
 
-Exact numerical viewBox equality/distinctness is not itself a product requirement. A test must not force artificial numerical differences merely to distinguish characters. The owned geometry and correct framing are authoritative.
+Exact numerical viewBox equality/distinctness is not a product requirement. A test must not force artificial numerical differences merely to distinguish characters.
 
 ## Final-art status
 
@@ -123,44 +123,68 @@ For all five named characters, polished authored production variants remain:
 
 **`PRODUCTION-ASSET-GAP`**
 
-This is expected and does not reopen Step 2B.
-
-The next production stage must derive final visual variants from the approved Character Masters rather than trying to polish the temporary SVGs into final watercolor/storybook art.
+This does not reopen Step 2B.
 
 Binding replacement direction:
 
-`approved Character Master -> reviewed production pose/state variant -> production export -> existing logical key -> Actor -> scene`
+`approved Character Master -> reviewed production pose/state variant -> production preparation/export -> existing logical key -> Actor -> scene`
 
 ## Closure acceptance criteria — VERIFIED
 
-Step 2B is **COMPLETE** because all closure checks were verified on `main`:
+Step 2B is **COMPLETE** because:
 
-1. all five canonical Character Masters are present under their canonical reference folders;
+1. all five canonical Character Masters are present;
 2. Maittê and all four companions have stable presentation seams;
 3. the four named companions resolve through their own Actor paths;
 4. generic companion fallback is reserved for unknown/absent/future ids;
 5. per-pet viewport resolution includes all four companions;
 6. shared companion acting-state contract remains unchanged;
 7. the externally audited M5 patch was reconstructed byte-for-byte from SHA-256 `d5d06e200b5ded16d4034d43541ce5d0222d0ed0ab85029a81f5d22e1693a5a3` before integration;
-8. the M5 integration gate verified the exact 13-file source/test scope and zero changes under protected `src/game/domain`, `src/game/evaluation`, `src/game/persistence`, `src/game/state`, and `src/game/content` paths;
-9. the integration validation passed the full test suite and `tsc --noEmit` before the source-only branch commit;
-10. final authored art remains explicitly classified as a separate production gap rather than silently treating scaffolds as final.
+8. M5 verified exact 13-file source/test scope and zero changes under protected game/domain paths;
+9. integration validation passed the full test suite and `tsc --noEmit`;
+10. final authored art remains explicitly classified as a separate production gap.
 
-## Next gate after closure
+## Post-closure history
 
-**DECIDED sequencing:** the next visual-production activity is the controlled Character Production Asset Benchmark defined in:
+The controlled Character Production Asset Benchmark was executed after Step 2B closure:
 
-`docs/design/CHARACTER-PRODUCTION-BENCHMARK.md`
+1. Round 1 — Maittê `listen-think`;
+2. Round 2 — Lyra `watch` identity-drift stress test.
 
-Required benchmark sequence:
+Benchmark status:
 
-1. **Round 1 — Maittê `listen-think`** — protagonist/identity-preservation benchmark;
-2. **Round 2 — Lyra `watch`** — asymmetric-marking identity-drift stress test.
+**COMPLETE FOR WORKFLOW SELECTION.**
 
-The benchmark selects a production workflow while keeping Character Masters authoritative. It precedes broad Step 2C Overworld production composition.
+See:
+
+- `CHARACTER-PRODUCTION-BENCHMARK.md`;
+- `CHARACTER-PRODUCTION-BENCHMARK-CLOSURE.md`;
+- `CHARACTER-PRODUCTION-WORKFLOW-DECISION.md`.
+
+Selected production workflow:
+
+- ChatGPT Images — primary;
+- Gemini / Nano Banana — fallback;
+- Photoshop — preferred finishing/preparation environment.
+
+## Current next gate
+
+The current visual-production gate is no longer benchmark generation.
+
+Proceed to:
+
+`docs/design/MAITTE-PRODUCTION-PROOF-01.md`
+
+Target:
+
+**Maittê — `listen-think`.**
+
+Purpose:
+
+prove the first real transparent/layered/restoration-aware production asset contract behind the existing presentation seam before broad Step 2C work.
 
 ## Step 2C state
 
 **NOT STARTED.**
 
-Step 2B closure does not itself authorize a broad Step 2C build. Step 2C remains governed by `VISUAL-PRODUCTION-STEP-2-GATE.md`, the approved Overworld north stars and the production-asset contracts.
+Step 2B closure and benchmark completion do not by themselves authorize a broad Step 2C build. Step 2C remains governed by `VISUAL-PRODUCTION-STEP-2-GATE.md`, approved Overworld north stars and the result of Production Proof 01.
