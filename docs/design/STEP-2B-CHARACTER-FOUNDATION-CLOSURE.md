@@ -152,9 +152,10 @@ Step 2B is **COMPLETE** because all closure checks were verified on `main`:
 
 `docs/design/CHARACTER-PRODUCTION-BENCHMARK.md`
 
-First benchmark target:
+Required benchmark sequence:
 
-**Lyra — `watch`**.
+1. **Round 1 — Maittê `listen-think`** — protagonist/identity-preservation benchmark;
+2. **Round 2 — Lyra `watch`** — asymmetric-marking identity-drift stress test.
 
 The benchmark selects a production workflow while keeping Character Masters authoritative. It precedes broad Step 2C Overworld production composition.
 
