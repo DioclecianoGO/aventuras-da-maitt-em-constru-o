@@ -1,8 +1,16 @@
 # Round 1 — Maittê `listen-think`
 
-**Status:** DECIDED TARGET / EXECUTION PENDING.
+**Status:** IN EXECUTION — ChatGPT initial candidate set generated; strongest-candidate selection and localized correction pending; Gemini and Adobe rounds pending.
 
 This folder is the controlled evidence workspace for the first Character Production Asset Benchmark round.
+
+Binding operational gate:
+
+`docs/design/MAITTE-PRODUCTION-BENCHMARK-ROUND-1.md`
+
+Binding benchmark protocol:
+
+`docs/design/CHARACTER-PRODUCTION-BENCHMARK.md`
 
 ## Identity authority
 
@@ -30,6 +38,26 @@ Round 1 compares:
 2. Gemini / Nano Banana image-generation/editing workflow where available;
 3. Adobe Firefly / Photoshop generative workflow.
 
+## Execution state
+
+### ChatGPT Images
+
+- three initial candidates: **GENERATED**;
+- strongest candidate: **PENDING PRODUCT SELECTION**;
+- one localized correction round: **PENDING**;
+- corrected best result: **PENDING**;
+- scoring: **PENDING**.
+
+The three initial candidates are benchmark evidence only and are not approved production assets merely because they were generated.
+
+### Gemini / Nano Banana
+
+**PENDING.**
+
+### Adobe Firefly / Photoshop
+
+**PENDING.**
+
 ## Required evidence per workflow
 
 - 3 initial candidates;
@@ -39,7 +67,7 @@ Round 1 compares:
 - notes on identity drift, pose fidelity, texture, edit preservation and human effort;
 - review at production size and approximate Challenge Stage size.
 
-Suggested future subfolders:
+Suggested subfolders when evidence is ready for repository storage:
 
 - `chatgpt/`;
 - `gemini/`;
