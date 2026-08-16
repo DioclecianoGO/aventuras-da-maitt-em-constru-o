@@ -1,6 +1,6 @@
 # Maittê Production Benchmark — Round 1 Gate
 
-**Status:** DECIDED operational gate; ChatGPT initial candidates generated; candidate selection, localized correction, cross-tool comparison and production integration remain pending.
+**Status:** DECIDED operational gate; ChatGPT initial candidates generated and stored; C1 selected; localized glasses-correction review approved and stored; ChatGPT runtime-size/scoring review pending; Gemini and Adobe rounds pending; production integration remains pending.
 
 ## Purpose
 
@@ -76,21 +76,32 @@ Per workflow:
 2. select one strongest candidate;
 3. identify one localized defect/detail for correction;
 4. perform exactly one localized correction round before scoring edit preservation;
-5. retain the corrected best candidate;
+5. retain the corrected best candidate or explicitly record a clean-export capability limitation;
 6. review at full/review size and approximate Challenge Stage size;
 7. record identity drift, acting readability, texture preservation, edit preservation, separability/transparency practicality and human correction effort.
 
 ### ChatGPT execution state
 
-Three initial ChatGPT Maittê `listen-think` candidates have been generated from the approved Character Master in the controlled benchmark conversation.
+Three initial ChatGPT Maittê `listen-think` candidates were generated from the approved Character Master and are stored in the Round-1 evidence workspace.
 
-**Current disposition:** generated / not yet promoted; strongest-candidate selection and localized correction remain pending.
+**Current disposition:**
 
-Storage or generation alone does not approve any candidate.
+- candidate set: **GENERATED + STORED**;
+- strongest initial candidate: **C1 — SELECTED BY PRODUCT REVIEW**;
+- C1 pose: hand at chin + opposite arm crossed + thoughtful/upward gaze;
+- localized correction target: **pink-glasses geometry/fidelity**;
+- localized correction review: **APPROVED FOR BENCHMARK EVIDENCE + STORED**;
+- clean standalone corrected C1 export: **NOT AVAILABLE / NOT STORED**;
+- runtime-size comparison: **PENDING**;
+- scoring: **PENDING**.
+
+The current lack of a clean standalone corrected export is a workflow limitation to be reflected in localized-edit preservation, transparency/separability and human correction effort. The correction-review board must not be cropped or silently promoted as the final production asset.
+
+Storage or selection alone does not approve any candidate as production art.
 
 ## Runtime-size review
 
-Before a Round-1 result is accepted as a tool leader, the selected corrected output must be evaluated at approximately the size used in `ChallengeStageShell`.
+Before a Round-1 result is accepted as a tool leader, the selected corrected output/evidence must be evaluated at approximately the size used in `ChallengeStageShell`.
 
 Review must verify that the following remain readable without relying on the full-resolution image:
 
@@ -99,7 +110,7 @@ Review must verify that the following remain readable without relying on the ful
 - green-heart anchor;
 - `listen-think` acting signal;
 - overall child silhouette;
-- no severe edge/transparency artifacts.
+- no severe edge/transparency artifacts when a separable export exists.
 
 A temporary comparison harness is permitted for this review and must not redefine production architecture.
 
@@ -165,7 +176,9 @@ Round 1 is complete only when:
 
 - Maittê Character Master: **DECIDED identity authority**.
 - Current Maittê SVG scaffold: **TECHNICAL / CONCEPT SCAFFOLD**.
-- ChatGPT initial Round-1 candidates: **BENCHMARK CANDIDATES / NOT APPROVED PRODUCTION ASSETS**.
+- ChatGPT initial Round-1 candidates: **BENCHMARK EVIDENCE / NOT APPROVED PRODUCTION ASSETS**.
+- ChatGPT C1: **SELECTED STRONGEST INITIAL CANDIDATE / NOT PRODUCTION ASSET**.
+- ChatGPT glasses correction review: **APPROVED BENCHMARK EVIDENCE / NOT CLEAN PRODUCTION EXPORT**.
 - Round-1 leader: **PENDING**.
 - Final primary workflow: **PROVISIONAL until Round 2**.
 - Final `listen-think` production asset: **PRODUCTION-ASSET-GAP until explicitly approved and promoted**.
