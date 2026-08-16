@@ -1,38 +1,40 @@
 # Visual Production — Step 2 Gate
 
-**Status:** DECIDED gate and sequencing; **Step 2A COMPLETE; Step 2B COMPLETE**; production assets remain PROVISIONAL until explicitly approved; Step 2C remains NOT STARTED; mobile packaging remains FUTURE/PROVISIONAL.
+**Status:** DECIDED gate and sequencing; **Step 2A COMPLETE; Step 2B COMPLETE; character-production benchmark COMPLETE FOR WORKFLOW SELECTION; Maittê Production Proof 01 is NEXT; Step 2C remains NOT STARTED.**
 
 ## Purpose
 
 Step 1 established the production presentation seam and is merged on `main`.
 
-Step 2 must convert approved visual direction into a production-ready asset/composition workflow without repeating the Phase 1B failure mode of treating increasingly complex programmatic SVG as final illustration quality.
+Step 2 converts approved visual direction into a production-ready asset/composition workflow without repeating the failure mode of treating increasingly complex programmatic SVG as final illustration quality.
 
-This gate supersedes any earlier Step 2 plan that assumed a center binding, a flattened north-star image, or immediate implementation before character/environment identity locking.
+This gate supersedes earlier plans that assumed a center binding, a flattened north-star image, immediate Step 2C implementation before character identity locking, or final art manufactured in React paths.
 
 ## 1. Step 2 is not one giant build
 
-Step 2 is deliberately split into three reviewable sub-gates, with a controlled character-production benchmark between Step 2B closure and broad Step 2C composition.
+Step 2 is split into reviewable sub-gates, with character production proof required before broad Overworld composition.
 
 ### Step 2A — Asset identity and production contract
 
 **COMPLETE — DECIDED.**
 
-Deliverables:
+Deliverables include:
 
-- `VISUAL-ASSET-CONTRACT.md` merged;
-- stable logical identity model understood by implementation;
-- explicit distinction between static assets and identity/variant assets;
-- `PRODUCTION-ASSET-GAP` used when final authored art is missing;
-- approved visual locks carried into production prompts/handoffs.
-
-No child-facing visual redesign is required in Step 2A.
+- `VISUAL-ASSET-CONTRACT.md`;
+- stable logical identity model;
+- explicit static vs identity/variant asset distinction;
+- `PRODUCTION-ASSET-GAP` classification;
+- visual lock semantics for production prompts/handoffs.
 
 ### Step 2B — Character Master + presentation foundation
 
-**COMPLETE — DECIDED.** Closure is recorded in `STEP-2B-CHARACTER-FOUNDATION-CLOSURE.md`.
+**COMPLETE — DECIDED.**
 
-The required master set is approved and present:
+Closure:
+
+`STEP-2B-CHARACTER-FOUNDATION-CLOSURE.md`
+
+Approved master set:
 
 - Maittê;
 - Burpee;
@@ -40,70 +42,101 @@ The required master set is approved and present:
 - Will;
 - Lyra.
 
-Step 2B also established technical/concept runtime scaffolds and stable presentation seams so final authored assets can replace those scaffolds without changing gameplay/domain contracts.
+Step 2B also established technical/concept runtime scaffolds and stable presentation seams so final authored assets can replace those scaffolds without gameplay/domain changes.
 
-The master review prioritizes identity consistency before pose count. Maittê preserves `MAITTE.md`/`CHARACTER-ART.md` traits. Each pet remains species-readable and individually recognizable.
+Current programmatic character drawings remain **TECHNICAL / CONCEPT RUNTIME SCAFFOLDS**, not production art.
 
-The current programmatic character drawings remain **TECHNICAL / CONCEPT RUNTIME SCAFFOLDS**, not production art.
+### Character Production Asset Benchmark
 
-Acting variants must derive from the approved Character Masters; do not regenerate the full identity from scratch for each pose and do not treat scaffold SVG fidelity as the production target.
+**COMPLETE FOR WORKFLOW SELECTION — DECIDED.**
 
-### Character Production Asset Benchmark — next gate after Step 2B
+Method/history:
 
-**READY / DECIDED METHOD; winning tool remains PROVISIONAL.**
+`CHARACTER-PRODUCTION-BENCHMARK.md`
 
-Before broad Step 2C implementation, execute `CHARACTER-PRODUCTION-BENCHMARK.md`.
+Closure:
 
-The first controlled benchmark target is **Lyra — `watch`**. It compares production-capable workflows against the same approved identity and pose requirement, with the Character Master as authority and the technical scaffold only as optional pose/structure guidance.
+`CHARACTER-PRODUCTION-BENCHMARK-CLOSURE.md`
 
-This benchmark selects a replaceable production workflow; it does not change architecture or authorize Step 2C.
+Workflow decision:
+
+`CHARACTER-PRODUCTION-WORKFLOW-DECISION.md`
+
+Result:
+
+- ChatGPT Images — **PRIMARY**;
+- Gemini / Nano Banana — **FALLBACK**;
+- Adobe Firefly — **REJECTED as primary generator for the current production pass**;
+- Adobe Photoshop — **PREFERRED finishing / masking / layer-preparation / export environment**.
+
+The benchmark tested Maittê `listen-think` and Lyra `watch`. Additional generator benchmarking on Burpee/Pipoca/Will is not required before production preparation.
+
+### Maittê Production Proof 01 — next gate
+
+**NEXT / DECIDED SCOPE.**
+
+Spec:
+
+`MAITTE-PRODUCTION-PROOF-01.md`
+
+Target:
+
+**Maittê — `listen-think`.**
+
+Purpose:
+
+prove the real production preparation and runtime composition strategy for transparency, colorless/base representation, green-heart always-on behavior, independent restoration regions, masks/layers, target-scale quality and performance.
+
+Current preferred hypothesis under test:
+
+`one aligned full-color painting -> colorless base + independent restoration masks -> runtime reveal from the exact same painting`
+
+This physical contract is **PROVISIONAL** until the proof passes.
 
 ### Step 2C — Overworld production composition
 
 **NOT STARTED.**
 
-**DECIDED:** Step 2C may proceed only against approved Character Masters/production assets or explicit named `PRODUCTION-ASSET-GAP`s, after the controlled production workflow is understood well enough to avoid embedding low-quality placeholder art as final output.
+Step 2C may proceed only after Production Proof 01 establishes a usable initial production-character asset preparation/composition strategy or explicitly records a fallback contract.
 
-The Overworld is rebuilt at the presentation/composition layer using authored replaceable assets and the approved Step 1 seam.
+Step 2C will rebuild the Overworld at the presentation/composition layer using authored replaceable assets and the approved Step 1 seam.
 
 Step 2C does not change subject availability, routes, progression, curriculum, evaluation or persistence semantics.
 
 ## 2. Binding Overworld visual locks
 
-The following are **DECIDED** based on product review of the complementary approved north stars.
-
 ### Format and page metaphor
 
 - landscape adventure/coloring-book notebook page;
-- spiral binding is on the **LEFT EDGE** of the composition, not in the center;
-- do not implement the approved target as a two-page spread with a center binding;
-- the page/notebook metaphor belongs to presentation, not to navigation state or domain data.
+- spiral binding on the **LEFT EDGE**, not center;
+- do not implement a center-bound two-page spread;
+- notebook/page metaphor belongs to presentation, not navigation/domain state.
 
 ### Geography
 
 - one continuous connected geography;
-- subject regions transition organically into neighboring regions rather than reading as separated islands/cards;
+- subject regions transition organically rather than separated islands/cards;
 - Base da Esperança remains approximately central;
-- all six subject regions remain independently reachable in the global model;
-- broad relative placement from `OVERWORLD.md` remains the starting semantic geography, while final scenic geometry may be refined for composition quality.
+- all six subject regions remain independently reachable;
+- relative semantic geography may be refined for composition quality without changing world identity.
 
 ### Detail language
 
 - high density of small, closed, colorable illustration regions;
-- scenic detail must make the page feel authored/inhabited rather than sparse UI-over-background;
-- paths, labels and landmarks are diegetic parts of the illustration;
-- essential gameplay reading remains legible even if world labels use handwritten/cursive storybook lettering.
+- authored/inhabited scenic density rather than sparse UI over a background;
+- paths, labels and landmarks are diegetic;
+- essential gameplay text remains readable even when world labels use handwritten/cursive treatment.
 
 ### Opening color state
 
 - predominantly black ink line art on white/very-light warm paper;
-- Maittê's green heart remains the primary saturated opening anchor;
-- do not fake restoration with arbitrary radial tint overlays;
-- restored color appears through progression-derived restoration layers/units.
+- Maittê's green heart is the primary saturated opening anchor;
+- no arbitrary radial tint overlays masquerading as restoration;
+- color returns through progression-derived restoration layers/units.
 
-### Characters at the Base
+### Characters at Base
 
-The approved visual direction includes physical presence at/near Base da Esperança for:
+Physical presence at/near Base da Esperança for:
 
 - Maittê;
 - Burpee;
@@ -111,25 +144,25 @@ The approved visual direction includes physical presence at/near Base da Esperan
 - Will;
 - Lyra.
 
-Exact staging may be refined for composition/readability, but the intended home-world identity is the group, not a generic solo avatar pasted over the map.
+Exact staging may be refined for composition/readability.
 
 ## 3. Approved complementary north stars
 
 Both files under `references/visual/11-visual-production-slice-01-output/` remain binding complementary references:
 
-- `39bf975d-91a7-442e-bc48-41f7f9fe1a58.png`
-- `46f5f1dc-42a0-4098-88a2-8cb5971d3632.png`
+- `39bf975d-91a7-442e-bc48-41f7f9fe1a58.png`;
+- `46f5f1dc-42a0-4098-88a2-8cb5971d3632.png`.
 
 Use them together:
 
 - stronger character treatment governs character-quality direction;
-- stronger connected black-and-white map governs geography, world continuity, density and colorable-detail structure.
+- stronger connected black-and-white map governs geography, continuity, density and colorable-detail structure.
 
 Neither file is a runtime background.
 
 ## 4. Runtime composition model
 
-The preferred presentation stack is:
+Preferred presentation stack:
 
 `page/base -> environments -> regions -> landmarks/details -> restoration units -> characters -> foreground -> invisible hit areas`
 
@@ -138,7 +171,7 @@ The exact file count/format is not fixed.
 Application code owns:
 
 - responsive positioning/framing;
-- asset composition;
+- composition;
 - restoration masks/reveals;
 - interactions/hit areas;
 - transitions;
@@ -164,15 +197,15 @@ Step 2C must preserve:
 - derived restoration from existing facts/selectors;
 - tablet-first landscape framing;
 - desktop support;
-- no vertical-scroll dashboard as the primary map;
+- no vertical-scroll dashboard as primary map;
 - diegetic world selection/hit areas;
-- spatial zoom as the primary world-entry metaphor.
+- spatial zoom as primary world-entry metaphor.
 
 A future page-turn transition may complement narrative/zone changes but is not authorized merely by this gate.
 
 ## 6. Production-asset rule
 
-When a required authored layer is not available, classify it as:
+When a required authored layer is unavailable, classify it as:
 
 **`PRODUCTION-ASSET-GAP`**
 
@@ -184,25 +217,22 @@ Allowed temporary behavior:
 Forbidden behavior:
 
 - draw a low-quality replacement in React/SVG and call it production art;
-- flatten the approved reference image into one runtime background;
-- invent new canonical character identity because a master asset is missing;
+- flatten an approved reference into one permanent runtime background;
+- invent new canonical character identity because an asset is missing;
 - alter gameplay/domain semantics to accommodate an art shortcut.
 
-## 7. Generation-tool policy
+## 7. Generation/finishing-tool policy
 
-Image-generation/editing tools are replaceable production tools.
+Tool choice does not change the approved identity/reference hierarchy.
 
-**DECIDED:** tool choice does not change the approved identity/reference hierarchy.
+Current selected workflow:
 
-When benchmarking tools, evaluate:
+- ChatGPT Images — primary character generation/editing;
+- Gemini — fallback generation/editing;
+- Photoshop — finishing/masks/layers/transparency/export;
+- Firefly — not primary character generator for this pass.
 
-- identity preservation;
-- reference/composition fidelity;
-- localized-edit preservation;
-- line-art cleanliness;
-- character species/age/proportion consistency;
-- ability to produce separable/layer-compatible assets;
-- iteration cost/time.
+A future tool may replace a production tool without changing Character Masters or architecture.
 
 Do not select a tool merely because one isolated image looks attractive.
 
@@ -217,67 +247,80 @@ Step 2 does NOT authorize:
 - all-world gameplay implementation;
 - final page-turn system;
 - backpack systems;
-- native React Native/Expo rewrite;
+- React Native/Expo rewrite;
 - Capacitor packaging/release work;
 - backend/accounts;
-- final production animation rig.
+- final production animation rig;
+- mass conversion of all character states before Proof 01.
 
-## 9. Acceptance criteria — Step 2A
+## 9. Acceptance — Step 2A
 
-Step 2A passes when:
+**PASSED / COMPLETE.**
 
-1. visual asset identity/variant rules are versioned;
-2. approved assets are distinguished from generated drafts;
-3. missing art is explicitly `PRODUCTION-ASSET-GAP`;
-4. physical filenames are not promoted into gameplay/domain contracts;
-5. production prompts can state what is locked vs generative;
-6. no child-facing visual behavior changed merely to document the contract.
+## 10. Acceptance — Step 2B
 
-**Status: PASSED.**
+**PASSED / COMPLETE.**
 
-## 10. Acceptance criteria — Step 2B
+See `STEP-2B-CHARACTER-FOUNDATION-CLOSURE.md`.
 
-Step 2B passes when:
+## 11. Acceptance — benchmark
 
-1. Maittê has an approved master identity consistent with specs;
-2. each of the four pets has an approved master identity and species readability;
-3. masters can support later poses/scales without identity drift;
-4. no master is considered approved solely because an image generator produced it;
-5. approval status is recorded in the repository/reference system;
-6. the named characters have stable presentation seams behind logical keys so final authored assets can replace technical scaffolds without gameplay/domain changes.
+**PASSED FOR WORKFLOW SELECTION.**
 
-**Status: PASSED / COMPLETE.** See `STEP-2B-CHARACTER-FOUNDATION-CLOSURE.md` for the audited closure record.
+See `CHARACTER-PRODUCTION-BENCHMARK-CLOSURE.md`.
 
-## 11. Acceptance criteria — Step 2C
+Production-fit criteria requiring real transparent/layered exports transfer to Production Proof 01 rather than being retroactively fabricated.
+
+## 12. Acceptance — Maittê Production Proof 01
+
+Proof 01 passes when the project demonstrates, at minimum:
+
+1. clean transparent isolation of the selected Maittê painting;
+2. convincing colorless/base representation from the same art;
+3. always-saturated green heart;
+4. independent restoration for glasses, hairStreak, hair, shirt, skirt, socks and shoes;
+5. no visible mask seams/halos at target scale;
+6. mixed restoration combinations remain coherent;
+7. existing gameplay facts can drive the composition without persisted visual state;
+8. stable `character.maitte.listen-think` / `MaitteActor` seam can remain;
+9. acceptable tablet-first runtime quality/performance;
+10. a clear recommendation for the physical production contract.
+
+Detailed criteria are binding in `MAITTE-PRODUCTION-PROOF-01.md`.
+
+## 13. Acceptance — Step 2C
 
 Step 2C passes when:
 
-1. opening Overworld reads as an authored landscape coloring-book adventure page, not a dashboard;
-2. spiral binding is visibly on the left edge, not center;
-3. all six subject regions form one continuous geography;
-4. Base da Esperança is central and Maittê + all four pets read coherently within the world;
-5. opening color state is predominantly line art with the green-heart hope anchor;
-6. scenic/detail density materially approaches the approved north-star direction;
-7. runtime is layered/composable enough for restoration and interaction;
+1. Overworld reads as authored landscape coloring-book adventure page, not dashboard;
+2. spiral binding is on left edge;
+3. all six regions form continuous geography;
+4. Base is central and Maittê + all four pets read coherently;
+5. opening state is predominantly line art with green-heart anchor;
+6. detail density materially approaches approved north stars;
+7. runtime remains layered/composable for restoration/interaction;
 8. no permanent flattened north-star background is used;
-9. current routes, domain, evaluator, persistence and progression semantics remain intact;
-10. missing final authored layers are reported as `PRODUCTION-ASSET-GAP`, not silently replaced with production-claimed programmatic art.
+9. current routes/domain/evaluator/persistence/progression semantics remain intact;
+10. missing authored layers remain explicit `PRODUCTION-ASSET-GAP`s.
 
 **Status: NOT STARTED.**
 
-## 12. Current authorization sequence
+## 14. Current authorization sequence
 
 The visual-production sequence is now:
 
 1. Step 2A specifications — **COMPLETE**;
-2. Character Master production/review + presentation foundation (Step 2B) — **COMPLETE**;
-3. execute `CHARACTER-PRODUCTION-BENCHMARK.md` using Lyra `watch` as the first controlled target;
-4. audit benchmark candidates and select primary/fallback production workflow;
-5. define/approve the first production character variant(s) and physical export strategy;
-6. only then prepare a Plan Mode proposal for broad Step 2C against approved assets/contracts and named `PRODUCTION-ASSET-GAP`s;
-7. audit Step 2C plan;
-8. explicit Build authorization;
-9. implementation;
-10. screenshot/runtime audit before further visual scope.
+2. Step 2B Character Masters + presentation foundation — **COMPLETE**;
+3. character-production benchmark — **COMPLETE FOR WORKFLOW SELECTION**;
+4. Maittê Production Proof 01 specification — **COMPLETE / NEXT EXECUTION GATE**;
+5. Photoshop production preparation for the proof;
+6. review proof exports/masks/contact sheet;
+7. Claude Code Plan Mode for presentation-only runtime integration;
+8. external audit of plan;
+9. explicit Build authorization;
+10. runtime implementation of the proof only;
+11. screenshot/performance audit;
+12. promote or reject the tested physical asset contract;
+13. only then prepare broad Step 2C Plan Mode proposal.
 
-No implementation agent may treat Step 2B completion as permission to bypass the benchmark or jump directly into a large low-quality Step 2C art rewrite.
+No implementation agent may use benchmark completion as permission to jump directly into mass character conversion or low-quality Step 2C art replacement.
