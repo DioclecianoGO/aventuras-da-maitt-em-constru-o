@@ -1,23 +1,40 @@
 # Character Production Asset Benchmark
 
-**Status:** DECIDED benchmark method and sequencing; winning tool, exact physical formats, pose inventory and production exports remain PROVISIONAL until benchmark review.
+**Status:** COMPLETE FOR WORKFLOW SELECTION — DECIDED. Primary/fallback generation workflows are selected; runtime physical format and restoration-layer contract remain PROVISIONAL and move to Maittê Production Proof 01.
 
 ## Purpose
 
-Step 2B established approved character identity masters and stable presentation seams so temporary technical SVG scaffolds can be replaced without changing gameplay/domain contracts.
+Step 2B established approved Character Masters and stable presentation seams so temporary technical SVG scaffolds can be replaced without changing gameplay/domain contracts.
 
-The next visual-production decision is **not** to improve those SVGs until they resemble final illustration. The next decision is to determine which available image-production workflow best preserves the approved Character Masters while producing usable acting-state variants with the intended storybook/watercolor texture.
+This benchmark determined which available image-production workflow best preserves approved Character Masters while creating usable acting-state variants in the intended storybook/watercolor language.
 
-This benchmark chooses a **production tool/workflow**, not an architecture. Tool choice remains replaceable and cannot redefine approved identity.
+The benchmark selected a **production workflow**, not an architecture. Tool choice remains replaceable and cannot redefine approved identity.
 
-## Preconditions
+## Binding outcome
 
-Before benchmark execution:
+Detailed closure:
 
-1. Maittê, Burpee, Pipoca, Will and Lyra Character Masters are explicitly approved and stored under their canonical reference folders;
+`docs/design/CHARACTER-PRODUCTION-BENCHMARK-CLOSURE.md`
+
+Detailed production decision:
+
+`docs/design/CHARACTER-PRODUCTION-WORKFLOW-DECISION.md`
+
+Current outcome:
+
+1. **ChatGPT Images — PRIMARY character generation/editing workflow**;
+2. **Gemini / Nano Banana — FALLBACK workflow**;
+3. **Adobe Firefly — REJECTED as primary character generator for the current production pass**;
+4. **Adobe Photoshop — PREFERRED finishing / masking / layer-preparation / export environment**.
+
+Character Masters and approved locks remain authoritative regardless of workflow.
+
+## Preconditions — satisfied
+
+1. Maittê, Burpee, Pipoca, Will and Lyra Character Masters are approved and stored;
 2. the five character presentation seams/scaffolds are integrated on `main`;
 3. `VISUAL-ASSET-CONTRACT.md` and `ASSET-PRODUCTION-PIPELINE.md` remain binding;
-4. Step 2C Overworld production composition remains **NOT STARTED** during this benchmark.
+4. Step 2C Overworld production composition remained NOT STARTED during benchmark execution.
 
 ## Binding identity hierarchy
 
@@ -27,135 +44,96 @@ For production-character variants, authority is:
 
 The current technical scaffold may provide pose/structure guidance, but it is **not** an identity or texture authority.
 
-A coding assistant must not attempt to recreate the approved watercolor/storybook character by expanding manual JSX/SVG paths and call that final production art.
+A coding assistant must not recreate approved watercolor/storybook character art by expanding manual JSX/SVG paths and call that final production art.
 
-## Benchmark sequence
+## Round 1 — Maittê `listen-think`
 
-### Round 1 — Maittê `listen-think`
+**Status: COMPLETE.**
 
-**DECIDED:** the first benchmark target is **Maittê — `listen-think`**.
-
-Rationale:
-
-- Maittê is the protagonist and therefore the highest-value visual identity in the product;
-- the production workflow must prove that it can preserve her exact recognizable identity before it is trusted for supporting characters;
-- `listen-think` requires a meaningful acting-state change without being an extreme action pose, making it a strong first test of identity preservation under controlled transformation;
-- the state is useful at Challenge Stage scale and tests whether the approved storybook/watercolor language survives at runtime-relevant size;
-- the neutral approved master is already close to an idle identity reference, so `listen-think` tests whether the tool can change acting while keeping the same child rather than merely reproducing the master.
-
-#### Identity input
-
-Primary authority:
+Identity authority:
 
 `references/visual/12-maitte-character-master/MAITTE_MASTER_APPROVED.png`
 
-#### Pose/structure input
+Evidence workspace:
 
-The rendered `MaitteFigure` / `MaitteActor` `listen-think` technical scaffold may be supplied **only as POSE / STRUCTURE GUIDANCE** when useful.
+`references/visual/17-character-production-benchmark/maitte-listen-think/`
 
-It must not override:
+Round-1 product dispositions:
 
-- Maittê's face model and recognizability;
-- approximately 8-year-old proportions;
-- dark-brown hair, fringe and approved curl/wave treatment;
-- independently recognizable lighter hair streak;
-- pink glasses;
-- approved shirt/skirt/socks/high-top-sneaker identity;
-- green heart as the identity/hope anchor;
-- approved palette;
-- storybook/watercolor texture and ink language.
+- ChatGPT: C1 selected; localized glasses-correction review accepted as evidence; strongest identity/style continuity;
+- Gemini: C3 selected; correction/refinement completed; strong/viable but with small visual-language divergences;
+- Adobe Firefly: Candidate 01 selected for correction; workflow rejected from leader consideration because identity/style divergence was materially larger.
 
-If a tool can accept only one reference, the Character Master has priority over the scaffold render.
+**Round-1 leader: ChatGPT Images.**
 
-### Round 2 — Lyra `watch`
+## Round 2 — Lyra `watch`
 
-**DECIDED:** Lyra — `watch` is the second benchmark round and serves as the **identity-drift stress test** before a production workflow is promoted for broader use.
-
-Why Lyra/watch remains required:
-
-- Lyra has unusually strong asymmetric identity evidence in her face and tricolor coat distribution;
-- `watch` requires a meaningful pose/expression change while preserving recognizability;
-- the result must remain clearly distinct from Will despite both being adult domestic cats;
-- this round tests whether the workflow that performs well on the human protagonist also preserves irregular animal markings rather than randomizing them.
+**Status: COMPLETE.**
 
 Identity authority:
 
 `references/visual/16-lyra-character-master/LYRA_MASTER_APPROVED.png`
 
-The rendered `LyraArt` `watch` state may be supplied only as pose/structure guidance and never as identity, texture or production-quality authority.
+Evidence workspace:
 
-## Candidate workflows
+`references/visual/17-character-production-benchmark/lyra-watch/`
 
-The benchmark compares the same target across the available production-capable workflows:
+Round-2 product dispositions:
 
-1. **ChatGPT Images** — image editing / controlled variant generation from the approved Character Master;
-2. **Gemini image generation/editing (Nano Banana family where available)** — multi-reference or image-to-image variant workflow;
-3. **Adobe Firefly / Photoshop generative workflow** — generation/editing using the approved master, with Photoshop available for reference-image, masking and finishing workflows.
+- ChatGPT: Candidate 01 selected; correction review accepted; strongest preservation of Lyra's asymmetric identity while changing acting pose;
+- Gemini: Candidate 02 selected as strongest original; correction review rejected because the edit degraded the selected result.
 
-Photoshop is also the preferred neutral finishing environment for masks, transparency, localized cleanup, layer preparation and export comparison regardless of which generative engine wins.
+**Round-2 leader: ChatGPT Images.**
 
-Illustrator may support vector masks, overlays, icons or deliberately simple authored vector assets, but is **not** required merely because the current placeholders are SVG. The approved watercolor/storybook texture has priority over preserving SVG as a physical production format.
+Round 2 completed the required asymmetric animal-identity stress test. Additional generator benchmarking on Burpee, Pipoca and Will is not required before production preparation.
 
-Claude, Claude Code, Codex, Copilot and Lovable remain implementation/specification/integration assistants unless a separately approved benchmark explicitly evaluates an image-production capability. They are not identity authorities.
+## Controlled benchmark protocol — historical/binding for future reruns
 
-## Controlled benchmark protocol
+Per tested workflow:
 
-Each generative candidate receives the same functional brief and equivalent reference material as closely as the tool permits.
+1. generate three initial candidates from the same approved identity target;
+2. select the strongest candidate;
+3. perform one localized correction/refinement round;
+4. retain the corrected result or record the workflow limitation/failure;
+5. compare identity, acting readability, texture, correction stability and production effort;
+6. keep all evidence non-authoritative until explicit product review.
 
-### Round 1 protocol — Maittê `listen-think`
+The benchmark did not authorize mass generation or automatic production promotion.
 
-Minimum protocol per candidate workflow:
+## Common production constraints — Maittê
 
-1. generate **3 initial Maittê `listen-think` candidates** from the same approved identity target;
-2. select the strongest candidate from that tool without changing the scoring rules;
-3. perform **1 localized correction round** on a deliberately identified defect or detail — for example hair streak, glasses, hand anatomy, facial expression or clothing detail — to test preservation of unaffected regions;
-4. export or capture the best result at production-comparable resolution;
-5. evaluate at both review size and approximate Challenge Stage size;
-6. do not manually repaint a weak candidate before scoring the generator itself; finishing effort is scored separately.
+Production variants must preserve at minimum:
 
-### Round 2 protocol — Lyra `watch`
+- same approved Maittê identity;
+- approximately 8-year-old proportions;
+- recognizable face;
+- dark-brown hair/fringe/curl-wave treatment;
+- independent lighter hair streak;
+- pink glasses;
+- shirt with green heart;
+- skirt, colorful socks and high-top canvas sneakers;
+- warm original 2D storybook/coloring-book watercolor texture and confident ink language;
+- positive/supportive acting treatment;
+- no photorealism or age drift;
+- no arbitrary new accessories or identity redesign.
 
-Run the same 3-candidate + 1-localized-correction protocol using Lyra's approved master and `watch` target. This second round is required before declaring the primary workflow sufficiently robust for broad character production.
+## Common production constraints — Lyra
 
-If a tool cannot support a required capability, record that as a workflow limitation rather than silently changing the benchmark.
+Production variants must preserve at minimum:
 
-## Common production prompt constraints — Maittê Round 1
+- same approved Lyra identity;
+- adult-cat proportions;
+- asymmetric orange/black/white facial distribution;
+- individual coat distribution rather than generic calico randomization;
+- green/olive eyes;
+- pink nose;
+- long white whiskers;
+- warm storybook/watercolor texture and ink-contour language;
+- no photorealism, arbitrary redesign or new accessories.
 
-The first benchmark brief must lock at minimum:
+## Scoring model — retained as review framework
 
-- same Maittê as the approved Character Master;
-- preserve recognizable face and approximately 8-year-old proportions;
-- preserve dark-brown hair, fringe, curl/wave treatment and lighter streak;
-- preserve pink glasses;
-- preserve shirt with green heart, skirt, colorful socks and unbranded high-top canvas sneakers;
-- preserve warm original 2D storybook/coloring-book language with watercolor texture and confident ink contours;
-- change **only** the acting pose/expression needed for `listen-think` plus explicitly authorized structural adjustments;
-- expression should read attentive, thoughtful and curious, never sad, punished or confused in a negative way;
-- no photorealism;
-- no age drift toward toddler, teenager or adult;
-- no redesign of identity;
-- no new accessories unless already part of the approved master identity;
-- no unrelated environment baked into the character asset;
-- target transparent/separable character output when the tool/workflow supports it without material quality loss.
-
-## Common production prompt constraints — Lyra Round 2
-
-The second stress-test brief must lock at minimum:
-
-- same Lyra as the approved Character Master;
-- preserve exact recognizable feline identity and adult-cat proportions;
-- preserve asymmetric orange/black/white facial distribution;
-- preserve individual body coat distribution rather than generic calico randomization;
-- preserve green/olive eyes, pink nose and long white whiskers;
-- preserve warm storybook/watercolor texture and confident ink-contour language;
-- change only the acting pose/expression required for `watch` plus explicitly authorized structural adjustments;
-- no photorealism, identity redesign, new accessories or unrelated environment.
-
-## Scoring model
-
-Score each category from **0 to 10**. Use the weighted score only after checking blockers.
-
-### Round 1 — Maittê
+### Maittê
 
 | Criterion | Weight |
 |---|---:|
@@ -170,9 +148,7 @@ Score each category from **0 to 10**. Use the weighted score only after checking
 | Repeatability across iterations | 4% |
 | Human correction effort | 3% |
 
-Total: **100%**.
-
-### Round 2 — Lyra stress test
+### Lyra
 
 | Criterion | Weight |
 |---|---:|
@@ -187,75 +163,66 @@ Total: **100%**.
 | Repeatability across iterations | 4% |
 | Human correction effort | 3% |
 
-Total: **100%**.
+A strict complete numeric score was not fabricated retrospectively for criteria that required clean transparent/runtime-ready exports. That process deviation is recorded in the benchmark closure. Production-fit criteria now move to Production Proof 01.
 
-For `human correction effort`, a high score means less corrective work is required.
+## Blocking failures — retained
 
-## Blocking failures
+A workflow/asset cannot be promoted when it materially:
 
-### Maittê Round 1 blockers
+- changes the approved subject identity;
+- causes age/species/anatomy drift;
+- randomizes locked coat/hair/facial markings;
+- loses the approved storybook/watercolor language;
+- causes localized correction to regenerate locked unaffected regions uncontrollably;
+- requires disproportionate reconstruction to become runtime-usable.
 
-A candidate/workflow cannot pass Round 1 if any of the following occurs in the selected result or correction round:
+## Recorded deviations
 
-- Maittê becomes a different-looking child;
-- age visibly drifts outside the approved approximately-8-year-old character model;
-- face, hair model, lighter streak or pink glasses are materially redesigned;
-- the green-heart/clothing identity is lost or arbitrarily replaced;
-- storybook/watercolor texture is materially lost;
-- changing the pose forces full identity regeneration with uncontrolled drift;
-- ordinary localized correction materially changes locked unaffected regions;
-- output cannot be made runtime-usable without disproportionate manual reconstruction.
+See `CHARACTER-PRODUCTION-BENCHMARK-CLOSURE.md` for full disposition.
 
-### Lyra Round 2 blockers
+Key recorded items:
 
-A workflow cannot pass the stress test if:
+- ChatGPT Round-1 clean standalone correction export was not obtained;
+- Gemini Lyra prompts used a `listen-think` label in part of the experiment although the binding round is `watch`; outputs still tested the intended attentive/observant identity-preservation concern and were accepted as non-blocking evidence;
+- some Gemini Lyra evidence filenames were uploaded without extensions;
+- strict numeric scoring was incomplete for production-fit criteria that were not yet measurable.
 
-- Lyra becomes a different-looking cat;
-- asymmetric facial identity is mirrored, randomized or replaced with generic calico distribution;
-- major anatomy failure remains after the allowed localized correction round;
-- storybook/watercolor texture is materially lost;
-- pose change or correction causes uncontrolled identity/marking drift.
-
-## Decision rule
-
-After Round 1:
-
-- score all compliant Maittê workflows;
-- identify a **ROUND-1 LEADER**, but do **not** yet promote it to the final primary workflow solely from Maittê.
-
-After Round 2:
-
-- compare robustness across Maittê and Lyra;
-- highest compliant overall workflow becomes **PROVISIONAL PRIMARY CHARACTER PRODUCTION WORKFLOW**;
-- second-highest compliant workflow becomes **PROVISIONAL FALLBACK WORKFLOW**;
-- a workflow that fails a blocking condition in either required round cannot become primary;
-- Character Masters and approved locks remain authoritative;
-- a tool may be replaced later if another tool materially improves preservation/effort without changing architecture.
-
-A benchmark winner is not authorization to mass-produce all character states automatically.
+None of these reopen the generator benchmark.
 
 ## Post-benchmark production gate
 
-After selecting a workflow, define the actual production inventory per character/state.
+The next gate is:
+
+`docs/design/MAITTE-PRODUCTION-PROOF-01.md`
+
+Target:
+
+**Maittê — `listen-think`.**
+
+The production proof must determine the real preparation/runtime contract for:
+
+- transparency;
+- colorless base;
+- green-heart always-on behavior;
+- independent restoration regions;
+- raster masks/layers or approved alternative;
+- runtime target-scale quality;
+- export/performance tradeoffs.
 
 Do **not** assume symmetry requires five independent full-frame images for every character.
 
-For each acting state decide whether it should be represented by:
+For each later acting state decide whether it should use:
 
 - the same production illustration plus micro-animation;
-- localized/layered variants (eyes, mouth, tail, arm/head layer, etc.);
+- localized/layered variants;
 - a distinct authored pose;
 - another approved presentation-only representation.
 
-Micro-animation may include breathing, blinking, slight head/body movement, bounce and independently layered tail movement when it preserves illustration quality.
-
-Larger pose/expression changes may use distinct authored variants derived from the same master.
-
 ## Runtime integration rule
 
-Final production assets replace technical scaffolds **behind the existing logical presentation keys** whenever practical.
+Final production assets replace technical scaffolds **behind existing logical presentation keys** whenever practical.
 
-Examples:
+Example:
 
 `character.maitte.listen-think`
 
@@ -263,57 +230,42 @@ may move from:
 
 `vectorAsset(MaitteFigure)`
 
-to an approved raster/vector/layer-aware production descriptor without changing:
+to an approved raster/layer-aware production descriptor without changing curriculum, evaluation, persistence or progression semantics.
 
-- MaitteActor's state contract;
-- curriculum;
-- evaluation;
-- persistence;
-- mastery/progression semantics.
+Likewise `character.lyra.watch` may later replace `vectorAsset(LyraArt)` without changing LyraActor or CompanionActor contracts.
 
-Likewise, later `character.lyra.watch` may move from `vectorAsset(LyraArt)` to the approved production descriptor without changing LyraActor or CompanionActor contracts.
+Any necessary renderer/descriptor extension must remain presentation-only and be audited separately.
 
-Any renderer/descriptor change that becomes necessary must be handled as a presentation-layer proposal and audited separately.
+## Benchmark evidence
 
-## Benchmark evidence folder
-
-Use:
+Root:
 
 `references/visual/17-character-production-benchmark/`
 
-Required first-round workspace:
+Round 1:
 
-`references/visual/17-character-production-benchmark/maitte-listen-think/`
+`maitte-listen-think/`
 
-Recommended evidence after execution:
+Round 2:
 
-- `maitte-listen-think/chatgpt/` candidates and correction output;
-- `maitte-listen-think/gemini/` candidates and correction output;
-- `maitte-listen-think/adobe/` candidates and correction output;
-- Round 1 target-scale comparison sheet;
-- Round 1 scoring/review record;
-- later `lyra-watch/` evidence using the same benchmark discipline;
-- final cross-round workflow decision artifact.
+`lyra-watch/`
 
-Storage alone does not approve an output. The README/review record must explicitly state the selected result/workflow and status.
+Storage alone does not approve a production asset.
 
 ## Relationship to Step 2C
 
-**DECIDED sequencing:** finish the two-round character-production benchmark and approve the initial character production replacement strategy before beginning broad Step 2C Overworld production composition.
-
-This prevents Step 2C from embedding temporary SVG character quality or committing to a physical asset format before the production workflow has been tested.
-
-Step 2C remains governed by `VISUAL-PRODUCTION-STEP-2-GATE.md` and the approved Overworld north stars.
+**DECIDED sequencing:** the benchmark is complete, but broad Step 2C remains blocked until the first production-character preparation/composition strategy is proven well enough to avoid embedding temporary SVG quality or an untested physical asset contract into the Overworld.
 
 ## Governance summary
 
 - Character Masters: **DECIDED identity authority**.
 - Current code-drawn character/pet SVGs: **TECHNICAL / CONCEPT SCAFFOLDS**.
-- Benchmark method: **DECIDED**.
-- Round 1 Maittê `listen-think`: **DECIDED / NEXT**.
-- Round 2 Lyra `watch`: **DECIDED / REQUIRED STRESS TEST**.
-- Exact winning tool: **PROVISIONAL until both rounds are reviewed**.
+- Benchmark execution: **COMPLETE FOR WORKFLOW SELECTION**.
+- ChatGPT Images: **DECIDED PRIMARY**.
+- Gemini / Nano Banana: **DECIDED FALLBACK**.
+- Adobe Firefly: **REJECTED as primary character generator for this pass**.
+- Photoshop: **DECIDED preferred finishing/production-preparation environment**.
 - Exact final physical file format: **PROVISIONAL**.
+- Exact restoration raster/mask contract: **PROVISIONAL / PRODUCTION-ASSET-GAP**.
 - Exact per-character production pose inventory: **PROVISIONAL**.
-- Missing final production variants: **PRODUCTION-ASSET-GAP**.
-- Step 2C: **NOT STARTED** during benchmark.
+- Step 2C: **NOT STARTED**.
