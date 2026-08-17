@@ -29,13 +29,23 @@
  * independently-restorable colour regions (glasses, hairStreak, hair, shirt,
  * skirt, socks, shoes; heart is always saturated) currently render UNDER a
  * shared ink layer inside the SAME component for every state. Swapping one
- * `character.maitte.<state>` entry to a flattened raster image would freeze
+ * `character.maitte.<state>` entry to a flattened `raster` image would freeze
  * that pose at whatever restoration level the raster happened to depict,
  * silently breaking restoration for every other progress value. Do not
- * promote any `character.maitte.*` key to `raster` until a restoration-
- * compositing contract for character poses is separately designed and
- * approved (tracked as a named `PRODUCTION-ASSET-GAP` / blocker, not solved
- * here).
+ * promote any `character.maitte.*` key to plain `raster` until a
+ * restoration-compositing contract for character poses is separately
+ * designed and approved (tracked as a named `PRODUCTION-ASSET-GAP` /
+ * blocker, not solved here).
+ *
+ * Production Proof 01 (docs/design/MAITTE-PRODUCTION-PROOF-01.md): that
+ * restoration-compositing contract now exists for exactly ONE state —
+ * `character.maitte.listen-think` resolves to a `restoration-raster`
+ * descriptor (`src/visual/illustration.tsx`), not `vectorAsset(MaitteFigure)`.
+ * That descriptor kind composites the SAME per-region restoration Set every
+ * other Maittê state still consumes via `MaitteFigure`'s `opacity={on(region)}`
+ * layers, so this is not the naive flattened-raster promotion warned about
+ * above. The other four `character.maitte.*` states remain
+ * `vectorAsset(MaitteFigure)`, explicitly untouched by this proof.
  *
  * Step 2B-M2: `character.burpee.*` follows the same one-entry-per-acting-
  * state pattern, resolved by `BurpeeActor`. Unlike Maittê, the current
@@ -84,6 +94,7 @@ import { PipocaArt } from "@/assets/game/characters/pets/PipocaArt";
 import { WillArt } from "@/assets/game/characters/pets/WillArt";
 import { LyraArt } from "@/assets/game/characters/pets/LyraArt";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
+import { maitteListenThinkProductionProof } from "@/assets/game/characters/maitteListenThinkProductionProof";
 import { DunasDouradasColor, DunasDouradasInk } from "@/assets/game/board/DunasDouradasArt";
 import { PraiaDasConchasColor, PraiaDasConchasInk } from "@/assets/game/board/PraiaDasConchasArt";
 import { INK_SOFT, PAPER_DEEP } from "@/assets/game/ink";
@@ -134,7 +145,7 @@ const registry: Record<string, IllustrationAsset> = {
   "object.folded-map": vectorAsset(FoldedMapArt),
   "object.backpack": vectorAsset(BackpackArt),
   "character.maitte.idle-curious": vectorAsset(MaitteFigure),
-  "character.maitte.listen-think": vectorAsset(MaitteFigure),
+  "character.maitte.listen-think": maitteListenThinkProductionProof,
   "character.maitte.success": vectorAsset(MaitteFigure),
   "character.maitte.retry-thinking": vectorAsset(MaitteFigure),
   "character.maitte.move": vectorAsset(MaitteFigure),

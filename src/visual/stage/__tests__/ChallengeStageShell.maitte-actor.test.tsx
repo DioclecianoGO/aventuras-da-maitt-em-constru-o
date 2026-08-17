@@ -41,10 +41,13 @@ describe("ChallengeStageShell Maittê rendering (MaitteActor migration)", () => 
         <p>conteúdo</p>
       </ChallengeStageShell>,
     );
-    // listen-think shares the same thinking-eyes glyph as retry-thinking —
-    // and specifically NOT the "success" open-mouth path, proving the
-    // speaking override still wins over the passed maitteState prop.
-    expect(container.querySelector('path[d="M45 82 q 5 -6 10 0 q -5 5 -10 0 Z"]')).toBeTruthy();
+    // Production Proof 01: "listen-think" now resolves to a real raster
+    // asset (character.maitte.listen-think), not a MaitteFigure vector
+    // pose — so its presence is proven by an <image>, which no OTHER
+    // Maittê acting state (including "success", still vector-rendered)
+    // ever emits. This still proves the speaking override wins over the
+    // passed maitteState prop.
+    expect(container.querySelector("image")).toBeTruthy();
     expect(container.querySelector('path[d^="M57 96 q 8 12 16 0"]')).toBeNull();
   });
 
