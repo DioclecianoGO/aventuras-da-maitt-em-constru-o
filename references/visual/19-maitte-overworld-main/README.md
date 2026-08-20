@@ -1,6 +1,6 @@
 # Maittê Main / Overworld — Production Front
 
-**Status:** GATE 2B PASSED WITH BLINK/HAIR MOTION-PREPARATION GAPS — runtime build remains unauthorized pending asset persistence and construction-base reconciliation.
+**Status:** GATE 2B PASSED FOR BREATHING / HEART / BLINK; HAIR SECONDARY MOTION REMAINS OPEN — runtime build remains unauthorized pending asset persistence and construction-base reconciliation.
 
 ## Purpose
 
@@ -147,7 +147,7 @@ For this front, measure rather than guess:
 
 A main protagonist presence should read as intentional co-presence, not merely as a technically visible corner asset.
 
-## Gate 2B — motion / microanimation feasibility — COMPLETE WITH GAPS
+## Gate 2B — motion / microanimation feasibility — COMPLETE WITH HAIR GAP
 
 Detailed result:
 
@@ -165,11 +165,28 @@ Validated decisions:
 
 - breathing / idle life: **PASS**, whole-character presentation transform, no new art;
 - green-heart pulse: **PASS**, heart-localized overlay from approved source + heart mask, no whole-character pulse;
-- blink: **CONDITIONAL PASS**, visual expression is feasible but requires a local eye-zone production representation; the generated full-frame blink candidate is reference/proof only and must not replace the approved master wholesale;
+- blink: **PASS FOR BUILD PROOF**, using a deterministic approved-source composition rather than a generative closed-eye bitmap;
 - hair secondary motion: **MOTION-ASSET-GAP**, because the flat source has no underpaint and moving a duplicated hair layer would risk ghosting/holes/misregistration;
 - hairStreak independent sway: not promoted automatically from its restoration mask;
 - microexpression: existing acting-state seam remains primary for the first slice;
 - reduced-motion behavior is defined for all of the above.
+
+### Blink contract
+
+Full-frame and face-region generative blink candidates were explicitly rejected because they repainted unrelated approved pixels.
+
+The selected blink architecture uses:
+
+1. untouched approved master as the persistent base;
+2. an `Eyes + Pupil` mask derived from that same master;
+3. a neutral blink underlay exposed only inside that eye mask during the blink window;
+4. the original approved eye pixels clipped by the same mask and vertically squashed toward a thin line, then reopened.
+
+At rest, the underlay is invisible and the approved master is seen unchanged.
+
+No generative face pixels are authorized in runtime.
+
+The exact squash amplitude, transform origin, duration and cadence remain runtime visual-tuning parameters for Gate 3/Gate 5 rather than new authored-art requirements.
 
 The proven `restoration-raster` contract remains the color/restoration core.
 
@@ -189,7 +206,7 @@ For `animated=true`:
 
 The green-heart pulse must be heart-localized; a whole-character pulse is not authorized.
 
-The blink candidate must remain local to the eye zone if it is promoted; full-frame generative swapping is forbidden.
+The blink must remain eye-localized and deterministic; full-frame generative swapping is forbidden.
 
 ## Remaining gates
 
@@ -198,8 +215,7 @@ The blink candidate must remain local to the eye zone if it is promoted; full-fr
 Before implementation begins:
 
 - establish one unified construction base containing current `main` governance plus the audited `restoration-raster` implementation;
-- establish stable binary persistence for the prepared idle-curious assets;
-- decide whether the local blink overlay is included in the first slice or explicitly follows it;
+- establish stable binary persistence for the prepared idle-curious assets, including the `Eyes + Pupil` blink mask / any persisted underlay evidence needed by the selected implementation;
 - keep hair secondary motion tracked as an unresolved production requirement rather than faking it with a ghost-prone transform.
 
 ### Gate 3 — implementation
@@ -210,9 +226,10 @@ Safe initial motion scope already proven:
 
 - breathing / idle life;
 - heart-localized pulse;
+- deterministic eye-localized blink;
 - reduced-motion behavior.
 
-Blink may be included only after a local production eye-zone representation is prepared and audited.
+Hair secondary motion is not part of the first promoted motion set unless a clean underpaint/layer technique is proven separately.
 
 ### Gate 4 — external audit
 
@@ -238,11 +255,12 @@ The first Maittê Main/Overworld slice passes when:
 4. heart/restoration behavior remains correct;
 5. scale/framing reads intentionally in all three real contexts;
 6. no clipping, halo, mask drift or asset-loading error appears;
-7. authorized motion hooks coexist with the raster production representation without redrawing Maittê;
-8. reduced-motion behavior is defined and verified;
-9. unresolved blink/hair motion is not silently represented as complete;
-10. other Maittê states/companions are unaffected unless explicitly scoped;
-11. external audit and isolated Lovable preview both pass.
+7. breathing, heart pulse and blink coexist with the raster production representation without redrawing Maittê;
+8. blink uses only approved-source pixels/masks plus deterministic presentation treatment;
+9. reduced-motion behavior is defined and verified;
+10. unresolved hair secondary motion is not silently represented as complete;
+11. other Maittê states/companions are unaffected unless explicitly scoped;
+12. external audit and isolated Lovable preview both pass.
 
 ## Out of scope for the first slice
 
@@ -252,16 +270,16 @@ The first Maittê Main/Overworld slice passes when:
 - changing curriculum/progression/domain semantics;
 - defining a permanent restoration reward order;
 - a broad skeletal/mesh animation rig;
-- regenerating another idle-curious identity/pose.
+- regenerating another idle-curious identity/pose;
+- pretending independent hair sway is solved without compatible underpaint/layer evidence.
 
 ## Immediate next step
 
 Do **not** start Claude Code BUILD yet.
 
-First close the pre-BUILD integration gate:
+Close the pre-BUILD integration gate:
 
-1. persist the prepared Gate 2A raster/mask binaries in a stable repository/runtime location;
-2. reconcile current `main` governance with the audited `restoration-raster` implementation into one construction base;
-3. choose whether blink is required in the first vertical slice or remains a clearly tracked motion follow-up.
+1. persist the prepared Gate 2A raster/mask binaries plus the blink eye-mask/underlay inputs in a stable repository/runtime location;
+2. reconcile current `main` governance with the audited `restoration-raster` implementation into one construction base.
 
-Hair secondary motion remains explicitly open for a later dedicated production-preparation pass unless a clean underpaint/layer technique is proven before promotion.
+After those two items are closed, Gate 3 can be authorized with breathing + heart pulse + deterministic blink in scope, while independent hair secondary motion remains explicitly open for a later production-preparation pass.
