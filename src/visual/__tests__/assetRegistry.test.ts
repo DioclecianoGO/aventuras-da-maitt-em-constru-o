@@ -22,7 +22,9 @@ describe("asset registry", () => {
       "object.folded-map",
       "object.backpack",
       "character.maitte.idle-curious",
-      "character.maitte.listen-think",
+      // "character.maitte.listen-think" is intentionally NOT here — Production
+      // Proof 01 promoted it to a "restoration-raster" descriptor, asserted
+      // separately below. It still resolves via `hasAsset`/`getAsset`.
       "character.maitte.success",
       "character.maitte.retry-thinking",
       "character.maitte.move",
@@ -79,6 +81,24 @@ describe("asset registry", () => {
 
   it("no longer exposes the bare character.maitte key removed by Step 2B-M1", () => {
     expect(hasAsset("character.maitte")).toBe(false);
+  });
+
+  it("Production Proof 01: character.maitte.listen-think resolves to a restoration-raster descriptor", () => {
+    expect(hasAsset("character.maitte.listen-think")).toBe(true);
+    const asset = getAsset("character.maitte.listen-think");
+    expect(asset.kind).toBe("restoration-raster");
+    if (asset.kind === "restoration-raster") {
+      expect(Object.keys(asset.regionMasks).sort()).toEqual(
+        ["glasses", "hair", "hairStreak", "heart", "shirt", "shoes", "skirt", "socks"].sort(),
+      );
+    }
+  });
+
+  it("Production Proof 01: the other four Maittê acting states are unaffected", () => {
+    for (const state of ["idle-curious", "success", "retry-thinking", "move"]) {
+      const asset = getAsset(`character.maitte.${state}`);
+      expect(asset.kind).toBe("vector-component");
+    }
   });
 
   it("Step 2B-M2: exposes all five Burpee per-state keys and keeps the generic companion fallback", () => {
