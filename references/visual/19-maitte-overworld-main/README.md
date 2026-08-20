@@ -1,6 +1,6 @@
 # Maittê Main / Overworld — Production Front
 
-**Status:** PRE-BUILD INTEGRATION GATE PASSED — Gate 3 runtime BUILD is ready for explicit authorization; independent hair secondary motion remains open.
+**Status:** GATE 3 IMPLEMENTED — AWAITING EXTERNAL CODE/ASSET AUDIT AND ISOLATED LOVABLE REVIEW; independent hair secondary motion remains open.
 
 ## Purpose
 
@@ -257,18 +257,25 @@ Critical post-reconciliation verification:
 
 ## Remaining gates
 
-### Gate 3 — implementation — READY FOR EXPLICIT AUTHORIZATION
+### Gate 3 — implementation — IMPLEMENTED
 
-Implement one narrow vertical slice behind the existing `character.maitte.idle-curious` seam.
+Detailed result:
 
-Safe initial motion scope already proven:
+`references/visual/19-maitte-overworld-main/GATE-3-BUILD-RESULT.md`
 
+Implemented behind the existing `character.maitte.idle-curious` seam:
+
+- restoration-raster production source and 8-region restoration contract;
 - breathing / idle life;
 - heart-localized pulse;
 - deterministic eye-localized blink;
 - reduced-motion behavior.
 
-Hair secondary motion is not part of the first promoted motion set unless a clean underpaint/layer technique is proven separately.
+Hair secondary motion remains an explicit open `MOTION-ASSET-GAP` and was not implemented.
+
+Disposition:
+
+`GATE 3 IMPLEMENTED — AWAITING EXTERNAL CODE/ASSET AUDIT AND ISOLATED LOVABLE REVIEW`
 
 ### Gate 4 — external audit
 
@@ -314,8 +321,10 @@ The first Maittê Main/Overworld slice passes when:
 
 ## Immediate next step
 
-Gate 3 is now ready for explicit BUILD authorization on:
+Gate 3 implementation and production-build validation are complete on:
 
 `feat/maitte-idle-curious-prebuild`
 
-Do not merge this branch to `main` before Gate 4 external audit and Gate 5 isolated Lovable runtime review pass.
+Proceed to Gate 4 external code/asset audit and then Gate 5 isolated Lovable runtime review.
+
+Do not merge this branch to `main` before Gate 4 and Gate 5 pass.
