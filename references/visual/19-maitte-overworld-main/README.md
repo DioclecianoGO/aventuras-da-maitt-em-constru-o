@@ -1,6 +1,6 @@
 # Maittê Main / Overworld — Production Front
 
-**Status:** GATE 2A PASSED FOR NEXT-GATE PROOFING — motion feasibility is next; runtime build remains unauthorized.
+**Status:** GATE 2B PASSED WITH BLINK/HAIR MOTION-PREPARATION GAPS — runtime build remains unauthorized pending asset persistence and construction-base reconciliation.
 
 ## Purpose
 
@@ -147,21 +147,29 @@ For this front, measure rather than guess:
 
 A main protagonist presence should read as intentional co-presence, not merely as a technically visible corner asset.
 
-## Gate 2B — motion / microanimation feasibility — NEXT
+## Gate 2B — motion / microanimation feasibility — COMPLETE WITH GAPS
+
+Detailed result:
+
+`references/visual/19-maitte-overworld-main/GATE-2B-MOTION-FEASIBILITY.md`
+
+Adobe evidence board:
+
+`https://firefly.adobe.com/boards/id/urn:aaid:sc:US:53ef5755-c0c2-4a80-8844-45ea14d55522`
 
 Binding motion specification:
 
 `docs/design/CHARACTER-MOTION.md`
 
-This gate must test and classify, without prematurely building a broad animation rig:
+Validated decisions:
 
-- breathing;
-- blink cadence;
-- green-heart pulse;
-- subtle hair secondary motion;
-- idle posture movement;
-- microexpression compatibility;
-- reduced-motion/accessibility behavior.
+- breathing / idle life: **PASS**, whole-character presentation transform, no new art;
+- green-heart pulse: **PASS**, heart-localized overlay from approved source + heart mask, no whole-character pulse;
+- blink: **CONDITIONAL PASS**, visual expression is feasible but requires a local eye-zone production representation; the generated full-frame blink candidate is reference/proof only and must not replace the approved master wholesale;
+- hair secondary motion: **MOTION-ASSET-GAP**, because the flat source has no underpaint and moving a duplicated hair layer would risk ghosting/holes/misregistration;
+- hairStreak independent sway: not promoted automatically from its restoration mask;
+- microexpression: existing acting-state seam remains primary for the first slice;
+- reduced-motion behavior is defined for all of the above.
 
 The proven `restoration-raster` contract remains the color/restoration core.
 
@@ -177,21 +185,34 @@ For `animated=false` / reduced-motion:
 
 For `animated=true`:
 
-- non-destructive presentation overlays may be used only when their neutral/rest frame reproduces the approved master and restoration semantics remain unchanged.
+- non-destructive presentation overlays may be used only when they preserve restoration semantics and do not replace unrelated approved pixels.
 
 The green-heart pulse must be heart-localized; a whole-character pulse is not authorized.
 
+The blink candidate must remain local to the eye zone if it is promoted; full-frame generative swapping is forbidden.
+
 ## Remaining gates
 
-### Gate 3 — implementation
+### Pre-BUILD integration gate
 
 Before implementation begins:
 
 - establish one unified construction base containing current `main` governance plus the audited `restoration-raster` implementation;
 - establish stable binary persistence for the prepared idle-curious assets;
-- record Gate 2B motion decisions.
+- decide whether the local blink overlay is included in the first slice or explicitly follows it;
+- keep hair secondary motion tracked as an unresolved production requirement rather than faking it with a ghost-prone transform.
+
+### Gate 3 — implementation
 
 Then implement one narrow vertical slice behind the existing `character.maitte.idle-curious` seam.
+
+Safe initial motion scope already proven:
+
+- breathing / idle life;
+- heart-localized pulse;
+- reduced-motion behavior.
+
+Blink may be included only after a local production eye-zone representation is prepared and audited.
 
 ### Gate 4 — external audit
 
@@ -217,10 +238,11 @@ The first Maittê Main/Overworld slice passes when:
 4. heart/restoration behavior remains correct;
 5. scale/framing reads intentionally in all three real contexts;
 6. no clipping, halo, mask drift or asset-loading error appears;
-7. required motion hooks coexist with the raster production representation without redrawing Maittê;
+7. authorized motion hooks coexist with the raster production representation without redrawing Maittê;
 8. reduced-motion behavior is defined and verified;
-9. other Maittê states/companions are unaffected unless explicitly scoped;
-10. external audit and isolated Lovable preview both pass.
+9. unresolved blink/hair motion is not silently represented as complete;
+10. other Maittê states/companions are unaffected unless explicitly scoped;
+11. external audit and isolated Lovable preview both pass.
 
 ## Out of scope for the first slice
 
@@ -229,11 +251,17 @@ The first Maittê Main/Overworld slice passes when:
 - redesigning the entire Overworld;
 - changing curriculum/progression/domain semantics;
 - defining a permanent restoration reward order;
-- broad animation-rig work before the required motion contract is understood;
+- a broad skeletal/mesh animation rig;
 - regenerating another idle-curious identity/pose.
 
 ## Immediate next step
 
-Run **Gate 2B — Motion Feasibility Proof** against the prepared approved master.
+Do **not** start Claude Code BUILD yet.
 
-Do not start the Claude Code BUILD yet.
+First close the pre-BUILD integration gate:
+
+1. persist the prepared Gate 2A raster/mask binaries in a stable repository/runtime location;
+2. reconcile current `main` governance with the audited `restoration-raster` implementation into one construction base;
+3. choose whether blink is required in the first vertical slice or remains a clearly tracked motion follow-up.
+
+Hair secondary motion remains explicitly open for a later dedicated production-preparation pass unless a clean underpaint/layer technique is proven before promotion.
