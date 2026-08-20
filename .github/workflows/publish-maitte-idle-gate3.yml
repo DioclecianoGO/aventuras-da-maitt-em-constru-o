@@ -1,0 +1,112 @@
+name: Publish audited Maitte idle Gate 3
+
+on:
+  push:
+    branches:
+      - feat/maitte-idle-curious-prebuild
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/maitte-idle-curious-prebuild
+          fetch-depth: 0
+
+      - name: Download audited artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL 'https://at.adobe.com/JBAADbMPPZOvdrxq' -o /tmp/gate3.patch
+          curl -fL 'https://at.adobe.com/yVMoLSQvh0v5XyGZ' -o /tmp/GATE-3-BUILD-RESULT.md
+          echo 'd567de2d67d6938d6c8a76c07e19a5b5460b72437ef314770fc958bbc16fb67f  /tmp/gate3.patch' | sha256sum -c -
+
+      - name: Apply externally audited Gate 3 implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git apply --check /tmp/gate3.patch
+          git apply /tmp/gate3.patch
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/assets/game/characters/maitteIdleCuriousProductionProof.ts src/visual
+          git commit -m 'Integrate audited Maittê idle-curious Gate 3 runtime' -m 'Reconstructed from externally audited Claude local implementation febc3b2c3742e6e808d71f715ce8e1ce7e9846cc; patch SHA-256 d567de2d67d6938d6c8a76c07e19a5b5460b72437ef314770fc958bbc16fb67f.'
+
+      - name: Record Gate 3 result and remove transport workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp /tmp/GATE-3-BUILD-RESULT.md references/visual/19-maitte-overworld-main/GATE-3-BUILD-RESULT.md
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('references/visual/19-maitte-overworld-main/README.md')
+          s = p.read_text()
+          s = s.replace(
+              '**Status:** PRE-BUILD INTEGRATION GATE PASSED — Gate 3 runtime BUILD is ready for explicit authorization; independent hair secondary motion remains open.',
+              '**Status:** GATE 3 IMPLEMENTED — AWAITING EXTERNAL CODE/ASSET AUDIT AND ISOLATED LOVABLE REVIEW; independent hair secondary motion remains open.'
+          )
+          old = '''### Gate 3 — implementation — READY FOR EXPLICIT AUTHORIZATION
+
+Implement one narrow vertical slice behind the existing `character.maitte.idle-curious` seam.
+
+Safe initial motion scope already proven:
+
+- breathing / idle life;
+- heart-localized pulse;
+- deterministic eye-localized blink;
+- reduced-motion behavior.
+
+Hair secondary motion is not part of the first promoted motion set unless a clean underpaint/layer technique is proven separately.'''
+          new = '''### Gate 3 — implementation — IMPLEMENTED
+
+Detailed result:
+
+`references/visual/19-maitte-overworld-main/GATE-3-BUILD-RESULT.md`
+
+Implemented behind the existing `character.maitte.idle-curious` seam:
+
+- restoration-raster production source and 8-region restoration contract;
+- breathing / idle life;
+- heart-localized pulse;
+- deterministic eye-localized blink;
+- reduced-motion behavior.
+
+Hair secondary motion remains an explicit open `MOTION-ASSET-GAP` and was not implemented.
+
+Disposition:
+
+`GATE 3 IMPLEMENTED — AWAITING EXTERNAL CODE/ASSET AUDIT AND ISOLATED LOVABLE REVIEW`'''
+          if old not in s:
+              raise SystemExit('Gate 3 README block not found')
+          s = s.replace(old, new)
+          old2 = '''## Immediate next step
+
+Gate 3 is now ready for explicit BUILD authorization on:
+
+`feat/maitte-idle-curious-prebuild`
+
+Do not merge this branch to `main` before Gate 4 external audit and Gate 5 isolated Lovable runtime review pass.'''
+          new2 = '''## Immediate next step
+
+Gate 3 implementation and production-build validation are complete on:
+
+`feat/maitte-idle-curious-prebuild`
+
+Proceed to Gate 4 external code/asset audit and then Gate 5 isolated Lovable runtime review.
+
+Do not merge this branch to `main` before Gate 4 and Gate 5 pass.'''
+          if old2 not in s:
+              raise SystemExit('Immediate next step README block not found')
+          p.write_text(s)
+          PY
+          git rm .github/workflows/publish-maitte-idle-gate3.yml
+          git add references/visual/19-maitte-overworld-main/GATE-3-BUILD-RESULT.md references/visual/19-maitte-overworld-main/README.md
+          git commit -m 'docs: record audited Maittê idle-curious Gate 3 result' -m 'Documentation derived from reviewed local follow-up dc60feead874753d7783b691bccefb07624133d4; no runtime changes in this commit.'
+
+      - name: Push reviewed state
+        run: git push origin HEAD:feat/maitte-idle-curious-prebuild
