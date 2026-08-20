@@ -52,6 +52,13 @@ describe("ChallengeStageShell Maittê rendering (MaitteActor migration)", () => 
   });
 
   it("still derives restored regions from avatarProgress", () => {
+    // Step 2C-M1: idle-curious (the default maitteState here) was promoted
+    // to a restoration-raster descriptor, so a fully-restored render no
+    // longer shows a vector `g[opacity="1"]` colour layer — it shows the
+    // untouched full-colour source with no grayscale filter anywhere. That
+    // absence is exactly as strong a proof that avatarProgress=1 reached
+    // `resolveRestoredRegions` -> `restored` -> the renderer: only full
+    // restoration takes this branch at all.
     const { container } = render(
       <ChallengeStageShell
         worldId="world-unknown-for-test"
@@ -62,9 +69,7 @@ describe("ChallengeStageShell Maittê rendering (MaitteActor migration)", () => 
         <p>conteúdo</p>
       </ChallengeStageShell>,
     );
-    const glassesLayer = Array.from(container.querySelectorAll("g")).find(
-      (g) => g.getAttribute("opacity") === "1" && g.querySelector('path[d^="M40 74 q 12 -4 22 0"]'),
-    );
-    expect(glassesLayer).toBeTruthy();
+    expect(container.querySelector("g[style*='grayscale']")).toBeNull();
+    expect(container.querySelector("image")).toBeTruthy();
   });
 });
