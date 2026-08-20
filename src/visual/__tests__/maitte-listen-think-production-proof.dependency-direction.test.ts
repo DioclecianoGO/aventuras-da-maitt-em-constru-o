@@ -42,3 +42,30 @@ describe("maitteListenThinkProductionProof.ts stays presentation-only", () => {
     expect(source).not.toContain(forbidden);
   });
 });
+
+describe("maitteIdleCuriousProductionProof.ts stays presentation-only (Step 2C-M1)", () => {
+  const source = read("../../assets/game/characters/maitteIdleCuriousProductionProof.ts");
+
+  it.each(FORBIDDEN_IMPORTS)("does not import %s", (forbidden) => {
+    expect(source).not.toContain(forbidden);
+  });
+
+  it("does not persist motion state — no imports from game/state selectors/facts", () => {
+    expect(source).not.toContain("@/game/state");
+  });
+});
+
+describe("idle-curious motion reuses classes already covered by the reduced-motion override (Step 2C-M1)", () => {
+  const css = read("../../styles.css");
+  const reducedMotionBlock = css.slice(
+    css.indexOf("@media (prefers-reduced-motion: reduce)"),
+    css.indexOf("@media (prefers-reduced-motion: reduce)") + 800,
+  );
+
+  it.each(["maitte-breathe", "maitte-blink", "heart-pulse"])(
+    "the %s class (reused by RestorationRasterIllustration's motion overlays) is listed in the reduced-motion override block",
+    (className) => {
+      expect(reducedMotionBlock).toContain(className);
+    },
+  );
+});
