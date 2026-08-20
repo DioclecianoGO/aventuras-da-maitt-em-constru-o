@@ -1,6 +1,6 @@
 # Maittê Main / Overworld — Production Front
 
-**Status:** GATE 2B PASSED FOR BREATHING / HEART / BLINK; HAIR SECONDARY MOTION REMAINS OPEN — runtime build remains unauthorized pending asset persistence and construction-base reconciliation.
+**Status:** PRE-BUILD INTEGRATION GATE PASSED — Gate 3 runtime BUILD is ready for explicit authorization; independent hair secondary motion remains open.
 
 ## Purpose
 
@@ -72,6 +72,8 @@ Current validated direction:
 `-> transparent production raster`
 `-> restoration masks`
 `-> motion feasibility proof`
+`-> repository-native asset persistence`
+`-> unified restoration-raster construction base`
 `-> stable existing logical key / Actor seam`
 `-> Overworld + World Board + Challenge Stage`
 
@@ -90,7 +92,7 @@ Preserve the restoration vocabulary:
 
 Restoration order remains outside the asset and must stay configurable.
 
-## Gate 2A — core production preparation — COMPLETE FOR PROOFING
+## Gate 2A — core production preparation — COMPLETE
 
 Detailed result:
 
@@ -126,10 +128,20 @@ Adobe evidence board:
 Known precision notes remain for final promotion:
 
 - glasses selection currently covers the visible lens region as well as frame pixels; visually acceptable for proofing, but final precision must be rechecked;
-- hairStreak is mapped to the narrow colored/beaded hair-accent strand; tiny low-level raw-mask residual remains a cleanup concern if it becomes visible at target scale;
-- stable repository/runtime persistence of the Adobe-produced binary exports must be established before BUILD.
+- hairStreak is mapped to the narrow colored/beaded hair-accent strand; tiny low-level raw-mask residual remains a cleanup concern if it becomes visible at target scale.
 
 These are **not** reasons to regenerate the Maittê source.
+
+### Gate 2A asset persistence — COMPLETE
+
+The prepared binaries are now repository-native files on the pre-BUILD branch.
+
+Detailed provenance and integrity records:
+
+- `references/visual/19-maitte-overworld-main/ASSET-PERSISTENCE.md`
+- `references/visual/19-maitte-overworld-main/RUNTIME-ASSET-SHA256.txt`
+
+The Adobe Boards are evidence only and are not runtime dependencies.
 
 ## Scale and framing are first-class acceptance concerns
 
@@ -208,19 +220,46 @@ The green-heart pulse must be heart-localized; a whole-character pulse is not au
 
 The blink must remain eye-localized and deterministic; full-frame generative swapping is forbidden.
 
+## Pre-BUILD integration gate — COMPLETE
+
+Detailed checkpoint:
+
+`references/visual/19-maitte-overworld-main/PREBUILD-INTEGRATION-GATE.md`
+
+Completed on isolated branch:
+
+`feat/maitte-idle-curious-prebuild`
+
+The gate closed both prerequisites:
+
+1. stable repository persistence of the `idle-curious` raster/masks/blink inputs;
+2. reconciliation of current `main` governance with the externally audited Production Proof 01 `restoration-raster` implementation.
+
+The audited restoration implementation was reconciled from:
+
+`feat/maitte-production-proof-01-runtime-audit`
+
+source audit commit:
+
+`50f18ecb62984241512429219ffc35132a2be87c`
+
+through PR #25, with pre-BUILD merge commit:
+
+`a23b4dc71e2838645239abf6b9afe3ac6f2c264a`
+
+Critical post-reconciliation verification:
+
+- `restoration-raster` renderer is present;
+- `character.maitte.listen-think` still uses the audited production proof;
+- `character.maitte.idle-curious` still uses `vectorAsset(MaitteFigure)`;
+- therefore Gate 3 implementation has **not** started accidentally;
+- `main` remains untouched by the pre-BUILD work.
+
 ## Remaining gates
 
-### Pre-BUILD integration gate
+### Gate 3 — implementation — READY FOR EXPLICIT AUTHORIZATION
 
-Before implementation begins:
-
-- establish one unified construction base containing current `main` governance plus the audited `restoration-raster` implementation;
-- establish stable binary persistence for the prepared idle-curious assets, including the `Eyes + Pupil` blink mask / any persisted underlay evidence needed by the selected implementation;
-- keep hair secondary motion tracked as an unresolved production requirement rather than faking it with a ghost-prone transform.
-
-### Gate 3 — implementation
-
-Then implement one narrow vertical slice behind the existing `character.maitte.idle-curious` seam.
+Implement one narrow vertical slice behind the existing `character.maitte.idle-curious` seam.
 
 Safe initial motion scope already proven:
 
@@ -275,11 +314,8 @@ The first Maittê Main/Overworld slice passes when:
 
 ## Immediate next step
 
-Do **not** start Claude Code BUILD yet.
+Gate 3 is now ready for explicit BUILD authorization on:
 
-Close the pre-BUILD integration gate:
+`feat/maitte-idle-curious-prebuild`
 
-1. persist the prepared Gate 2A raster/mask binaries plus the blink eye-mask/underlay inputs in a stable repository/runtime location;
-2. reconcile current `main` governance with the audited `restoration-raster` implementation into one construction base.
-
-After those two items are closed, Gate 3 can be authorized with breathing + heart pulse + deterministic blink in scope, while independent hair secondary motion remains explicitly open for a later production-preparation pass.
+Do not merge this branch to `main` before Gate 4 external audit and Gate 5 isolated Lovable runtime review pass.
