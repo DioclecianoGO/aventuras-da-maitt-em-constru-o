@@ -38,14 +38,24 @@
  * blocker, not solved here).
  *
  * Production Proof 01 (docs/design/MAITTE-PRODUCTION-PROOF-01.md): that
- * restoration-compositing contract now exists for exactly ONE state —
- * `character.maitte.listen-think` resolves to a `restoration-raster`
- * descriptor (`src/visual/illustration.tsx`), not `vectorAsset(MaitteFigure)`.
- * That descriptor kind composites the SAME per-region restoration Set every
- * other Maittê state still consumes via `MaitteFigure`'s `opacity={on(region)}`
- * layers, so this is not the naive flattened-raster promotion warned about
- * above. The other four `character.maitte.*` states remain
- * `vectorAsset(MaitteFigure)`, explicitly untouched by this proof.
+ * restoration-compositing contract now exists for `character.maitte.listen-think`,
+ * which resolves to a `restoration-raster` descriptor (`src/visual/illustration.tsx`),
+ * not `vectorAsset(MaitteFigure)`. That descriptor kind composites the SAME
+ * per-region restoration Set every other Maittê state still consumes via
+ * `MaitteFigure`'s `opacity={on(region)}` layers, so this is not the naive
+ * flattened-raster promotion warned about above.
+ *
+ * Step 2C-M1 (docs/design/CHARACTER-MOTION.md,
+ * `references/visual/19-maitte-overworld-main/`): `character.maitte.idle-curious`
+ * is promoted the same way, using `MAITTE_MASTER_APPROVED.png` itself as the
+ * literal approved pixel source (no new pose generated). This is the
+ * Overworld/World Board/Challenge-Stage-default acting state — the single
+ * most-rendered Maittê presentation in the app — so its descriptor also
+ * carries an optional presentation-only `motion` config (breathing,
+ * heart-pulse, deterministic blink; independent hair secondary motion is
+ * explicitly NOT authorized yet, tracked as a `MOTION-ASSET-GAP`). The
+ * remaining three `character.maitte.*` states (`success`, `retry-thinking`,
+ * `move`) remain `vectorAsset(MaitteFigure)`, explicitly untouched.
  *
  * Step 2B-M2: `character.burpee.*` follows the same one-entry-per-acting-
  * state pattern, resolved by `BurpeeActor`. Unlike Maittê, the current
@@ -95,6 +105,7 @@ import { WillArt } from "@/assets/game/characters/pets/WillArt";
 import { LyraArt } from "@/assets/game/characters/pets/LyraArt";
 import { MaitteFigure } from "@/assets/game/characters/MaitteFigure";
 import { maitteListenThinkProductionProof } from "@/assets/game/characters/maitteListenThinkProductionProof";
+import { maitteIdleCuriousProductionProof } from "@/assets/game/characters/maitteIdleCuriousProductionProof";
 import { DunasDouradasColor, DunasDouradasInk } from "@/assets/game/board/DunasDouradasArt";
 import { PraiaDasConchasColor, PraiaDasConchasInk } from "@/assets/game/board/PraiaDasConchasArt";
 import { INK_SOFT, PAPER_DEEP } from "@/assets/game/ink";
@@ -144,7 +155,7 @@ const registry: Record<string, IllustrationAsset> = {
   "object.slot": vectorAsset(SlotObjectArt),
   "object.folded-map": vectorAsset(FoldedMapArt),
   "object.backpack": vectorAsset(BackpackArt),
-  "character.maitte.idle-curious": vectorAsset(MaitteFigure),
+  "character.maitte.idle-curious": maitteIdleCuriousProductionProof,
   "character.maitte.listen-think": maitteListenThinkProductionProof,
   "character.maitte.success": vectorAsset(MaitteFigure),
   "character.maitte.retry-thinking": vectorAsset(MaitteFigure),
