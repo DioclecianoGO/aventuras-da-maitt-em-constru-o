@@ -51,9 +51,16 @@ describe("MaitteAvatar", () => {
   });
 
   it("derives restored regions from progress via the unchanged selector", () => {
+    // Step 2C-M1: "success" here, not the default "idle-curious" — that
+    // state was promoted to a restoration-raster descriptor and no longer
+    // renders MaitteFigure's vector `g[opacity]` DOM. The selector wiring
+    // this test exercises (`resolveRestoredRegions` -> `restored` prop) is
+    // itself state-agnostic and unchanged by that promotion; see
+    // `MaitteAvatar.idle-curious-production-proof.test.tsx` for the same
+    // wiring proven against the real idle-curious raster asset.
     const { container } = render(
       <svg>
-        <MaitteAvatar progress={1} x={0} y={0} animated={false} />
+        <MaitteAvatar progress={1} x={0} y={0} state="success" animated={false} />
       </svg>,
     );
     // At full progress every region in provisionalSequence is restored,
