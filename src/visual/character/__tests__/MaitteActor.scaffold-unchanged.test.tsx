@@ -4,6 +4,15 @@
  * the migration from a direct <MaitteFigure> render to <MaitteActor> did not
  * change what the child sees — state still picks a pose, restored regions
  * still reach the colour layers, the heart is still unconditional.
+ *
+ * Step 2C-M1: these tests use `state="move"` rather than `"idle-curious"`
+ * (their original choice), because `idle-curious` was promoted to a
+ * `restoration-raster` descriptor and no longer renders `MaitteFigure`'s
+ * vector DOM shape at all — see
+ * `src/visual/character/__tests__/MaitteActor.idle-curious-production-proof.test.tsx`
+ * for that state's own real/unmocked passthrough coverage. The region-colour
+ * paths asserted below are pose-invariant, so this still proves the exact
+ * same thing for every OTHER Maittê state still on the vector scaffold.
  */
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render } from "@testing-library/react";
@@ -26,7 +35,7 @@ describe("MaitteActor scaffold passthrough (unmocked)", () => {
   it("forwards restored regions unchanged — a restored region's colour layer is fully opaque", () => {
     const { container } = render(
       <svg>
-        <MaitteActor state="idle-curious" restored={new Set(["heart", "glasses"])} animated={false} />
+        <MaitteActor state="move" restored={new Set(["heart", "glasses"])} animated={false} />
       </svg>,
     );
     const glassesLayer = Array.from(container.querySelectorAll("g")).find(
@@ -38,7 +47,7 @@ describe("MaitteActor scaffold passthrough (unmocked)", () => {
   it("leaves an unrestored region's colour layer transparent", () => {
     const { container } = render(
       <svg>
-        <MaitteActor state="idle-curious" restored={new Set(["heart"])} animated={false} />
+        <MaitteActor state="move" restored={new Set(["heart"])} animated={false} />
       </svg>,
     );
     // Only the region-gated <g> declares an explicit opacity attribute at
@@ -54,7 +63,7 @@ describe("MaitteActor scaffold passthrough (unmocked)", () => {
   it("keeps the heart saturated regardless of which regions are restored", () => {
     const { container } = render(
       <svg>
-        <MaitteActor state="idle-curious" restored={new Set(["heart"])} animated={false} />
+        <MaitteActor state="move" restored={new Set(["heart"])} animated={false} />
       </svg>,
     );
     // The heart path is drawn unconditionally by MaitteFigure — not gated by
