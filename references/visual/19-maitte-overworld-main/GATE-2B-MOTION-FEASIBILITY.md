@@ -1,8 +1,8 @@
 # Gate 2B — Maittê `idle-curious` Motion Feasibility
 
-**Disposition:** PASS WITH MOTION-PREPARATION GAPS
+**Disposition:** PASS WITH HAIR MOTION-PREPARATION GAP
 
-**Runtime BUILD remains unauthorized.**
+**Runtime BUILD remains unauthorized until the pre-BUILD integration gate is closed.**
 
 This gate evaluates whether the approved `MAITTE_MASTER_APPROVED.png` / prepared `idle-curious` raster can support the living-motion requirements recorded in `docs/design/CHARACTER-MOTION.md` without replacing the approved identity source or changing restoration/gameplay semantics.
 
@@ -12,7 +12,7 @@ Adobe Firefly Board:
 
 `https://firefly.adobe.com/boards/id/urn:aaid:sc:US:53ef5755-c0c2-4a80-8844-45ea14d55522`
 
-The board contains the prepared full-color cutout, eye-selection proof, blink candidate, heart/hair masks and aligned face crops used during this audit.
+The board contains the prepared full-color cutout, eye-selection proofs, rejected generative blink attempts, deterministic blink-underlay proof, heart/hair masks and aligned face crops used during this audit.
 
 ## Binding principle
 
@@ -72,33 +72,69 @@ Reduced motion: stop the pulse or reduce it to a static emphasis.
 
 ## 4. Blink
 
-**Result: CONDITIONAL PASS — `MOTION-PREPARATION-GAP`.**
+**Result: PASS FOR BUILD PROOF — DETERMINISTIC COMPOSITING CONTRACT SELECTED.**
 
-Adobe produced a visually natural closed-eye blink candidate from the approved cutout. This proves that the intended expression is visually compatible with the Maittê master.
+### Rejected approach: full-frame generative blink
 
-However, the generated candidate is **not approved as a full-frame runtime replacement**.
-
-Observed technical evidence:
-
-- approved prepared source: `1024 × 1536`;
-- generative blink output: `1248 × 1888`;
-- normalizing/reframing the blink output back to `1024 × 1536` does not restore pixel identity outside the eye area;
-- face crops show small changes in glasses/face/hair rendering around the intended eye edit.
+Adobe produced visually natural closed-eye candidates, proving that the expression itself is compatible with Maittê. However, every generative attempt repainted unrelated pixels, including skin, glasses, hair and/or mouth. Even a single-eye crop drifted outside the eyelid.
 
 Therefore:
 
-**Forbidden:** swap the entire approved source for the generated blink frame during a blink.
+**Full-frame or face-region generative blink assets are rejected for runtime.**
 
-**Potentially valid:** use the blink candidate only as source material for a tightly localized eye-zone overlay, masked/clipped so the approved master remains authoritative everywhere else.
+They remain evidence/reference material only.
 
-The original eye-selection proof is narrow and clean. A production blink still needs one of the following before promotion:
+### Accepted approach: approved-source deterministic blink
 
-1. a production-quality eye-zone overlay aligned to the approved master; or
-2. another locally authored blink representation that changes only the eye zone.
+The selected blink contract uses only the approved prepared source plus a mask derived from that same source.
 
-The current full-frame generative blink candidate is **reference/proof material only**.
+Adobe produced a clean combined `Eyes + Pupil` mask on the approved `1024 × 1536` source. Its measured normalized bbox is:
 
-If no production-quality local blink representation is available, the first runtime slice may safely degrade to static eyes rather than introduce whole-face drift.
+- x: `0.4306640625`
+- y: `0.20572916666666666`
+- width: `0.1455078125`
+- height: `0.01953125`
+
+A deterministic neutral eye-underlay was also proven by applying processing only inside this mask. The underlay is **not intended to be displayed alone**; close-up evidence confirms that a flat/neutral eye area is insufficient by itself.
+
+The runtime blink must instead compose:
+
+1. the untouched approved Maittê raster as the persistent base;
+2. a blink underlay exposed only inside the eye mask during the blink window;
+3. the ORIGINAL approved eye pixels, clipped by the same `Eyes + Pupil` mask, temporarily rendered as an overlay;
+4. a vertical `scaleY`/squash of that original-eye overlay toward a thin line around the shared eye-center Y, then reversed.
+
+The compressed approved eye pixels create the visible eyelid/lash line while the underlay prevents the open eyeball in the persistent base from showing through.
+
+### Required invariants
+
+At neutral/rest state:
+
+- the underlay is not visible;
+- no replacement eye asset is visible;
+- the user sees the untouched approved master exactly.
+
+During blink:
+
+- only the eye-zone presentation changes;
+- glasses, face, hair and all other approved pixels remain the master;
+- restoration semantics do not change;
+- no generative face pixels are used;
+- blink duration remains brief and presentation-only.
+
+At full closure:
+
+- the original eye overlay should not collapse to absolute zero if doing so removes the lash/eyelid cue; target a small non-zero `scaleY` determined by runtime visual proof.
+
+Reduced motion:
+
+- blink may be disabled unless retained for legibility/naturalness after accessibility review.
+
+### Status distinction
+
+The **asset/architecture problem is solved**: no authored closed-eye bitmap is required.
+
+The exact `scaleY`, transform origin, duration and cadence remain **runtime visual-tuning parameters** and must be verified in Gate 3/Gate 5 at Overworld, World Board and Challenge Stage sizes.
 
 ## 5. Hair secondary motion
 
@@ -154,7 +190,7 @@ Required behavior:
 - breathing / idle sway: disabled or near-static;
 - heart pulse: disabled or static emphasis;
 - hair secondary motion: disabled;
-- blink: may remain only if the final implementation is judged necessary for legibility rather than decorative motion; otherwise static eyes are preferred;
+- blink: may remain only if the final implementation is judged necessary for legibility/naturalness; otherwise static eyes are preferred;
 - restoration state remains unchanged regardless of motion preference.
 
 ## Gate 2B decision matrix
@@ -164,21 +200,19 @@ Required behavior:
 | Breathing | PASS | No |
 | Idle posture / micro-sway | PASS | No |
 | Heart pulse | PASS | No — use approved source + heart mask |
-| Blink | CONDITIONAL PASS | Yes, local eye-zone production overlay or equivalent |
+| Blink | PASS FOR BUILD PROOF | No authored closed-eye art — use master + `Eyes/Pupil` mask + deterministic underlay + original-eye squash |
 | Hair secondary motion | OPEN / GAP | Likely yes — layer/underpaint or another proven technique |
 | `hairStreak` independent sway | OPEN / GAP | Possibly; restoration mask alone is insufficient |
 | Microexpression | Existing acting-state seam remains primary | No for first slice |
 
 ## Recommended production scope for the first runtime slice
 
-The first build should be architecturally ready for presentation-only motion but must not fake unresolved motion assets.
-
 Safe first-slice motion scope:
 
 - breathing / idle life;
 - heart-localized pulse;
-- reduced-motion behavior;
-- optional blink hook only if a local production blink asset is prepared before build completion.
+- deterministic blink contract described above;
+- reduced-motion behavior.
 
 Hair secondary motion remains a named follow-up production requirement unless a dedicated motion-preparation pass proves a clean technique before the runtime slice is promoted.
 
@@ -186,11 +220,10 @@ Hair secondary motion remains a named follow-up production requirement unless a 
 
 Before Claude Code BUILD is authorized:
 
-1. establish stable binary persistence for the Gate 2A core prepared assets;
+1. establish stable binary persistence for the Gate 2A core prepared assets and the additional `Eyes + Pupil` blink mask / underlay evidence needed by the selected blink composition;
 2. establish one unified construction base containing current `main` governance and the audited `restoration-raster` implementation;
-3. decide whether blink is required in the first slice or remains a motion follow-up;
-4. keep hair secondary motion explicitly tracked as unresolved rather than silently implementing a ghost-prone transform.
+3. keep hair secondary motion explicitly tracked as unresolved rather than silently implementing a ghost-prone transform.
 
 ## Final status
 
-`GATE 2B MOTION FEASIBILITY — PASS WITH BLINK/HAIR MOTION-PREPARATION GAPS`
+`GATE 2B MOTION FEASIBILITY — PASS FOR BREATHING / HEART / BLINK; HAIR SECONDARY MOTION REMAINS OPEN`
