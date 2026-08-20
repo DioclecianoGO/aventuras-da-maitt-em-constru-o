@@ -1,6 +1,6 @@
 # Maittê Main / Overworld — Production Front
 
-**Status:** GATE 3 IMPLEMENTED — AWAITING EXTERNAL CODE/ASSET AUDIT AND ISOLATED LOVABLE REVIEW; independent hair secondary motion remains open.
+**Status:** GATE 5 PASS WITH TUNING REQUIRED — READY FOR PRODUCT DECISION; final production promotion remains pending known asset-cleanup gaps and product/framing decisions.
 
 ## Purpose
 
@@ -33,11 +33,11 @@ Current logical path:
 `-> character.maitte.idle-curious`
 `-> assetRegistry`
 
-The same state is therefore relevant in three real contexts:
+The same state is therefore relevant in three real contexts, but Gate 5 clarified an important distinction:
 
-- Overworld;
-- World Board;
-- Challenge Stage resting/default presentation.
+- Overworld uses `idle-curious`;
+- World Board uses `idle-curious`;
+- Challenge Stage may contain an `idle-curious` board/background Maittê, but its primary stage actor follows the existing route state machine (`listen-think` before the first attempt, then `success` / `retry-thinking`).
 
 No new `maitte-overworld-default` logical key is authorized.
 
@@ -75,7 +75,7 @@ Current validated direction:
 `-> repository-native asset persistence`
 `-> unified restoration-raster construction base`
 `-> stable existing logical key / Actor seam`
-`-> Overworld + World Board + Challenge Stage`
+`-> Overworld + World Board + Challenge Stage regression review`
 
 Do not create separate redrawn partial-restoration versions.
 
@@ -134,7 +134,7 @@ These are **not** reasons to regenerate the Maittê source.
 
 ### Gate 2A asset persistence — COMPLETE
 
-The prepared binaries are now repository-native files on the pre-BUILD branch.
+The prepared binaries are repository-native files on the feature branch.
 
 Detailed provenance and integrity records:
 
@@ -147,17 +147,13 @@ The Adobe Boards are evidence only and are not runtime dependencies.
 
 Production Proof 01 showed that an asset can be technically correct while still requiring composition tuning in the real interface.
 
-For this front, measure rather than guess:
+Gate 5 measured rather than guessed:
 
-- source alpha/content bounds;
-- Overworld on-screen box;
-- World Board/avatar box;
-- Challenge Stage box;
-- foot/bottom anchor;
-- perceived character size relative to scene landmarks/UI;
-- legibility of face, glasses, heart and hair accent.
+- Overworld `idle-curious`: approximately `82.2 × 123.7 CSS px` at the primary `1280 × 1800` audit viewport;
+- World Board `idle-curious`: approximately `108–122 × 164–184 CSS px`, varying with the ambient parent-scene animation;
+- Challenge Stage primary actor remains the existing state-machine-driven `listen-think`/`success`/`retry-thinking`, not an `idle-curious` resting actor.
 
-A main protagonist presence should read as intentional co-presence, not merely as a technically visible corner asset.
+A main protagonist presence should read as intentional co-presence, not merely as a technically visible corner asset. Final acceptance of the Overworld/Board scale is therefore a product decision.
 
 ## Gate 2B — motion / microanimation feasibility — COMPLETE WITH HAIR GAP
 
@@ -198,13 +194,7 @@ At rest, the underlay is invisible and the approved master is seen unchanged.
 
 No generative face pixels are authorized in runtime.
 
-The exact squash amplitude, transform origin, duration and cadence remain runtime visual-tuning parameters for Gate 3/Gate 5 rather than new authored-art requirements.
-
-The proven `restoration-raster` contract remains the color/restoration core.
-
-Presentation-only motion overlays/layers may extend it only when visually justified.
-
-Motion must not become gameplay state or persisted progression state.
+Gate 5 observed the real blink cycle in runtime without a blocking visual defect.
 
 ### Full-restored invariant
 
@@ -247,17 +237,7 @@ through PR #25, with pre-BUILD merge commit:
 
 `a23b4dc71e2838645239abf6b9afe3ac6f2c264a`
 
-Critical post-reconciliation verification:
-
-- `restoration-raster` renderer is present;
-- `character.maitte.listen-think` still uses the audited production proof;
-- `character.maitte.idle-curious` still uses `vectorAsset(MaitteFigure)`;
-- therefore Gate 3 implementation has **not** started accidentally;
-- `main` remains untouched by the pre-BUILD work.
-
-## Remaining gates
-
-### Gate 3 — implementation — IMPLEMENTED
+## Gate 3 — implementation — COMPLETE
 
 Detailed result:
 
@@ -273,40 +253,66 @@ Implemented behind the existing `character.maitte.idle-curious` seam:
 
 Hair secondary motion remains an explicit open `MOTION-ASSET-GAP` and was not implemented.
 
+Production build, TypeScript, 213/213 tests, lint-regression check and protected-layer diff all passed.
+
+## Gate 4 — external audit — COMPLETE / PASS
+
+Detailed result:
+
+`references/visual/19-maitte-overworld-main/GATE-4-EXTERNAL-AUDIT.md`
+
+The externally audited implementation patch remains:
+
+`d567de2d67d6938d6c8a76c07e19a5b5460b72437ef314770fc958bbc16fb67f`
+
+No blocking code/architecture defect was found.
+
+## Gate 5 — isolated Lovable runtime review — COMPLETE WITH TUNING REQUIRED
+
+Detailed result:
+
+`references/visual/19-maitte-overworld-main/GATE-5-LOVABLE-RUNTIME-REVIEW.md`
+
+Isolated preview:
+
+`https://id-preview--31fef5b8-b281-4d41-a29b-59473f19f6c6.lovable.app`
+
 Disposition:
 
-`GATE 3 IMPLEMENTED — AWAITING EXTERNAL CODE/ASSET AUDIT AND ISOLATED LOVABLE REVIEW`
+`GATE 5 PASS WITH TUNING REQUIRED — READY FOR PRODUCT DECISION`
 
-### Gate 4 — external audit
+Validated in the real child-facing runtime:
 
-Code/test/asset audit before remote promotion.
+- `idle-curious` restoration-raster resolution in Overworld and World Board;
+- heart-only stolen-color semantics;
+- breathing;
+- localized heart pulse;
+- deterministic blink;
+- reduced-motion fallback;
+- existing `listen-think` Challenge Stage behavior remains intact.
 
-### Gate 5 — isolated Lovable runtime review
+Gate 5 also identified:
 
-Validate in the real child-facing interface before merging the runtime slice to `main`.
+- small breathing foot lift (~1 px) from `translateY(-1.5px)`;
+- World Board viewport drift inherited from the ambient parent-scene animation, not the character renderer;
+- Challenge Stage primary resting actor is not `idle-curious` under current DECIDED state wiring;
+- ~6 px shoe clipping for the existing Challenge Stage actor at `1280 × 1800`, not reproduced at `1440 × 900`;
+- a separate `SpeechBubble` hard-load hydration mismatch on the Challenge Stage route.
 
-Mandatory real-call-site review:
+## Acceptance criteria status
 
-- Overworld;
-- World Board;
-- Challenge Stage.
-
-## Acceptance criteria
-
-The first Maittê Main/Overworld slice passes when:
-
-1. identity clearly matches the approved Character Master;
-2. the real authored raster replaces only the intended technical scaffold seam;
-3. existing gameplay/restoration facts remain authoritative;
-4. heart/restoration behavior remains correct;
-5. scale/framing reads intentionally in all three real contexts;
-6. no clipping, halo, mask drift or asset-loading error appears;
-7. breathing, heart pulse and blink coexist with the raster production representation without redrawing Maittê;
-8. blink uses only approved-source pixels/masks plus deterministic presentation treatment;
-9. reduced-motion behavior is defined and verified;
-10. unresolved hair secondary motion is not silently represented as complete;
-11. other Maittê states/companions are unaffected unless explicitly scoped;
-12. external audit and isolated Lovable preview both pass.
+1. identity clearly matches the approved Character Master — **PASS**;
+2. real authored raster replaces only the intended technical scaffold seam — **PASS**;
+3. existing gameplay/restoration facts remain authoritative — **PASS**;
+4. heart/restoration behavior remains correct — **PASS**;
+5. scale/framing reads intentionally in all relevant contexts — **PRODUCT DECISION / TUNING PENDING**;
+6. no idle-curious clipping, blocking halo, mask drift or asset-loading error — **PASS** for Overworld/Board; separate Challenge Stage/listen-think clipping tracked;
+7. breathing, heart pulse and blink coexist with raster production representation — **PASS**;
+8. blink uses approved-source pixels/masks plus deterministic presentation treatment — **PASS**;
+9. reduced-motion behavior is defined and verified — **PASS**;
+10. unresolved hair secondary motion is not silently represented as complete — **PASS**;
+11. other Maittê states/companions are unaffected — **PASS**;
+12. external audit and isolated Lovable preview — **PASS / PASS WITH TUNING REQUIRED**.
 
 ## Out of scope for the first slice
 
@@ -321,10 +327,13 @@ The first Maittê Main/Overworld slice passes when:
 
 ## Immediate next step
 
-Gate 3 implementation and production-build validation are complete on:
+Make the product/spec decisions identified by Gate 5 before any final production promotion or merge to `main`:
 
-`feat/maitte-idle-curious-prebuild`
+1. accept or tune Overworld/World Board protagonist scale/framing;
+2. accept or tune the ~1 px breathing foot lift;
+3. correct the Challenge Stage acceptance language to match the existing state machine rather than forcing `idle-curious` into that context;
+4. track Challenge Stage/listen-think clipping separately;
+5. track the `SpeechBubble` direct-load hydration mismatch separately;
+6. keep glasses-mask precision, `hairStreak` cleanup/readability and independent hair motion open until final production promotion.
 
-Proceed to Gate 4 external code/asset audit and then Gate 5 isolated Lovable runtime review.
-
-Do not merge this branch to `main` before Gate 4 and Gate 5 pass.
+Do not merge this branch to `main` until the product decision closes the Gate 5 tuning items.
