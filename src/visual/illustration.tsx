@@ -24,6 +24,7 @@
  * scope here and is not implied by this file.
  */
 import { useId, type ComponentType, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 /** Existing hand-authored scaffolding. May be promoted to "raster" later. */
 export type VectorComponentIllustrationAsset = {
@@ -40,6 +41,62 @@ export type RasterIllustrationAsset = {
   height: number;
   /** Accessible description. Required — a raster asset carries no <title>. */
   alt: string;
+};
+
+/**
+ * Presentation-only heart-pulse. Requires "heart" to be a key of the asset's
+ * `regionMasks` (it always is for Maittê — heart is the always-restored
+ * anchor). No new authored art: the pulse reuses the SAME full-colour source
+ * pixels through the SAME heart mask, transformed in place.
+ * Binding spec: docs/design/CHARACTER-MOTION.md ("Heart pulse").
+ */
+export type RestorationRasterHeartPulseConfig = {
+  /**
+   * CSS `transform-origin`, as a percentage of the asset's own native pixel
+   * canvas (the heart-pulse layer uses `transform-box: fill-box`, and that
+   * layer spans the FULL canvas like every other layer — so the origin must
+   * be the heart's own measured centre, not "center", or the pulse would
+   * visibly orbit the whole-image centre instead of the heart).
+   */
+  originXPercent: number;
+  originYPercent: number;
+};
+
+/**
+ * Deterministic, approved-source-only blink. No generative/authored
+ * closed-eye art: composes the SAME full-colour source, clipped to a small
+ * combined eyes+pupil mask, vertically squashed toward a thin line and back
+ * — with a neutral underlay revealed only in the gap the squash opens up.
+ * Binding spec: docs/design/CHARACTER-MOTION.md ("Blink"),
+ * `references/visual/19-maitte-overworld-main/GATE-2B-MOTION-FEASIBILITY.md`.
+ */
+export type RestorationRasterBlinkConfig = {
+  /** Small combined "eyes + pupil" luminance mask isolating just the blink region. */
+  eyeMask: string;
+  /**
+   * Neutral/closed eye representation, clipped by the SAME `eyeMask`,
+   * rendered BEHIND the squashing eye overlay. At rest the un-squashed
+   * overlay (identical pixels to the base) fully covers it, so it is never
+   * visible until the squash opens a gap — deliberately static rather than
+   * timed separately, so no second animation has to stay in sync with it.
+   */
+  underlay: string;
+  /** Squash transform-origin, as a percentage of the native canvas (fill-box) — see `RestorationRasterHeartPulseConfig`'s note. */
+  originXPercent: number;
+  originYPercent: number;
+};
+
+/**
+ * Optional presentation-only motion. Entirely additive: an asset with no
+ * `motion` field (e.g. `listen-think`) renders byte-identical output to
+ * before this existed. Every behavior here is gated behind `animated` at
+ * render time and must never change restoration semantics or persist state.
+ */
+export type RestorationRasterMotionConfig = {
+  /** Whole-character breathing/idle-life transform. No new art. */
+  breathing?: boolean;
+  heartPulse?: RestorationRasterHeartPulseConfig;
+  blink?: RestorationRasterBlinkConfig;
 };
 
 /**
@@ -78,6 +135,8 @@ export type RestorationRasterIllustrationAsset = {
   renderBox: { width: number; height: number };
   /** Accessible description. */
   alt: string;
+  /** Optional presentation-only motion. Absent = no motion, ever. */
+  motion?: RestorationRasterMotionConfig;
 };
 
 export type IllustrationAsset =
@@ -93,6 +152,8 @@ export function vectorAsset(
 type RestorationRasterIllustrationProps = {
   asset: RestorationRasterIllustrationAsset;
   restored?: ReadonlySet<string> | readonly string[];
+  /** Gates ALL motion (breathing/heart-pulse/blink). Defaults true, matching every other Maittê state's own default. */
+  animated?: boolean;
   className?: string;
   title?: string;
 };
@@ -116,10 +177,17 @@ type RestorationRasterIllustrationProps = {
  *
  * Mask ids are scoped with `useId()` so two simultaneous instances of this
  * component in the same document can never collide.
+ *
+ * Motion (docs/design/CHARACTER-MOTION.md) is entirely additive and gated
+ * behind `animated && asset.motion`: an asset with no `motion` field (e.g.
+ * `listen-think`) renders exactly the DOM this component always has, byte
+ * for byte, motion or no motion — the static full-restored invariant this
+ * component already guaranteed is unweakened by any of this.
  */
 function RestorationRasterIllustration({
   asset,
   restored,
+  animated = true,
   className,
   title,
 }: RestorationRasterIllustrationProps): ReactNode {
@@ -139,6 +207,30 @@ function RestorationRasterIllustration({
 
   const { x, y, width, height } = asset.sourceContentBox;
 
+  // Motion is looked up ONLY when animated — `animated=false` must render
+  // the exact same DOM as an asset with no `motion` field at all.
+  const motion = animated ? asset.motion : undefined;
+  const heartPulse =
+    motion?.heartPulse && asset.regionMasks["heart"] ? motion.heartPulse : undefined;
+  const blink = motion?.blink;
+  const blinkMaskId = blink ? `${uid}-motion-blink-eye` : undefined;
+  const heartOverlayMaskId = heartPulse ? `${uid}-motion-heart-pulse` : undefined;
+
+  const blinkLayers = blink ? (
+    <>
+      <image href={blink.underlay} mask={`url(#${blinkMaskId})`} {...layerProps} />
+      <g
+        className="maitte-blink"
+        style={{
+          transformBox: "fill-box",
+          transformOrigin: `${blink.originXPercent}% ${blink.originYPercent}%`,
+        }}
+      >
+        <image href={asset.fullColor} mask={`url(#${blinkMaskId})`} {...layerProps} />
+      </g>
+    </>
+  ) : null;
+
   return (
     <svg
       viewBox={`${x} ${y} ${width} ${height}`}
@@ -147,15 +239,71 @@ function RestorationRasterIllustration({
       y={0}
       width={asset.renderBox.width}
       height={asset.renderBox.height}
-      {...(className !== undefined ? { className } : {})}
+      {...(motion?.breathing || className !== undefined
+        ? { className: cn(motion?.breathing ? "maitte-breathe" : undefined, className) }
+        : {})}
+      {...(motion?.breathing
+        ? { style: { transformBox: "fill-box" as const, transformOrigin: "center bottom" } }
+        : {})}
     >
       <title>{title ?? asset.alt}</title>
       {allRegionsRestored ? (
-        <image href={asset.fullColor} {...layerProps} />
+        <>
+          <image href={asset.fullColor} {...layerProps} />
+          {(heartOverlayMaskId ?? blinkMaskId) ? (
+            <defs>
+              {heartPulse && heartOverlayMaskId ? (
+                <mask
+                  id={heartOverlayMaskId}
+                  maskUnits="userSpaceOnUse"
+                  maskContentUnits="userSpaceOnUse"
+                  x={0}
+                  y={0}
+                  width={asset.width}
+                  height={asset.height}
+                  style={{ maskType: "luminance" }}
+                >
+                  <image href={asset.regionMasks["heart"]} {...layerProps} />
+                </mask>
+              ) : null}
+              {blink && blinkMaskId ? (
+                <mask
+                  id={blinkMaskId}
+                  maskUnits="userSpaceOnUse"
+                  maskContentUnits="userSpaceOnUse"
+                  x={0}
+                  y={0}
+                  width={asset.width}
+                  height={asset.height}
+                  style={{ maskType: "luminance" }}
+                >
+                  <image href={blink.eyeMask} {...layerProps} />
+                </mask>
+              ) : null}
+            </defs>
+          ) : null}
+          {heartPulse && heartOverlayMaskId ? (
+            <g
+              className="heart-pulse"
+              style={{
+                transformBox: "fill-box",
+                transformOrigin: `${heartPulse.originXPercent}% ${heartPulse.originYPercent}%`,
+              }}
+            >
+              <image href={asset.fullColor} mask={`url(#${heartOverlayMaskId})`} {...layerProps} />
+            </g>
+          ) : null}
+          {blinkLayers}
+        </>
       ) : (
         <>
           <g style={{ filter: "grayscale(1)" }}>
             <image href={asset.fullColor} {...layerProps} />
+            {/* Face/eyes are never a restoration region — they belong to the
+                grayscale base whenever the character isn't fully restored,
+                so the blink layers must share this same filter or colored
+                eye pixels would leak over an otherwise desaturated figure. */}
+            {blinkLayers}
           </g>
           <defs>
             {restoredEntries.map(([region, maskHref]) => (
@@ -177,15 +325,51 @@ function RestorationRasterIllustration({
                 <image href={maskHref} {...layerProps} />
               </mask>
             ))}
+            {blink && blinkMaskId ? (
+              <mask
+                id={blinkMaskId}
+                maskUnits="userSpaceOnUse"
+                maskContentUnits="userSpaceOnUse"
+                x={0}
+                y={0}
+                width={asset.width}
+                height={asset.height}
+                style={{ maskType: "luminance" }}
+              >
+                <image href={blink.eyeMask} {...layerProps} />
+              </mask>
+            ) : null}
           </defs>
-          {restoredEntries.map(([region]) => (
-            <image
-              key={region}
-              href={asset.fullColor}
-              mask={`url(#${uid}-mask-${region})`}
-              {...layerProps}
-            />
-          ))}
+          {restoredEntries.map(([region]) => {
+            if (region === "heart" && heartPulse) {
+              return (
+                <g
+                  key={region}
+                  className="heart-pulse"
+                  style={{
+                    transformBox: "fill-box",
+                    transformOrigin: `${heartPulse.originXPercent}% ${heartPulse.originYPercent}%`,
+                  }}
+                >
+                  <image
+                    href={asset.fullColor}
+                    mask={`url(#${uid}-mask-${region})`}
+                    {...layerProps}
+                  />
+                </g>
+              );
+            }
+            // Unwrapped — identical to this component's behaviour before
+            // motion existed, for every region and every non-heart-pulse asset.
+            return (
+              <image
+                key={region}
+                href={asset.fullColor}
+                mask={`url(#${uid}-mask-${region})`}
+                {...layerProps}
+              />
+            );
+          })}
         </>
       )}
     </svg>
@@ -223,17 +407,19 @@ export function Illustration({
   }
 
   if (asset.kind === "restoration-raster") {
-    // Only `restored`/`title` are meaningful for this asset kind — `state`/
-    // `animated` (forwarded unconditionally by e.g. MaitteActor) are not
-    // consumed here and must not leak onto the DOM as invalid attributes.
-    const { restored, title } = rest as {
+    // Only `restored`/`animated`/`title` are meaningful for this asset kind
+    // — `state` (forwarded unconditionally by e.g. MaitteActor) is not
+    // consumed here and must not leak onto the DOM as an invalid attribute.
+    const { restored, animated, title } = rest as {
       restored?: ReadonlySet<string> | readonly string[];
+      animated?: boolean;
       title?: string;
     };
     return (
       <RestorationRasterIllustration
         asset={asset}
         {...(restored !== undefined ? { restored } : {})}
+        {...(animated !== undefined ? { animated } : {})}
         {...(className !== undefined ? { className } : {})}
         {...(title !== undefined ? { title } : {})}
       />
