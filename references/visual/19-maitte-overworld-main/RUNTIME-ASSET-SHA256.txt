@@ -1,0 +1,11 @@
+044bc9acf270a3805f47831bfa06793ca51e9341b32eacbf69584dd9f0c1b8ba  src/assets/game/characters/production-proof/maitte-idle-curious-blink-underlay.png
+267f770662d98a3cac4dd5d7264dfff9f2dcc2e656ee4a5dbbd390414d3f3fd8  src/assets/game/characters/production-proof/maitte-idle-curious-full-color.png
+983b5adc2ff723614374dad08453d13db5e340ae0fd26a4bb2436a85e9b845b7  src/assets/game/characters/production-proof/maitte-idle-curious-mask-eyes-pupil.png
+e16e70f578a67ee55859fd4310833c28e2a81e03879787c34ebf46da278f412e  src/assets/game/characters/production-proof/maitte-idle-curious-mask-glasses.png
+811a300b7fe76fbfeace0658d2c4a85b273931ad9d97fed924a878a231cdea3a  src/assets/game/characters/production-proof/maitte-idle-curious-mask-hair-streak.png
+e0b177d769ace5e5fc45460abae3ba988b96bb8d01854c33c5237e1c516b9314  src/assets/game/characters/production-proof/maitte-idle-curious-mask-hair.png
+548222abcbc6397878a0c9607e99fcafdbd8c6a435eea1ab6cbbb6409f9aabef  src/assets/game/characters/production-proof/maitte-idle-curious-mask-heart.png
+79a89046c3d8a50f9d7b3462f3f4623c8d45521b567be08da471441daf4ff994  src/assets/game/characters/production-proof/maitte-idle-curious-mask-shirt.png
+776e04450f8cd2fb8d4817305d39b14301255e3c69ea4d5fdfcbe9cb0b00f188  src/assets/game/characters/production-proof/maitte-idle-curious-mask-shoes.png
+59f80e755f151c17982a13c5c542beb6fb8cf0f67c1656116173052a915b5f9c  src/assets/game/characters/production-proof/maitte-idle-curious-mask-skirt.png
+d3029ad47d1d45f945729c768f241f42d7144a2bcf166650b958067a6b1b3a47  src/assets/game/characters/production-proof/maitte-idle-curious-mask-socks.png
