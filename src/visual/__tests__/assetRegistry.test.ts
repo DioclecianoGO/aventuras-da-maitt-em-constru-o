@@ -21,10 +21,10 @@ describe("asset registry", () => {
       "object.slot",
       "object.folded-map",
       "object.backpack",
-      "character.maitte.idle-curious",
-      // "character.maitte.listen-think" is intentionally NOT here — Production
-      // Proof 01 promoted it to a "restoration-raster" descriptor, asserted
-      // separately below. It still resolves via `hasAsset`/`getAsset`.
+      // "character.maitte.idle-curious" and "character.maitte.listen-think"
+      // are intentionally NOT here — Production Proof 01 / Step 2C-M1
+      // promoted them to "restoration-raster" descriptors, asserted
+      // separately below. Both still resolve via `hasAsset`/`getAsset`.
       "character.maitte.success",
       "character.maitte.retry-thinking",
       "character.maitte.move",
@@ -94,10 +94,31 @@ describe("asset registry", () => {
     }
   });
 
-  it("Production Proof 01: the other four Maittê acting states are unaffected", () => {
-    for (const state of ["idle-curious", "success", "retry-thinking", "move"]) {
+  it("Production Proof 01: the other three Maittê acting states are unaffected", () => {
+    for (const state of ["success", "retry-thinking", "move"]) {
       const asset = getAsset(`character.maitte.${state}`);
       expect(asset.kind).toBe("vector-component");
+    }
+  });
+
+  it("Step 2C-M1: character.maitte.idle-curious resolves to a restoration-raster descriptor with motion", () => {
+    expect(hasAsset("character.maitte.idle-curious")).toBe(true);
+    const asset = getAsset("character.maitte.idle-curious");
+    expect(asset.kind).toBe("restoration-raster");
+    if (asset.kind === "restoration-raster") {
+      expect(Object.keys(asset.regionMasks).sort()).toEqual(
+        ["glasses", "hair", "hairStreak", "heart", "shirt", "shoes", "skirt", "socks"].sort(),
+      );
+      expect(asset.motion?.breathing).toBe(true);
+      expect(asset.motion?.heartPulse).toBeTruthy();
+      expect(asset.motion?.blink).toBeTruthy();
+    }
+  });
+
+  it("Step 2C-M1: character.maitte.listen-think keeps no motion config (unaffected by idle-curious's promotion)", () => {
+    const asset = getAsset("character.maitte.listen-think");
+    if (asset.kind === "restoration-raster") {
+      expect(asset.motion).toBeUndefined();
     }
   });
 
