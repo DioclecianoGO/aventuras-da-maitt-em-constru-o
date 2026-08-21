@@ -1,6 +1,6 @@
 # Character Animation Architecture Benchmark — Evidence Workspace
 
-**Status:** GATE A PASS CONDITIONAL — GATE B LAYER-PREPARATION PROOF AWAITING EXPLICIT APPROVAL
+**Status:** GATE A PASS CONDITIONAL — GATE B PARTIAL; AUTOMATIC SEGMENTATION PASSED, RIG-READY LAYER EXTRACTION / UNDERPAINT REQUIRES AN EDITOR STEP
 
 This workspace contains evidence for the character-animation architecture benchmark governed by:
 
@@ -61,29 +61,58 @@ Mandatory proof still open:
 - underpaint must not introduce visible redesign;
 - actual editor authoring effort must be measured.
 
-## Current gate
+## Gate B — Maittê layer-preparation proof — PARTIAL
 
-### Gate B — Maittê layer-preparation proof — AWAITING EXPLICIT APPROVAL
+Detailed result:
 
-No Rive rig or runtime code is authorized yet.
+`GATE-B-MAITTE-LAYER-PREPARATION.md`
 
-Gate B must first prove that the approved Maittê can be decomposed into a minimal riggable layer inventory and reassembled at the neutral pose without visible seams or identity drift.
+Disposition:
 
-Expected evidence:
+`PARTIAL — AUTOMATIC SEGMENTATION PASS; PRODUCTION LAYER EXTRACTION / UNDERPAINT STILL REQUIRES EDITOR WORK`
 
-- source-layer plan;
-- extracted transparent PNG layers;
-- neutral underpaint only where articulation needs it;
-- corrected glasses-frame layer excluding lens interiors;
-- eyelid/blink source strategy;
-- neutral re-composition board;
-- review-scale and Overworld-scale comparison;
-- SHA manifest;
-- human approval before mesh/bone rigging.
+Confirmed through the Adobe connector:
+
+- transparent benchmark cutout can be derived without altering the approved master;
+- hair mask is coherent;
+- both arm+hand masks are coherent and individually identifiable;
+- eyes+pupils are tightly localized;
+- upper-clothes/torso and lower-clothes/skirt masks are coherent;
+- face region is identifiable;
+- automatic glasses segmentation remains insufficient for production and must be manually refined.
+
+Important authoring finding:
+
+- the current Adobe connector exposes mask generation but not a direct arbitrary `selection -> transparent approved-pixel layer` operation;
+- meaningful arm/hair articulation also requires authored underpaint for pixels hidden in the flat master;
+- two restricted Adobe Firefly underpaint attempts were rejected before generation, so underpaint automation was not proven and no generated derivative was accepted.
+
+No Rive rig or runtime code has been started.
+
+## Current decision
+
+The benchmark remains on the Rive path, but Gate B is not fully closed.
+
+Recommended next action:
+
+### Gate B1 — minimal editor-assisted preparation
+
+Prepare only the smallest rig-ready package required to prove:
+
+- one grounded torso/breathing deformation;
+- one arm gesture;
+- one top-down blink;
+- one hair secondary-motion region;
+- heart independence;
+- grayscale/color restoration alignment.
+
+Do not prepare every future pose or every companion.
+
+The goal is to measure the real up-front authoring burden before deciding whether Rive's rig reuse pays back that cost.
 
 ## Future proof evidence
 
-After explicit authorization:
+After Gate B is fully closed and Gate C is explicitly authorized:
 
 - rig screenshot/layout;
 - neutral rest;
