@@ -1,6 +1,6 @@
 # Character Animation Architecture Benchmark — Evidence Workspace
 
-**Status:** OPEN — GATE A / TOOL AND REPOSITORY FEASIBILITY NEXT
+**Status:** GATE A PASS CONDITIONAL — GATE B LAYER-PREPARATION PROOF AWAITING EXPLICIT APPROVAL
 
 This workspace contains evidence for the character-animation architecture benchmark governed by:
 
@@ -32,28 +32,59 @@ The benchmark tests whether a dedicated rigged 2D character runtime can solve th
 4. current raster/CSS implementation — control baseline, never discarded until a replacement wins;
 5. pixel-art — separate product/art-direction spike, not part of the initial rigging proof.
 
+## Gate A — Rive tool/repository feasibility — COMPLETE
+
+Detailed result:
+
+`GATE-A-RIVE-FEASIBILITY.md`
+
+Disposition:
+
+`PASS CONDITIONAL`
+
+Confirmed:
+
+- raster watercolor images can be imported and mesh-deformed;
+- bones/weighting support body articulation;
+- State Machines/Data Binding fit the existing semantic character adapter;
+- official React/Web runtime exists;
+- Rive runtime libraries are MIT/open source;
+- production `.riv` export requires a paid plan;
+- `.rev` + `.riv` + repository source-layer policy provides a reproducible path;
+- current ChatGPT environment has no direct Rive connector/MCP;
+- Rive's own in-editor Agent may reduce authoring effort but does not eliminate the need to measure manual rig/mesh work.
+
+Mandatory proof still open:
+
+- named grayscale/color restoration must stay aligned through mesh/bone deformation;
+- neutral layered reassembly must preserve the approved watercolor identity;
+- underpaint must not introduce visible redesign;
+- actual editor authoring effort must be measured.
+
 ## Current gate
 
-### Gate A — tool / repository feasibility
+### Gate B — Maittê layer-preparation proof — AWAITING EXPLICIT APPROVAL
 
-No production rig is authorized yet.
+No Rive rig or runtime code is authorized yet.
 
-Evidence to add here:
+Gate B must first prove that the approved Maittê can be decomposed into a minimal riggable layer inventory and reassembled at the neutral pose without visible seams or identity drift.
 
-- Rive primary-documentation findings;
-- licensing/deployment findings;
-- Web/React runtime integration findings;
-- watercolor/raster-layer fidelity findings;
-- proposed layer-separation inventory;
-- proposed `.riv` repository/versioning policy;
-- manual-editor/integration constraints;
-- Gate-A PASS / FAIL / CONDITIONAL decision.
+Expected evidence:
+
+- source-layer plan;
+- extracted transparent PNG layers;
+- neutral underpaint only where articulation needs it;
+- corrected glasses-frame layer excluding lens interiors;
+- eyelid/blink source strategy;
+- neutral re-composition board;
+- review-scale and Overworld-scale comparison;
+- SHA manifest;
+- human approval before mesh/bone rigging.
 
 ## Future proof evidence
 
 After explicit authorization:
 
-- layer-separation proof;
 - rig screenshot/layout;
 - neutral rest;
 - grounded breathing;
