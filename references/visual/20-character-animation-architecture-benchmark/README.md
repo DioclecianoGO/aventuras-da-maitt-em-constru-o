@@ -1,6 +1,6 @@
 # Character Animation Architecture Benchmark — Evidence Workspace
 
-**Status:** GATE A PASS CONDITIONAL — GATE B PARTIAL; AUTOMATIC SEGMENTATION PASSED, RIG-READY LAYER EXTRACTION / UNDERPAINT REQUIRES AN EDITOR STEP
+**Status:** GATE A PASS CONDITIONAL — GATE B PARTIAL — GATE B1 HYBRID RIVE PREPARATION PROOF ACTIVE
 
 This workspace contains evidence for the character-animation architecture benchmark governed by:
 
@@ -84,35 +84,43 @@ Confirmed through the Adobe connector:
 Important authoring finding:
 
 - the current Adobe connector exposes mask generation but not a direct arbitrary `selection -> transparent approved-pixel layer` operation;
-- meaningful arm/hair articulation also requires authored underpaint for pixels hidden in the flat master;
+- meaningful arm articulation still requires authored underpaint for pixels hidden in the flat master;
 - two restricted Adobe Firefly underpaint attempts were rejected before generation, so underpaint automation was not proven and no generated derivative was accepted.
 
-No Rive rig or runtime code has been started.
+No production Rive rig or runtime code has been started.
 
-## Current decision
+## Gate B1 — hybrid Rive preparation proof — ACTIVE
 
-The benchmark remains on the Rive path, but Gate B is not fully closed.
+Detailed plan:
 
-Recommended next action:
+`GATE-B1-RIVE-HYBRID-PREPARATION-PROOF.md`
 
-### Gate B1 — minimal editor-assisted preparation
+B1 intentionally narrows the artwork-preparation burden before accepting a full paper-doll decomposition.
 
-Prepare only the smallest rig-ready package required to prove:
+New working hypothesis:
 
-- one grounded torso/breathing deformation;
-- one arm gesture;
-- one top-down blink;
-- one hair secondary-motion region;
-- heart independence;
-- grayscale/color restoration alignment.
+- grounded breathing can use local mesh deformation on the approved base raster with feet pinned;
+- subtle hair secondary motion may also use local mesh deformation without a separate hair PNG;
+- blink can remain a very small localized overlay/state element;
+- heart remains an independent presentation/restoration element;
+- only motions that reveal previously hidden pixels, starting with one arm gesture, require explicit separated artwork + underpaint;
+- a duplicate-source/custom-mesh-contour experiment will test whether even the visible arm pixels can be sampled directly from the same approved raster instead of exporting a separate arm PNG.
 
-Do not prepare every future pose or every companion.
+This is the current proof sequence:
 
-The goal is to measure the real up-front authoring burden before deciding whether Rive's rig reuse pays back that cost.
+1. neutral source import/fidelity;
+2. grounded breathing on the base raster;
+3. subtle local hair deformation;
+4. duplicate-source/custom-contour arm experiment;
+5. one-arm articulation and measurement of the minimum necessary underpaint;
+6. localized top-down blink;
+7. restoration/motion alignment proof.
+
+The aim is to learn the smallest repeatable rig-authoring package, not to rig every future state now.
 
 ## Future proof evidence
 
-After Gate B is fully closed and Gate C is explicitly authorized:
+After Gate B/B1 are closed and Gate C is explicitly authorized:
 
 - rig screenshot/layout;
 - neutral rest;
